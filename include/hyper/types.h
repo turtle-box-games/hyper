@@ -5,9 +5,6 @@
 
 namespace hyper
 {
-    /// Single byte value with a range from 0 to 255.
-    enum class byte : unsigned char {};
-
     /// 8-bit signed integer.
     /// Values can range from -128 to 127
     typedef int8_t int8;
