@@ -1,0 +1,84 @@
+/// @file assert.h
+/// Macros for requiring a condition is met before proceeding.
+/// These assertions will cause the program to immediately exit if the condition is false.
+/// However, if the program is compiled for release, with @c -DNDEBUG, then the assertions are removed.
+
+#ifndef HYPER_ASSERT_H
+#define HYPER_ASSERT_H
+
+#include <cstdlib> // For abort()
+#include <cstdio>  // For fprintf()
+
+// Workaround for converting the line number in a file to a string.
+#define STRINGIFY(X) #X
+#define TOSTRING(X) STRINGIFY(X)
+
+/// @def SOURCE_LOCATION
+/// @brief Current location in the source code as a string.
+/// @details Inserts the current location in the source code as a constant string.
+///   The string is formatted as @c FILE:LINE
+#define SOURCE_LOCATION __FILE__ ":" TOSTRING(__LINE__)
+
+#ifdef NDEBUG
+// Define assertions as no-ops when compiling in release mode.
+#define ASSERT(condition) ((void)0)
+#define ASSERTF(condition, message, vars...) ((void)0)
+#else
+
+/// @def ASSERT(condition)
+/// @brief Require that a condition be met.
+/// @details If the condition fails, then an error is printed and the program exits immediately.
+///   This macro should only be used in exceptional circumstances when program stability is questioned.
+///   When building the program in release mode, specifically with @c NDEBUG defined,
+///   then this check is a no-op - the check is not performed.
+/// @param condition Boolean condition to ensure is true.
+/// @example assert.cpp
+/// Verify that P is not NP (if only it were this easy).
+/// @code
+/// ASSERT(p != np);
+/// @endcode
+#define ASSERT(condition) \
+if(!(condition)) \
+{ \
+    fprintf(stderr, "Assertion failed: " #condition "\n" \
+        "\tat " SOURCE_LOCATION  "\n"); \
+    abort(); \
+}
+
+/// @def ASSERTF(condition, message, vars...)
+/// @brief Require that a condition be met and display a message if not.
+/// @details If the condition fails, then an error is printed and the program exits immediately.
+///   This macro should only be used in exceptional circumstances when program stability is questioned.
+///   When building the program in release mode, specifically with @c NDEBUG defined,
+///   then this check is a no-op - the check is not performed.
+/// @param condition Boolean condition to ensure is true.
+/// @param message String describing the condition that must be met.
+///   This string can contain @p printf() format specifiers.
+/// @param vars Optional list of variables to substitute into the @p message.
+/// @example assertf.cpp
+/// Require that pointer is not NULL.
+/// @code
+/// ASSERTF(ptr != nullptr, "Pointer cannot be NULL");
+/// @endcode
+/// @example assertf_var.cpp
+/// Require that the computer can perform some simple math.
+/// If it fails to do so, display what it thinks the answer is.
+/// @code
+/// int x = 1 + 2;
+/// ASSERTF(x == 3, "Failed basic math, 1 + 2 = %i", x);
+/// @endcode
+#define ASSERTF(condition, message, vars...) \
+if(!(condition)) \
+{ \
+    fprintf(stderr, "Assertion failed: " #condition "\n" \
+        "\tat " SOURCE_LOCATION "\n"); \
+    fprintf(stderr, "\t" message "\n", ##vars); \
+    abort(); \
+}
+
+/* There is a separate call to fprintf() for message
+ * because #condition could contain %,
+ * which would mess up the formatting. */
+#endif
+
+#endif //HYPER_ASSERT_H
