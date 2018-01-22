@@ -1,7 +1,11 @@
+/// @file types.h
+/// Definitions for numerical data types.
+/// Defines developer-friendly type names for specifying exactly the size of value needed.
+
 #ifndef HYPER_TYPES_H
 #define HYPER_TYPES_H
 
-#include <cstdint>
+#include <cstdint> // For integer types.
 
 namespace hyper
 {
