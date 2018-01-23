@@ -14,3 +14,8 @@ EXCLUDE_PATTERNS       = */test/* \
 RECURSIVE              = YES
 USE_MDFILE_AS_MAINPAGE = @doxy_main_page@
 ENABLE_PREPROCESSING   = YES
+
+HTML_HEADER           = header.html
+HTML_FOOTER           = footer.html
+HTML_EXTRA_STYLESHEET = customdoxygen.css
+HTML_EXTRA_FILES      = doxy-boot.js
