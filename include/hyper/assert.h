@@ -38,12 +38,15 @@
 /// ASSERT(p != np);
 /// @endcode
 #define ASSERT(condition) \
-if(!(condition)) \
+do \
 { \
-    fprintf(stderr, "Assertion failed: " #condition "\n" \
-        "\tat " SOURCE_LOCATION  "\n"); \
-    abort(); \
-}
+    if(!(condition)) \
+    { \
+        fprintf(stderr, "Assertion failed: " #condition "\n" \
+            "\tat " SOURCE_LOCATION  "\n"); \
+        abort(); \
+    } \
+} while(false)
 
 /// @def ASSERTF(condition, message, vars...)
 /// @brief Require that a condition be met and display a message if not.
@@ -68,13 +71,16 @@ if(!(condition)) \
 /// ASSERTF(x == 3, "Failed basic math, 1 + 2 = %i", x);
 /// @endcode
 #define ASSERTF(condition, message, vars...) \
-if(!(condition)) \
+do \
 { \
-    fprintf(stderr, "Assertion failed: " #condition "\n" \
-        "\tat " SOURCE_LOCATION "\n"); \
-    fprintf(stderr, "\t" message "\n", ##vars); \
-    abort(); \
-}
+    if(!(condition)) \
+    { \
+        fprintf(stderr, "Assertion failed: " #condition "\n" \
+            "\tat " SOURCE_LOCATION "\n"); \
+        fprintf(stderr, "\t" message "\n", ##vars); \
+        abort(); \
+    } \
+} while(false)
 
 /* There is a separate call to fprintf() for message
  * because #condition could contain %,
