@@ -33,10 +33,7 @@
 ///   then this check is a no-op - the check is not performed.
 /// @param condition Boolean condition to ensure is true.
 /// @example assert.cpp
-/// Verify that P is not NP (if only it were this easy).
-/// @code
-/// ASSERT(p != np);
-/// @endcode
+///   Example of asserting a condition is true without a message.
 #define ASSERT(condition) \
 do \
 { \
@@ -59,17 +56,7 @@ do \
 ///   This string can contain @p printf() format specifiers.
 /// @param vars Optional list of variables to substitute into the @p message.
 /// @example assertf.cpp
-/// Require that pointer is not NULL.
-/// @code
-/// ASSERTF(ptr != nullptr, "Pointer cannot be NULL");
-/// @endcode
-/// @example assertf_var.cpp
-/// Require that the computer can perform some simple math.
-/// If it fails to do so, display what it thinks the answer is.
-/// @code
-/// int x = 1 + 2;
-/// ASSERTF(x == 3, "Failed basic math, 1 + 2 = %i", x);
-/// @endcode
+///   Example of asserting with a custom message and formatting variables.
 #define ASSERTF(condition, message, vars...) \
 do \
 { \

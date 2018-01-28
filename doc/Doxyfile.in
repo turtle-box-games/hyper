@@ -3,8 +3,8 @@ PROJECT_NUMBER         = @PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@.@PROJEC
 STRIP_FROM_PATH        = @PROJECT_SOURCE_DIR@ \
                          @PROJECT_BINARY_DIR@
 INPUT                  = @doxy_main_page@ \
-                         @PROJECT_SOURCE_DIR@ \
-                         @PROJECT_BINARY_DIR@
+                         @PROJECT_SOURCE_DIR@
+EXAMPLE_PATH           = @PROJECT_SOURCE_DIR@/examples
 FILE_PATTERNS          = *.h \
                          *.cpp \
                          *.inl
