@@ -34,7 +34,7 @@ namespace hyper
         /// @brief Frame count.
         /// @details Number of frame contained in the snapshot.
         /// @return Number of frames.
-        size_t frameCount() const noexcept
+        constexpr size_t frameCount() const noexcept
         {
             return _frameCount;
         }
@@ -43,7 +43,7 @@ namespace hyper
         /// @details Raw return addresses captured from the stack.
         ///   These addresses refer to points where function calls return to.
         ///   This information can be traced back to the calling functions.
-        AddressArray const &addresses() const noexcept
+        constexpr AddressArray const &addresses() const noexcept
         {
             return _addresses;
         }
