@@ -1,5 +1,5 @@
 set(SRC_FILES
-        )
+        Backtrace.cpp)
 
-# add_library(foobar ${SRC_FILES})
-# install(TARGETS foobar DESTINATION .)
+add_library(hyper ${SRC_FILES})
+install(TARGETS hyper DESTINATION .)
