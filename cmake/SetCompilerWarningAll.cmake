@@ -1,4 +1,4 @@
-# - Enable warning all for gcc or use /W4 for visual studio
+# - Enable all warnings for gcc/clang or use /W4 for visual studio
 
 ## Strict warning level
 if(CMAKE_BUILD_TOOL MATCHES "(msdev|devenv|nmake)")
@@ -17,8 +17,9 @@ if(CMAKE_BUILD_TOOL MATCHES "(msdev|devenv|nmake)")
         set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /W4")
     endif(CMAKE_C_FLAGS MATCHES "/W[0-4]")
 
-elseif(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_GNUC)
-    # use -Wall for gcc
+elseif(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_GNUC
+        OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    # use -Wall for gcc/clang.
     if(NOT CMAKE_CXX_FLAGS MATCHES "-Wall$")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
     endif(NOT CMAKE_CXX_FLAGS MATCHES "-Wall$")
