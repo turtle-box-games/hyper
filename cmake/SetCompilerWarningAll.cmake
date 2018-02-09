@@ -28,5 +28,5 @@ elseif(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_GNUC)
     endif(NOT CMAKE_C_FLAGS MATCHES "-Wall$")
 
 else()
-    message(STATUS "Unknown build tool, cannot set warning flags for your")
+    message(STATUS "Unknown build tool, cannot set warning flags for you")
 endif()
