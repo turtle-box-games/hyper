@@ -1,11 +1,12 @@
-/// @file Backtrace.h
+/// @file StackTrace.h
 /// Stack trace information.
 /// Helps track where and how a state was reached.
 
-#ifndef HYPER_BACKTRACE_H
-#define HYPER_BACKTRACE_H
+#ifndef HYPER_STACKTRACE_H
+#define HYPER_STACKTRACE_H
 
-#include <cstddef> // For size_t.
+#include <cstdlib> // For free().
+#include "StackTraceSnapshot.h"
 
 namespace hyper
 {
@@ -13,7 +14,7 @@ namespace hyper
     /// @details Enables the inspection of the stack frames.
     /// @note Complete stack information, such as function names,
     ///   are only available when the compiled executable has all symbols exposed (@c -rdynamic).
-    class Backtrace
+    class StackTrace
     {
     public:
         /// @brief Stack frame information.
@@ -27,6 +28,10 @@ namespace hyper
             int _functionOffset;
 
         public:
+            /// @brief Default constructor.
+            /// @details Creates an empty entry.
+            Entry() noexcept;
+
             /// @brief General constructor.
             /// @param returnAddress Function return address retrieved from the stack.
             Entry(void *returnAddress) noexcept;
@@ -97,37 +102,59 @@ namespace hyper
         };
 
     private:
-        /// Hard-coded max stack size to capture.
-        /// This allows for allocating the a backtrace on the stack with no dynamic memory allocation.
-        static const size_t maxEntries = 64;
-
         size_t _stackSize;
-        void *_returnAddresses[maxEntries];
+        Entry _entries[];
+
+        static Entry createEntryFromSymbol(void *returnAddress, char *symbol) noexcept;
+
+        template<size_t Size>
+        static size_t createStackEntries(const StackTraceSnapshot <Size> &snapshot, Entry *entries)
+        {
+            auto addresses  = &snapshot.addresses();
+            auto entryCount = snapshot.frameCount();
+            auto symbols    = backtrace_symbols(*addresses, entryCount--);
+            // Subtract one to skip the top-most frame that called backtrace().
+            entries = new Entry[entryCount];
+            for(size_t i = 0; i < entryCount; ++i)
+                entries[i] = createEntryFromSymbol(*addresses[i], symbols[i]);
+            free(symbols);
+            return entryCount;
+        }
 
     public:
-        /// @brief Takes a snapshot of the current stack.
-        /// @details Creates a backtrace from the current state of the stack.
-        ///   This method will be removed from the trace.
+        /// Creates a stack trace for the current state of the stack.
+        /// @tparam Size Maximum number of stack frames to capture.
         /// @return Current stack trace.
-        static Backtrace capture() noexcept;
+        template<size_t Size = 64>
+        static StackTrace capture()
+        {
+            StackTraceSnapshot<Size> snapshot;
+            return StackTrace(snapshot);
+        }
 
         /// @brief Default constructor.
-        /// @details Creates a backtrace from the current state of the stack.
-        Backtrace() noexcept;
+        /// @details Generates a trace from a snapshot of a stack.
+        /// @param snapshot Snapshot of the stack to analyze.
+        /// @tparam Size Maximum number of stack frames to process.
+        template<size_t Size>
+        StackTrace(const StackTraceSnapshot<Size> &snapshot)
+        {
+            _stackSize = createStackEntries(snapshot, _entries);
+        }
 
         /// @brief Copy constructor.
         /// @details Copies an existing backtrace to a new one.
         /// @param other Existing backtrace to copy from.
-        Backtrace(const Backtrace &other) noexcept;
+        StackTrace(const StackTrace &other) noexcept;
 
         /// @brief Move constructor.
         /// @details Moves an existing backtrace to a separate instance.
         /// @param other Temporary backtrace to move.
-        Backtrace(Backtrace &&other) noexcept;
+        StackTrace(StackTrace &&other) noexcept;
 
         /// @brief Destructor.
         /// @details Releases resources that were previously acquired to obtain the stack trace.
-        ~Backtrace() noexcept;
+        ~StackTrace() noexcept;
 
         /// @brief Size of the stack trace.
         /// @return Number of frames in the stack.
@@ -137,13 +164,13 @@ namespace hyper
         /// @details Copy an existing backtrace over the current one.
         /// @param other Existing backtrace to copy from.
         /// @return Reference to the current backtrace.
-        Backtrace &operator=(const Backtrace &other) noexcept;
+        StackTrace &operator=(const StackTrace &other) noexcept;
 
         /// @brief Move operator.
         /// @details Move an existing backtrace and replace the current one with it.
         /// @param other Temporary backtrace to move.
         /// @return Reference to the current backtrace.
-        Backtrace &operator=(Backtrace &&other) noexcept;
+        StackTrace &operator=(StackTrace &&other) noexcept;
 
         /// @brief Retrieves the specified frame from the stack trace.
         /// @param frame Index of the entry to get information about.
@@ -152,4 +179,4 @@ namespace hyper
     };
 }
 
-#endif //HYPER_BACKTRACE_H
+#endif //HYPER_STACKTRACE_H
