@@ -1,12 +1,19 @@
+/// @file byte.h
+/// Definition of a raw byte.
+
 #ifndef HYPER_BYTE_H
 #define HYPER_BYTE_H
 
 namespace hyper
 {
-    /// Single byte value with a range from 0 to 255.
+    /// @brief Single byte value that represents raw data.
+    /// @details A byte is not intended to be read directly from.
+    ///   It is for storing raw data and converting between types,
+    ///   such as during a serialization or marshal process.
     enum class byte : unsigned char {};
 
-    /// Shifts a byte left by a specified number of bits.
+    /// @brief Left-shift operator.
+    /// @details Shifts a byte left by a specified number of bits.
     /// @param b Byte to shift.
     /// @param shift Number of bits to shift to the left.
     /// @return Left-shifted byte.
@@ -15,7 +22,8 @@ namespace hyper
         return byte(static_cast<unsigned char>(b) << shift);
     }
 
-    /// Shifts a byte left by a specified number of bits and updates it.
+    /// @brief Left-shift compound assignment operator.
+    /// @details Shifts a byte left by a specified number of bits and updates it.
     /// @param b Byte to shift.
     /// @param shift Number of bits to shift to the left.
     /// @return Left-shifted byte.
@@ -24,7 +32,8 @@ namespace hyper
         return b = byte(static_cast<unsigned char>(b) << shift);
     }
 
-    /// Shifts a byte right by a specified number of bits.
+    /// @brief Right-shift operator.
+    /// @details Shifts a byte right by a specified number of bits.
     /// @param b Byte to shift.
     /// @param shift Number of bits to shift to the right.
     /// @return Right-shifted byte.
@@ -33,7 +42,8 @@ namespace hyper
         return byte(static_cast<unsigned char>(b) >> shift);
     }
 
-    /// Shifts a byte right by a specified number of bits and updates it.
+    /// @brief Right-shift compound assignment operator.
+    /// @details Shifts a byte right by a specified number of bits and updates it.
     /// @param b Byte to shift.
     /// @param shift Number of bits to shift to the right.
     /// @return Right-shifted byte.
@@ -42,7 +52,8 @@ namespace hyper
         return b = byte(static_cast<unsigned char>(b) >> shift);
     }
 
-    /// Performs an OR operation on a byte.
+    /// @brief OR operator.
+    /// @details Performs an OR operation on a byte.
     /// @param b Byte to operate on.
     /// @param v Byte to OR against.
     /// @return Result of the OR operation.
@@ -51,7 +62,8 @@ namespace hyper
         return byte(static_cast<unsigned char>(b) | static_cast<unsigned char>(v));
     }
 
-    /// Performs an OR operation on a byte and updates it.
+    /// @brief OR compound assignment operator.
+    /// @details Performs an OR operation on a byte and updates it.
     /// @param b Byte to operate on.
     /// @param v Byte to OR against.
     /// @return Result of the OR operation.
@@ -60,7 +72,8 @@ namespace hyper
         return b = byte(static_cast<unsigned char>(b) | static_cast<unsigned char>(v));
     }
 
-    /// Performs an AND operation on a byte.
+    /// @brief AND operator.
+    /// @details Performs an AND operation on a byte.
     /// @param b Byte to operate on.
     /// @param v Byte to AND against.
     /// @return Result of the AND operation.
@@ -69,7 +82,8 @@ namespace hyper
         return byte(static_cast<unsigned char>(b) & static_cast<unsigned char>(v));
     }
 
-    /// Performs an AND operation on a byte and updates it.
+    /// @brief AND compound assignment operator.
+    /// @details Performs an AND operation on a byte and updates it.
     /// @param b Byte to operate on.
     /// @param v Byte to AND against.
     /// @return Result of the AND operation.
@@ -78,7 +92,8 @@ namespace hyper
         return b = byte(static_cast<unsigned char>(b) & static_cast<unsigned char>(v));
     }
 
-    /// Performs an XOR operation on a byte.
+    /// @brief XOR operator.
+    /// @details Performs an XOR operation on a byte.
     /// @param b Byte to operate on.
     /// @param v Byte to XOR against.
     /// @return Result of the XOR operation.
@@ -87,7 +102,8 @@ namespace hyper
         return byte(static_cast<unsigned char>(b) ^ static_cast<unsigned char>(v));
     }
 
-    /// Performs an XOR operation on a byte and updates it.
+    /// @brief XOR compound assignment operator.
+    /// @details Performs an XOR operation on a byte and updates it.
     /// @param b Byte to operate on.
     /// @param v Byte to XOR against.
     /// @return Result of the XOR operation.
@@ -96,7 +112,8 @@ namespace hyper
         return b = byte(static_cast<unsigned char>(b) ^ static_cast<unsigned char>(v));
     }
 
-    /// Performs a NOT operation on a byte.
+    /// @brief NOT operator.
+    /// @details Performs a NOT operation on a byte.
     /// @param b Byte to operate on.
     /// @return Result of the NOT operation.
     inline constexpr byte operator ~(byte b) noexcept
@@ -104,7 +121,8 @@ namespace hyper
         return byte(~static_cast<unsigned char>(b));
     }
 
-    /// Convert a byte to an integer.
+    /// @brief Integer conversion.
+    /// @details Convert a byte to an integer.
     /// @param b Byte to convert.
     /// @return Byte value as an integer.
     inline constexpr int toInt(byte b) noexcept

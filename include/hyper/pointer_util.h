@@ -7,9 +7,9 @@
 
 namespace hyper
 {
-    /// Check before deleting a pointer.
-    /// Checks if an instance referenced by a pointer already appears to be deleted before freeing it.
-    /// Afterwards, the pointer is updated to reference NULL so that future calls will do nothing.
+    /// @brief Check before deleting a pointer.
+    /// @details Checks if an instance referenced by a pointer already appears to be deleted before freeing it.
+    ///   Afterwards, the pointer is updated to reference NULL so that future calls will do nothing.
     /// @tparam T Type of instance being referenced by a pointer.
     /// @param object Reference to the pointer to delete.
     template<typename T>
@@ -22,9 +22,9 @@ namespace hyper
         }
     }
 
-    /// Check before deleting an array.
-    /// Checks if an array referenced by a pointer already appears to be deleted before freeing it.
-    /// Afterwards, the pointer is updated to reference NULL so that future calls will do nothing.
+    /// @brief Check before deleting an array.
+    /// @details Checks if an array referenced by a pointer already appears to be deleted before freeing it.
+    ///   Afterwards, the pointer is updated to reference NULL so that future calls will do nothing.
     /// @tparam T Type of elements in the array being referenced by a pointer.
     /// @param array Reference to the array to delete.
     template<typename T>
