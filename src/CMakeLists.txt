@@ -1,7 +1,7 @@
 include(DisableExceptionsRtti)
 
 set(SRC_FILES
-        _.cpp)
+        Error.cpp)
 
 # Disable standard library.
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_GNUC
