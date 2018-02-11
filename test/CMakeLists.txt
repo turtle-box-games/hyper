@@ -36,4 +36,3 @@ add_test(NAME base_test COMMAND base_test)
 
 add_executable(ad-hoc-test test.cpp)
 target_link_libraries(ad-hoc-test hyper)
-set_target_properties(ad-hoc-test PROPERTIES ENABLE_EXPORTS TRUE)
