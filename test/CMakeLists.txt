@@ -30,7 +30,11 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
 endif()
 
 # Add top-level namespace tests.
-add_executable(base_test ByteTest.cpp)
+set(TOP_LEVEL_SRC_FILES
+        ByteTest.cpp
+        ScopedPointerTest.cpp)
+
+add_executable(base_test ${TOP_LEVEL_SRC_FILES})
 target_link_libraries(base_test gtest_main)
 add_test(NAME base_test COMMAND base_test)
 
