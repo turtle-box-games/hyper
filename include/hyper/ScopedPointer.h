@@ -103,12 +103,12 @@ namespace hyper
         /// @brief Equality operator.
         /// @details Equality operator is disabled.
         ///   Scoped pointers should never reference the same raw pointer.
-        void operator==(ScopedPointer const &) = delete;
+        bool operator==(ScopedPointer const &) = delete;
 
         /// @brief Inequality operator.
         /// @brief Inequality operator is disabled.
         ///   Scoped pointers should never reference the same raw pointer.
-        void operator!=(ScopedPointer const &) = delete;
+        bool operator!=(ScopedPointer const &) = delete;
     };
 }
 
