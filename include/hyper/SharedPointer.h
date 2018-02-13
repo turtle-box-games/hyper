@@ -90,7 +90,7 @@ namespace hyper
         ~SharedPointer() noexcept
         {
             // Release reference counter if this instance is the last one using it.
-            if(!_impl->decrement())
+            if(_impl != nullptr && !_impl->decrement())
                 delete _impl;
         }
 
@@ -98,13 +98,12 @@ namespace hyper
         /// @return Raw pointer.
         constexpr T *get() const noexcept
         {
-            return _impl->getReference();
+            return _impl == nullptr ? nullptr : _impl->getReference();
         }
 
         /// @brief Forces the pointer to be destroyed and resources released.
         void reset() noexcept
         {
-            // TODO: Causes _impl to be set to nullptr, which breaks usage of _impl in other methods.
             checkedDelete(_impl);
         }
 
@@ -124,6 +123,7 @@ namespace hyper
         ///   The pointer is asserted to be non-null.
         constexpr T &operator*() const noexcept
         {
+            ASSERTF(_impl != nullptr, "Attempt to use a disposed shared pointer");
             auto ptr = _impl->getReference();
             ASSERTF(ptr != nullptr, "Attempt to dereference null pointer");
             return *ptr;
@@ -136,6 +136,7 @@ namespace hyper
         ///   The pointer is asserted to be non-null.
         constexpr T *operator->() const noexcept
         {
+            ASSERTF(_impl != nullptr, "Attempt to use a disposed shared pointer");
             auto ptr = _impl->getReference();
             ASSERTF(ptr != nullptr, "Attempt to dereference null pointer");
             return ptr;
@@ -146,7 +147,7 @@ namespace hyper
         /// @return True if the pointer is not null, or false if it is null.
         constexpr explicit operator bool() const noexcept
         {
-            return _impl->getReference() != nullptr;
+            return _impl != nullptr && _impl->getReference() != nullptr;
         }
 
         /// @brief Assignment operator.
@@ -157,15 +158,18 @@ namespace hyper
         }
 
         /// @brief Equality operator.
-        bool operator==(const SharedPointer &other)
+        constexpr bool operator==(const SharedPointer &other) const noexcept
         {
-            return _impl->getReference() == other._impl->getReference();
+            if(_impl != nullptr && other._impl != nullptr)
+                return _impl->getReference() == other._impl->getReference();
+            else
+                return _impl == nullptr && other._impl == nullptr;
         }
 
         /// @brief Inequality operator.
-        bool operator!=(const SharedPointer &other)
+        constexpr bool operator!=(const SharedPointer &other) const noexcept
         {
-            return _impl->getReference() != other._impl->getReference();
+            return !(this == other);
         }
     };
 }
