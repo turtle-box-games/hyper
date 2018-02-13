@@ -35,7 +35,7 @@ namespace hyper
         /// @brief Nested cause.
         /// @details Retrieves the underlying error that caused this one.
         /// @return Underlying error or null if there was none.
-        constexpr Error *cause() const noexcept;
+        Error *cause() const noexcept;
     };
 }
 

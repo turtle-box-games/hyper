@@ -19,7 +19,7 @@ namespace hyper
         _cause = nullptr;
     }
 
-    constexpr Error *Error::cause() const noexcept
+    Error *Error::cause() const noexcept
     {
         return _cause;
     }
