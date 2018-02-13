@@ -31,7 +31,7 @@ namespace hyper
 
         /// @brief Copy constructor.
         /// @details Copy constructor is disabled.
-        ScopedArray(ScopedArray const &) = delete;
+        ScopedArray(const ScopedArray &) = delete;
 
         /// @brief Destructor.
         /// @details Releases the resources referenced by the pointer.
@@ -96,17 +96,17 @@ namespace hyper
         /// @brief Assignment operator.
         /// @details Assignment operator is disabled.
         ///   Assigning pointer values would invalidate the scope of the pointer.
-        ScopedArray &operator=(ScopedArray const &) = delete;
+        ScopedArray &operator=(const ScopedArray &) = delete;
 
         /// @brief Equality operator.
         /// @details Equality operator is disabled.
         ///   Scoped pointers should never reference the same raw pointer.
-        bool operator==(ScopedArray const &) = delete;
+        bool operator==(const ScopedArray &) = delete;
 
         /// @brief Inequality operator.
         /// @brief Inequality operator is disabled.
         ///   Scoped pointers should never reference the same raw pointer.
-        bool operator!=(ScopedArray const &) = delete;
+        bool operator!=(const ScopedArray &) = delete;
     };
 }
 

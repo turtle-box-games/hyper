@@ -31,7 +31,7 @@ namespace hyper
 
         /// @brief Copy constructor.
         /// @details Copy constructor is disabled.
-        ScopedPointer(ScopedPointer const &) = delete;
+        ScopedPointer(const ScopedPointer &) = delete;
 
         /// @brief Destructor.
         /// @details Releases the resources referenced by the pointer.
@@ -98,17 +98,17 @@ namespace hyper
         /// @brief Assignment operator.
         /// @details Assignment operator is disabled.
         ///   Assigning pointer values would invalidate the scope of the pointer.
-        ScopedPointer &operator=(ScopedPointer const &) = delete;
+        ScopedPointer &operator=(const ScopedPointer &) = delete;
 
         /// @brief Equality operator.
         /// @details Equality operator is disabled.
         ///   Scoped pointers should never reference the same raw pointer.
-        bool operator==(ScopedPointer const &) = delete;
+        bool operator==(const ScopedPointer &) = delete;
 
         /// @brief Inequality operator.
         /// @brief Inequality operator is disabled.
         ///   Scoped pointers should never reference the same raw pointer.
-        bool operator!=(ScopedPointer const &) = delete;
+        bool operator!=(const ScopedPointer &) = delete;
     };
 }
 
