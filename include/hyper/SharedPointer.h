@@ -101,8 +101,17 @@ namespace hyper
             return _impl == nullptr ? nullptr : _impl->getReference();
         }
 
+        void expire() noexcept
+        {
+            if(_impl != nullptr)
+            {
+                _impl->decrement();
+                _impl = nullptr;
+            }
+        }
+
         /// @brief Forces the pointer to be destroyed and resources released.
-        void reset() noexcept
+        void release() noexcept
         {
             checkedDelete(_impl);
         }

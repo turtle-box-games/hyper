@@ -48,7 +48,7 @@ namespace hyper
         }
 
         /// @brief Forces the pointer to be destroyed and resources released.
-        void reset() noexcept
+        void expire() noexcept
         {
             // Reuse the swap method to reference a nullptr.
             // This temporary scoped pointer to swap with immediately
