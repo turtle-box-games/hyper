@@ -30,29 +30,40 @@ namespace hyper
             T *_ptr;
 
         public:
+            /// @brief Default constructor.
+            /// @details Creates a new reference counter.
+            /// @param ptr Pointer to count references to.
             constexpr ReferenceCounter(T *ptr) noexcept
                 : _count(1), _ptr(ptr)
             {
                 // ...
             }
 
+            /// @brief Destructor.
+            /// @details Resets the count to zero and releases the memory held by the pointer, if any.
             ~ReferenceCounter()
             {
                 _count = 0;
                 checkedDelete(_ptr);
             }
 
+            /// @brief Increments the reference count by one.
             void increment() noexcept
             {
                 _count++;
             }
 
+            /// @brief Decrements the reference count by one.
+            /// @return True if there are still references to the pointer.
+            /// @return False if the last reference was just released and the pointer can be freed.
             bool decrement() noexcept
             {
                 ASSERTF(_count > 0, "Attempted to decrement reference count below zero");
                 return 0 < --_count;
             }
 
+            /// @brief Retrieves the raw pointer.
+            /// @return Pointer being counted.
             constexpr T *getReference() const noexcept
             {
                 return _ptr;
@@ -63,7 +74,7 @@ namespace hyper
 
     public:
         /// @brief Default constructor.
-        /// @details Creates a new Shared pointer.
+        /// @details Creates a new shared pointer.
         /// @param ptr Raw pointer to wrap.
         constexpr explicit SharedPointer(T *ptr)
             : _impl(new ReferenceCounter(ptr))
@@ -72,6 +83,8 @@ namespace hyper
         }
 
         /// @brief Copy constructor.
+        /// @details Creates a new shared pointer that references an existing one.
+        /// @param other Existing shared pointer.
         SharedPointer(const SharedPointer &other) noexcept
             : _impl(other._impl)
         {
@@ -79,6 +92,8 @@ namespace hyper
         }
 
         /// @brief Move constructor.
+        /// @details Creates a new shared pointer from a temporary one.
+        /// @param other Temporary shared pointer.
         SharedPointer(SharedPointer &&other) noexcept
             : _impl(other._impl)
         {
@@ -86,7 +101,8 @@ namespace hyper
         }
 
         /// @brief Destructor.
-        /// @details Releases the resources referenced by the pointer.
+        /// @details Releases the resources referenced by the shared pointer.
+        ///   The underlying pointer will not be released unless all other references have been released.
         ~SharedPointer() noexcept
         {
             // Release reference counter if this instance is the last one using it.
@@ -101,6 +117,7 @@ namespace hyper
             return _impl == nullptr ? nullptr : _impl->getReference();
         }
 
+        /// @brief Removes this pointer's reference to the raw pointer.
         void expire() noexcept
         {
             if(_impl != nullptr)
@@ -110,7 +127,7 @@ namespace hyper
             }
         }
 
-        /// @brief Forces the pointer to be destroyed and resources released.
+        /// @brief Forces the pointer to be destroyed, all references invalidated, and resources released.
         void release() noexcept
         {
             checkedDelete(_impl);
@@ -160,6 +177,9 @@ namespace hyper
         }
 
         /// @brief Assignment operator.
+        /// @details Overwrites the current pointer with a copy of another.
+        /// @param other Other pointer to overwrite the existing one with.
+        /// @return The current pointer.
         SharedPointer &operator=(SharedPointer other)
         {
             swap(other);
@@ -167,15 +187,32 @@ namespace hyper
         }
 
         /// @brief Equality operator.
+        /// @details Checks if two shared pointers reference the same raw pointer.
+        /// @param other Other instance to compare against.
+        /// @return True if the instances reference the same pointer.
+        /// @return False if the instances reference different pointers.
+        /// @return True if both instances reference null.
+        /// @return False if only one instance references null.
         constexpr bool operator==(const SharedPointer &other) const noexcept
         {
-            if(_impl != nullptr && other._impl != nullptr)
-                return _impl->getReference() == other._impl->getReference();
+            if(_impl == other._impl)
+                return true;
+            else if(_impl != nullptr && other._impl != nullptr)
+            {
+                if(_impl->getReference() == other._impl->getReference())
+                    return true;
+            }
             else
-                return _impl == nullptr && other._impl == nullptr;
+                return false;
         }
 
         /// @brief Inequality operator.
+        /// @details Checks if two shared pointers don't reference the same raw pointer.
+        /// @param other Other instance to compare against.
+        /// @return True if the instances reference different pointers.
+        /// @return False if the instances reference the same pointer.
+        /// @return True if only one instance references null.
+        /// @return False if both instances reference null.
         constexpr bool operator!=(const SharedPointer &other) const noexcept
         {
             return !(this == other);
