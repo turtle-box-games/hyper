@@ -84,13 +84,13 @@ TEST(ScopedArray, Swap) {
 }
 
 TEST(ScopedArray, SubscriptGet) {
-    ScopedArray<ScopedArraySampleValue> sa(new ScopedArraySampleValue[SAMPLE_ARRAY_SIZE]);
+    ScopedArray<ScopedArraySampleValue> sa(SAMPLE_ARRAY_SIZE);
     for(size_t i = 0; i < SAMPLE_ARRAY_SIZE; ++i)
         EXPECT_EQ(sa[i].value, SAMPLE_VALUE);
 }
 
 TEST(ScopedArray, SubscriptSet) {
-    ScopedArray<size_t> sa(new size_t[SAMPLE_ARRAY_SIZE]);
+    ScopedArray<size_t> sa(SAMPLE_ARRAY_SIZE);
     for(size_t i = 0; i < SAMPLE_ARRAY_SIZE; ++i) {
         sa[i] = i;
         EXPECT_EQ(sa[i], i);
