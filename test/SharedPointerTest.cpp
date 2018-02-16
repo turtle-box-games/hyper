@@ -24,30 +24,39 @@ public:
 struct SharedPointerSampleData
 {
     int value;
+
+    SharedPointerSampleData() = default;
+
+    SharedPointerSampleData(int val)
+            : value(val)
+    {
+        // ...
+    }
 };
 
 TEST(SharedPointer, Free) {
     bool result = false;
-    auto mock = new SharedPointerDestructorCapture(&result);
     {
-        SharedPointer<SharedPointerDestructorCapture> sp(mock);
+        SharedPointer<SharedPointerDestructorCapture> sp(
+                new SharedPointerDestructorCapture(&result)
+        );
         // sp should be freed when this scope exits,
         // which will set result to true if the destructor was called.
     }
     EXPECT_TRUE(result);
 }
 
-TEST(SharedPointer, ExpireNull) {
-    auto ptr = new int;
-    SharedPointer<int> sp(ptr);
+TEST(SharedPointer, ResetNull) {
+    SharedPointer<int> sp(new int);
     sp.expire();
     EXPECT_FALSE((bool)sp);
 }
 
-TEST(SharedPointer, ExpireFree) {
+TEST(SharedPointer, ResetFree) {
     bool result = false;
-    auto mock = new SharedPointerDestructorCapture(&result);
-    SharedPointer<SharedPointerDestructorCapture> sp(mock);
+    SharedPointer<SharedPointerDestructorCapture> sp(
+            new SharedPointerDestructorCapture(&result)
+    );
     sp.expire();
     EXPECT_TRUE(result);
 }
@@ -55,45 +64,41 @@ TEST(SharedPointer, ExpireFree) {
 TEST(SharedPointer, Swap) {
     const auto val1 = 42;
     const auto val2 = 24;
-    auto ptr1 = new int(val1);
-    auto ptr2 = new int(val2);
-    SharedPointer<int> sp1(ptr1);
-    SharedPointer<int> sp2(ptr2);
+    SharedPointer<int> sp1(new int(val1));
+    SharedPointer<int> sp2(new int(val2));
     sp1.swap(sp2);
-    EXPECT_EQ(*sp1, val2);
-    EXPECT_EQ(*sp2, val1);
+    EXPECT_EQ(val1, *sp2);
+    EXPECT_EQ(val2, *sp1);
 }
 
 TEST(SharedPointer, DereferenceGet) {
-    auto ptr = new int(5);
-    SharedPointer<int> sp(ptr);
-    EXPECT_EQ(*sp, 5);
+    const auto val = 5;
+    SharedPointer<int> sp(new int(val));
+    EXPECT_EQ(*sp, val);
 }
 
 TEST(SharedPointer, DereferenceSet) {
-    auto ptr = new int;
-    SharedPointer<int> sp(ptr);
-    *sp = 42;
-    EXPECT_EQ(*ptr, 42);
+    const auto val = 42;
+    SharedPointer<int> sp;
+    *sp = val;
+    EXPECT_EQ(*sp, val);
 }
 
 TEST(SharedPointer, MemberAccessGet) {
-    auto ptr = new SharedPointerSampleData;
-    ptr->value = 777;
-    SharedPointer<SharedPointerSampleData> sp(ptr);
-    EXPECT_EQ(sp->value, 777);
+    const auto val = 777;
+    SharedPointer<SharedPointerSampleData> sp(new SharedPointerSampleData(val));
+    EXPECT_EQ(sp->value, val);
 }
 
 TEST(SharedPointer, MemberAccessSet) {
-    auto ptr = new SharedPointerSampleData;
-    SharedPointer<SharedPointerSampleData> sp(ptr);
-    sp->value = 12345;
-    EXPECT_EQ(ptr->value, 12345);
+    const auto val = 12345;
+    SharedPointer<SharedPointerSampleData> sp;
+    sp->value = val;
+    EXPECT_EQ(sp->value, val);
 }
 
 TEST(SharedPointer, BoolCastTrue) {
-    auto ptr = new int;
-    SharedPointer<int> sp(ptr);
+    SharedPointer<int> sp(new int);
     EXPECT_TRUE((bool)sp);
 }
 

@@ -24,13 +24,22 @@ public:
 struct ScopedPointerSampleData
 {
     int value;
+
+    ScopedPointerSampleData() = default;
+
+    ScopedPointerSampleData(int val)
+            : value(val)
+    {
+        // ...
+    }
 };
 
 TEST(ScopedPointer, Free) {
     bool result = false;
-    auto mock = new ScopedPointerDestructorCapture(&result);
     {
-        ScopedPointer<ScopedPointerDestructorCapture> sp(mock);
+        ScopedPointer<ScopedPointerDestructorCapture> sp(
+                new ScopedPointerDestructorCapture(&result)
+        );
         // sp should be freed when this scope exits,
         // which will set result to true if the destructor was called.
     }
@@ -38,16 +47,16 @@ TEST(ScopedPointer, Free) {
 }
 
 TEST(ScopedPointer, ResetNull) {
-    auto ptr = new int;
-    ScopedPointer<int> sp(ptr);
+    ScopedPointer<int> sp(new int);
     sp.expire();
     EXPECT_FALSE((bool)sp);
 }
 
 TEST(ScopedPointer, ResetFree) {
     bool result = false;
-    auto mock = new ScopedPointerDestructorCapture(&result);
-    ScopedPointer<ScopedPointerDestructorCapture> sp(mock);
+    ScopedPointer<ScopedPointerDestructorCapture> sp(
+            new ScopedPointerDestructorCapture(&result)
+    );
     sp.expire();
     EXPECT_TRUE(result);
 }
@@ -55,45 +64,41 @@ TEST(ScopedPointer, ResetFree) {
 TEST(ScopedPointer, Swap) {
     const auto val1 = 42;
     const auto val2 = 24;
-    auto ptr1 = new int(val1);
-    auto ptr2 = new int(val2);
-    ScopedPointer<int> sp1(ptr1);
-    ScopedPointer<int> sp2(ptr2);
+    ScopedPointer<int> sp1(new int(val1));
+    ScopedPointer<int> sp2(new int(val2));
     sp1.swap(sp2);
     EXPECT_EQ(val1, *sp2);
     EXPECT_EQ(val2, *sp1);
 }
 
 TEST(ScopedPointer, DereferenceGet) {
-    auto ptr = new int(5);
-    ScopedPointer<int> sp(ptr);
-    EXPECT_EQ(*sp, 5);
+    const auto val = 5;
+    ScopedPointer<int> sp(new int(val));
+    EXPECT_EQ(*sp, val);
 }
 
 TEST(ScopedPointer, DereferenceSet) {
-    auto ptr = new int;
-    ScopedPointer<int> sp(ptr);
-    *sp = 42;
-    EXPECT_EQ(*ptr, 42);
+    const auto val = 42;
+    ScopedPointer<int> sp;
+    *sp = val;
+    EXPECT_EQ(*sp, val);
 }
 
 TEST(ScopedPointer, MemberAccessGet) {
-    auto ptr = new ScopedPointerSampleData;
-    ptr->value = 777;
-    ScopedPointer<ScopedPointerSampleData> sp(ptr);
-    EXPECT_EQ(sp->value, 777);
+    const auto val = 777;
+    ScopedPointer<ScopedPointerSampleData> sp(new ScopedPointerSampleData(val));
+    EXPECT_EQ(sp->value, val);
 }
 
 TEST(ScopedPointer, MemberAccessSet) {
-    auto ptr = new ScopedPointerSampleData;
-    ScopedPointer<ScopedPointerSampleData> sp(ptr);
-    sp->value = 12345;
-    EXPECT_EQ(ptr->value, 12345);
+    const auto val = 12345;
+    ScopedPointer<ScopedPointerSampleData> sp;
+    sp->value = val;
+    EXPECT_EQ(sp->value, val);
 }
 
 TEST(ScopedPointer, BoolCastTrue) {
-    auto ptr = new int;
-    ScopedPointer<int> sp(ptr);
+    ScopedPointer<int> sp(new int);
     EXPECT_TRUE((bool)sp);
 }
 

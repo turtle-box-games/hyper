@@ -22,6 +22,8 @@ namespace hyper
         /// @brief Underlying implementation for tracking references.
         /// @details All smart pointers that refer to the same instance share a single instance of this class.
         ///   This allows the smart pointers to "communicate" when they are no longer being used.
+        ///   Instances of this class should have the only references to a raw pointer.
+        ///   This class is designed in such a way to attempt to prevent external references.
         /// @todo Implement locking to be safe in multi-threaded scenarios.
         class ReferenceCounter
         {
@@ -74,10 +76,18 @@ namespace hyper
 
     public:
         /// @brief Default constructor.
-        /// @details Creates a new shared pointer.
+        /// @details Creates a new shared pointer with the default constructor of type @tparam T.
+        constexpr explicit SharedPointer() noexcept
+                : _impl(new ReferenceCounter(new T))
+        {
+            // ...
+        }
+
+        /// @brief General constructor.
+        /// @details Creates a new shared pointer with an existing reference.
         /// @param ptr Raw pointer to wrap.
-        constexpr explicit SharedPointer(T *ptr)
-            : _impl(new ReferenceCounter(ptr))
+        constexpr explicit SharedPointer(T *&&ptr) noexcept
+                : _impl(new ReferenceCounter(ptr))
         {
             // ...
         }

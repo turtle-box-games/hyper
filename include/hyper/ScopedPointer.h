@@ -12,6 +12,8 @@ namespace hyper
     /// @brief Smart pointer that can't be shared outside its scope.
     /// @details Smart pointer with a lifetime limited to its scope.
     ///   This operates on the RAII principle.
+    ///   Instances of this class should have the only references to a raw pointer.
+    ///   This class is designed in such a way to attempt to prevent external references.
     /// @tparam T Type the pointer references.
     template<typename T>
     class ScopedPointer
@@ -21,9 +23,17 @@ namespace hyper
 
     public:
         /// @brief Default constructor.
-        /// @details Creates a new scoped pointer.
+        /// @details Creates a new scoped pointer with the default constructor of type @tparam T.
+        constexpr explicit ScopedPointer() noexcept
+            : _ptr(new T)
+        {
+            // ...
+        }
+
+        /// @brief General constructor.
+        /// @details Creates a new scoped pointer with an existing reference.
         /// @param ptr Raw pointer to wrap.
-        constexpr explicit ScopedPointer(T *ptr) noexcept
+        constexpr explicit ScopedPointer(T *&&ptr) noexcept
             : _ptr(ptr)
         {
             // ...
