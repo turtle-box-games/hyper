@@ -40,5 +40,6 @@ add_executable(base_test ${TOP_LEVEL_SRC_FILES})
 target_link_libraries(base_test gtest_main)
 add_test(NAME base_test COMMAND base_test)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions -fno-rtti")
 add_executable(ad-hoc-test test.cpp)
 target_link_libraries(ad-hoc-test hyper)
