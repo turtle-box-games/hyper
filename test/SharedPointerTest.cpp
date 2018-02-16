@@ -26,12 +26,6 @@ struct SharedPointerSampleData
     int value;
 };
 
-TEST(SharedPointer, GetPointer) {
-    auto ptr = new int;
-    SharedPointer<int> sp(ptr);
-    EXPECT_EQ(ptr, sp.get());
-}
-
 TEST(SharedPointer, Free) {
     bool result = false;
     auto mock = new SharedPointerDestructorCapture(&result);
@@ -59,13 +53,15 @@ TEST(SharedPointer, ExpireFree) {
 }
 
 TEST(SharedPointer, Swap) {
-    auto ptr1 = new int;
-    auto ptr2 = new int;
+    const auto val1 = 42;
+    const auto val2 = 24;
+    auto ptr1 = new int(val1);
+    auto ptr2 = new int(val2);
     SharedPointer<int> sp1(ptr1);
     SharedPointer<int> sp2(ptr2);
     sp1.swap(sp2);
-    EXPECT_EQ(sp1.get(), ptr2);
-    EXPECT_EQ(sp2.get(), ptr1);
+    EXPECT_EQ(*sp1, val2);
+    EXPECT_EQ(*sp2, val1);
 }
 
 TEST(SharedPointer, DereferenceGet) {

@@ -108,13 +108,6 @@ namespace hyper
             expire();
         }
 
-        /// @brief Retrieves the raw pointer being held by this container.
-        /// @return Raw pointer.
-        constexpr T *get() const noexcept
-        {
-            return _impl == nullptr ? nullptr : _impl->getReference();
-        }
-
         /// @brief Removes this pointer's reference to the raw pointer.
         void expire() noexcept
         {

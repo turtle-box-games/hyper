@@ -40,13 +40,6 @@ namespace hyper
             checkedDelete(_ptr);
         }
 
-        /// @brief Retrieves the raw pointer being held by this container.
-        /// @return Raw pointer.
-        constexpr T *get() const noexcept
-        {
-            return _ptr;
-        }
-
         /// @brief Forces the pointer to be destroyed and resources released.
         void expire() noexcept
         {

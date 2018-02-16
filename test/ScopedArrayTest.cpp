@@ -29,12 +29,6 @@ public:
     }
 };
 
-TEST(ScopedArray, GetPointer) {
-    auto arr = new int[SAMPLE_ARRAY_SIZE];
-    ScopedArray<int> sa(arr);
-    EXPECT_EQ(arr, sa.get());
-}
-
 TEST(ScopedArray, Free) {
     int freeCount = -SAMPLE_ARRAY_SIZE; // Negative because copying instances triggers destructor.
     auto mock = new ScopedArrayDestructorCapture[SAMPLE_ARRAY_SIZE];
@@ -72,8 +66,8 @@ TEST(ScopedArray, Swap) {
     ScopedArray<int> sa1(arr1);
     ScopedArray<int> sa2(arr2);
     sa1.swap(sa2);
-    EXPECT_EQ(sa1.get(), arr2);
-    EXPECT_EQ(sa2.get(), arr1);
+    EXPECT_EQ(&sa1[0], arr2);
+    EXPECT_EQ(&sa2[0], arr1);
 }
 
 TEST(ScopedArray, SubscriptGet) {

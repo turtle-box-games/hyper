@@ -26,12 +26,6 @@ struct ScopedPointerSampleData
     int value;
 };
 
-TEST(ScopedPointer, GetPointer) {
-    auto ptr = new int;
-    ScopedPointer<int> sp(ptr);
-    EXPECT_EQ(ptr, sp.get());
-}
-
 TEST(ScopedPointer, Free) {
     bool result = false;
     auto mock = new ScopedPointerDestructorCapture(&result);
@@ -43,14 +37,14 @@ TEST(ScopedPointer, Free) {
     EXPECT_TRUE(result);
 }
 
-TEST(ScopedPointer, ExpireNull) {
+TEST(ScopedPointer, ResetNull) {
     auto ptr = new int;
     ScopedPointer<int> sp(ptr);
     sp.expire();
     EXPECT_FALSE((bool)sp);
 }
 
-TEST(ScopedPointer, ExpireFree) {
+TEST(ScopedPointer, ResetFree) {
     bool result = false;
     auto mock = new ScopedPointerDestructorCapture(&result);
     ScopedPointer<ScopedPointerDestructorCapture> sp(mock);
@@ -59,13 +53,15 @@ TEST(ScopedPointer, ExpireFree) {
 }
 
 TEST(ScopedPointer, Swap) {
-    auto ptr1 = new int;
-    auto ptr2 = new int;
+    const auto val1 = 42;
+    const auto val2 = 24;
+    auto ptr1 = new int(val1);
+    auto ptr2 = new int(val2);
     ScopedPointer<int> sp1(ptr1);
     ScopedPointer<int> sp2(ptr2);
     sp1.swap(sp2);
-    EXPECT_EQ(sp1.get(), ptr2);
-    EXPECT_EQ(sp2.get(), ptr1);
+    EXPECT_EQ(val1, *sp2);
+    EXPECT_EQ(val2, *sp1);
 }
 
 TEST(ScopedPointer, DereferenceGet) {
