@@ -131,6 +131,22 @@ namespace hyper
     {
         return static_cast<int>(b);
     }
+
+    /// @brief Minimum value that a byte can hold.
+    /// @return 0
+    template<>
+    inline constexpr byte min_value()
+    {
+        return byte(min_value<uint8>());
+    }
+
+    /// @brief Maximum value that a byte can hold.
+    /// @return 255
+    template<>
+    inline constexpr byte max_value()
+    {
+        return byte(max_value<uint8>());
+    }
 }
 
 #endif //HYPER_BYTE_H
