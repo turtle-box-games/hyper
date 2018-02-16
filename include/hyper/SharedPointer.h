@@ -122,7 +122,8 @@ namespace hyper
         {
             if(_impl != nullptr)
             {
-                _impl->decrement();
+                if(!_impl->decrement())
+                    delete _impl;
                 _impl = nullptr;
             }
         }
