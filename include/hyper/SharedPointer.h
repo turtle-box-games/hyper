@@ -105,9 +105,7 @@ namespace hyper
         ///   The underlying pointer will not be released unless all other references have been released.
         ~SharedPointer() noexcept
         {
-            // Release reference counter if this instance is the last one using it.
-            if(_impl != nullptr && !_impl->decrement())
-                delete _impl;
+            expire();
         }
 
         /// @brief Retrieves the raw pointer being held by this container.
@@ -122,6 +120,7 @@ namespace hyper
         {
             if(_impl != nullptr)
             {
+                // Release reference counter if this instance is the last one using it.
                 if(!_impl->decrement())
                     delete _impl;
                 _impl = nullptr;
