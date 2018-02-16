@@ -14,6 +14,8 @@ namespace hyper
     /// @details Smart pointer that tracks its references.
     ///   The pointer will automatically be destroyed (and resources freed)
     ///   when there are no more references to it.
+    ///   Instances of this class should have the only references to a raw pointer.
+    ///   This class is designed in such a way to attempt to prevent external references.
     /// @tparam T Type the pointer references.
     template<typename T>
     class SharedPointer
@@ -22,8 +24,6 @@ namespace hyper
         /// @brief Underlying implementation for tracking references.
         /// @details All smart pointers that refer to the same instance share a single instance of this class.
         ///   This allows the smart pointers to "communicate" when they are no longer being used.
-        ///   Instances of this class should have the only references to a raw pointer.
-        ///   This class is designed in such a way to attempt to prevent external references.
         /// @todo Implement locking to be safe in multi-threaded scenarios.
         class ReferenceCounter
         {
