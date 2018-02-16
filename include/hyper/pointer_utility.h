@@ -1,4 +1,4 @@
-/// @file pointer_util.h
+/// @file pointer_utility.h
 /// Utility methods for dealing with raw pointers.
 /// Makes dealing with raw pointers a little easier with these methods.
 
