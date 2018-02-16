@@ -43,18 +43,18 @@ TEST(ScopedPointer, Free) {
     EXPECT_TRUE(result);
 }
 
-TEST(ScopedPointer, ResetNull) {
+TEST(ScopedPointer, ExpireNull) {
     auto ptr = new int;
     ScopedPointer<int> sp(ptr);
-    sp.reset();
+    sp.expire();
     EXPECT_FALSE((bool)sp);
 }
 
-TEST(ScopedPointer, ResetFree) {
+TEST(ScopedPointer, ExpireFree) {
     bool result = false;
     auto mock = new ScopedPointerDestructorCapture(&result);
     ScopedPointer<ScopedPointerDestructorCapture> sp(mock);
-    sp.reset();
+    sp.expire();
     EXPECT_TRUE(result);
 }
 

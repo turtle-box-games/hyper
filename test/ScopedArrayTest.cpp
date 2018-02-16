@@ -49,20 +49,20 @@ TEST(ScopedArray, Free) {
     EXPECT_EQ(freeCount, SAMPLE_ARRAY_SIZE);
 }
 
-TEST(ScopedArray, ResetNull) {
+TEST(ScopedArray, ExpireNull) {
     auto arr = new int[SAMPLE_ARRAY_SIZE];
     ScopedArray<int> sa(arr);
-    sa.reset();
+    sa.expire();
     EXPECT_FALSE((bool)sa);
 }
 
-TEST(ScopedArray, ResetFree) {
+TEST(ScopedArray, ExpireFree) {
     int freeCount = 0;
     auto mock = new ScopedArrayDestructorCapture[SAMPLE_ARRAY_SIZE];
     for(size_t i = 0; i < SAMPLE_ARRAY_SIZE; ++i)
         mock[i] = ScopedArrayDestructorCapture(&freeCount);
     ScopedArray<ScopedArrayDestructorCapture> sa(mock);
-    sa.reset();
+    sa.expire();
     EXPECT_EQ(freeCount, SAMPLE_ARRAY_SIZE * 2); // x2 because swapping causes two destructor calls per instance.
 }
 
