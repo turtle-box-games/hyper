@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "hyper/types.h"
+#include <cfloat>
 
 using namespace hyper;
 
@@ -103,6 +104,22 @@ TEST(float32, Size) {
     EXPECT_EQ(4, sizeof(float32));
 }
 
+TEST(float32, MinValue) {
+    EXPECT_EQ(FLT_MIN, min_value<float32>());
+}
+
+TEST(float32, MaxValue) {
+    EXPECT_EQ(FLT_MAX, max_value<float32>());
+}
+
 TEST(float64, Size) {
     EXPECT_EQ(8, sizeof(float64));
+}
+
+TEST(float64, MinValue) {
+    EXPECT_EQ(DBL_MIN, min_value<float64>());
+}
+
+TEST(float64, MaxValue) {
+    EXPECT_EQ(DBL_MAX, max_value<float64>());
 }

@@ -6,6 +6,7 @@
 #define HYPER_TYPES_H
 
 #include <cstdint> // For integer types.
+#include <cfloat>  // For floating-point types.
 
 namespace hyper
 {
@@ -184,8 +185,40 @@ namespace hyper
     /// @brief 32-bit floating-point value.
     typedef float float32;
 
+    /// @brief Gets the minimum value that a 32-bit floating-point value can hold.
+    /// @return
+    template<>
+    inline constexpr float32 min_value() noexcept
+    {
+        return FLT_MIN;
+    }
+
+    /// @brief Gets the maximum value that a 32-bit floating-point value can hold.
+    /// @return
+    template<>
+    inline constexpr float32 max_value() noexcept
+    {
+        return FLT_MAX;
+    }
+
     /// @brief 64-bit floating-point value
     typedef double float64;
+
+    /// @brief Gets the minimum value that a 64-bit floating-point value can hold.
+    /// @return
+    template<>
+    inline constexpr float64 min_value() noexcept
+    {
+        return DBL_MIN;
+    }
+
+    /// @brief Gets the maximum value that a 64-bit floating-point value can hold.
+    /// @return
+    template<>
+    inline constexpr float64 max_value() noexcept
+    {
+        return DBL_MAX;
+    }
 }
 
 #endif //HYPER_TYPES_H
