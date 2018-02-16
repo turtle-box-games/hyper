@@ -112,6 +112,15 @@ namespace hyper
         ///   Scoped pointers should never reference the same raw pointer.
         bool operator!=(const ScopedArray &) = delete;
     };
+
+    /// @brief Swaps the references of two scoped arrays.
+    /// @param first First smart pointer to swap.
+    /// @param second Second smart pointer to swap.
+    template<typename T>
+    void swap(ScopedArray<T> &first, ScopedArray<T> &second)
+    {
+        first.swap(second);
+    }
 }
 
 #endif //HYPER_SCOPEDARRAY_H

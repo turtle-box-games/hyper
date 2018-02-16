@@ -221,6 +221,15 @@ namespace hyper
             return !(this == other);
         }
     };
+
+    /// @brief Swaps the references of two shared pointers.
+    /// @param first First smart pointer to swap.
+    /// @param second Second smart pointer to swap.
+    template<typename T>
+    void swap(SharedPointer<T> &first, SharedPointer<T> &second)
+    {
+        first.swap(second);
+    }
 }
 
 #endif //HYPER_SHAREDPOINTER_H
