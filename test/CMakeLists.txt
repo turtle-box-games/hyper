@@ -33,7 +33,8 @@ endif()
 set(TOP_LEVEL_SRC_FILES
         ByteTest.cpp
         ScopedPointerTest.cpp
-        ScopedArrayTest.cpp)
+        ScopedArrayTest.cpp
+        SharedPointerTest.cpp)
 
 add_executable(base_test ${TOP_LEVEL_SRC_FILES})
 target_link_libraries(base_test gtest_main)
