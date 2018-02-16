@@ -4,7 +4,7 @@
 #ifndef HYPER_SCOPEDARRAY_H
 #define HYPER_SCOPEDARRAY_H
 
-#include "pointer_util.h"
+#include "pointer_utility.h"
 #include "assert.h"
 
 namespace hyper

@@ -5,7 +5,7 @@
 #ifndef HYPER_SHAREDPOINTER_H
 #define HYPER_SHAREDPOINTER_H
 
-#include "pointer_util.h"
+#include "pointer_utility.h"
 #include "assert.h"
 
 namespace hyper

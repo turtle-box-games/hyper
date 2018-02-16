@@ -4,7 +4,7 @@
 #ifndef HYPER_SCOPEDPOINTER_H
 #define HYPER_SCOPEDPOINTER_H
 
-#include "pointer_util.h"
+#include "pointer_utility.h"
 #include "assert.h"
 
 namespace hyper
