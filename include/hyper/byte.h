@@ -4,13 +4,15 @@
 #ifndef HYPER_BYTE_H
 #define HYPER_BYTE_H
 
+#include "types.h"
+
 namespace hyper
 {
     /// @brief Single byte value that represents raw data.
     /// @details A byte is not intended to be read directly from.
     ///   It is for storing raw data and converting between types,
     ///   such as during a serialization or marshal process.
-    enum class byte : unsigned char {};
+    enum class byte : uint8 {};
 
     /// @brief Left-shift operator.
     /// @details Shifts a byte left by a specified number of bits.
@@ -19,7 +21,7 @@ namespace hyper
     /// @return Left-shifted byte.
     inline constexpr byte operator<<(byte b, int shift) noexcept
     {
-        return byte(static_cast<unsigned char>(b) << shift);
+        return byte(static_cast<uint8>(b) << shift);
     }
 
     /// @brief Left-shift compound assignment operator.
@@ -29,7 +31,7 @@ namespace hyper
     /// @return Left-shifted byte.
     inline constexpr byte& operator<<=(byte& b, int shift) noexcept
     {
-        return b = byte(static_cast<unsigned char>(b) << shift);
+        return b = byte(static_cast<uint8>(b) << shift);
     }
 
     /// @brief Right-shift operator.
@@ -39,7 +41,7 @@ namespace hyper
     /// @return Right-shifted byte.
     inline constexpr byte operator>>(byte b, int shift) noexcept
     {
-        return byte(static_cast<unsigned char>(b) >> shift);
+        return byte(static_cast<uint8>(b) >> shift);
     }
 
     /// @brief Right-shift compound assignment operator.
@@ -49,7 +51,7 @@ namespace hyper
     /// @return Right-shifted byte.
     inline constexpr byte& operator>>=(byte& b, int shift) noexcept
     {
-        return b = byte(static_cast<unsigned char>(b) >> shift);
+        return b = byte(static_cast<uint8>(b) >> shift);
     }
 
     /// @brief OR operator.
@@ -59,7 +61,7 @@ namespace hyper
     /// @return Result of the OR operation.
     inline constexpr byte operator |(byte b, byte v) noexcept
     {
-        return byte(static_cast<unsigned char>(b) | static_cast<unsigned char>(v));
+        return byte(static_cast<uint8>(b) | static_cast<uint8>(v));
     }
 
     /// @brief OR compound assignment operator.
@@ -69,7 +71,7 @@ namespace hyper
     /// @return Result of the OR operation.
     inline constexpr byte& operator |=(byte& b, byte v) noexcept
     {
-        return b = byte(static_cast<unsigned char>(b) | static_cast<unsigned char>(v));
+        return b = byte(static_cast<uint8>(b) | static_cast<uint8>(v));
     }
 
     /// @brief AND operator.
@@ -79,7 +81,7 @@ namespace hyper
     /// @return Result of the AND operation.
     inline constexpr byte operator &(byte b, byte v) noexcept
     {
-        return byte(static_cast<unsigned char>(b) & static_cast<unsigned char>(v));
+        return byte(static_cast<uint8>(b) & static_cast<uint8>(v));
     }
 
     /// @brief AND compound assignment operator.
@@ -89,7 +91,7 @@ namespace hyper
     /// @return Result of the AND operation.
     inline constexpr byte& operator &=(byte& b, byte v) noexcept
     {
-        return b = byte(static_cast<unsigned char>(b) & static_cast<unsigned char>(v));
+        return b = byte(static_cast<uint8>(b) & static_cast<uint8>(v));
     }
 
     /// @brief XOR operator.
@@ -99,7 +101,7 @@ namespace hyper
     /// @return Result of the XOR operation.
     inline constexpr byte operator ^(byte b, byte v) noexcept
     {
-        return byte(static_cast<unsigned char>(b) ^ static_cast<unsigned char>(v));
+        return byte(static_cast<uint8>(b) ^ static_cast<uint8>(v));
     }
 
     /// @brief XOR compound assignment operator.
@@ -109,7 +111,7 @@ namespace hyper
     /// @return Result of the XOR operation.
     inline constexpr byte& operator ^=(byte& b, byte v) noexcept
     {
-        return b = byte(static_cast<unsigned char>(b) ^ static_cast<unsigned char>(v));
+        return b = byte(static_cast<uint8>(b) ^ static_cast<uint8>(v));
     }
 
     /// @brief NOT operator.
@@ -118,7 +120,7 @@ namespace hyper
     /// @return Result of the NOT operation.
     inline constexpr byte operator ~(byte b) noexcept
     {
-        return byte(~static_cast<unsigned char>(b));
+        return byte(~static_cast<uint8>(b));
     }
 
     /// @brief Integer conversion.
