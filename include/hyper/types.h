@@ -7,6 +7,7 @@
 
 #include <cstdint> // For integer types.
 #include <cfloat>  // For floating-point types.
+#include <cmath>   // Ditto.
 
 namespace hyper
 {
@@ -21,6 +22,18 @@ namespace hyper
     /// @return Maximum value that can be contained by @p T.
     template<typename T>
     T max_value();
+
+    /// @brief Gets the representation of infinity for the given type.
+    /// @tparam T Type to get infinity for.
+    /// @return Infinity for the type.
+    template<typename T>
+    T infinity();
+
+    /// @brief Gets the representation of negative infinity for the given type.
+    /// @tparam T Type to get negative infinity for.
+    /// @return Negative infinity for the type.
+    template<typename T>
+    T negative_infinity();
 
     /// @brief 8-bit signed integer.
     /// @details Values can range from -128 to 127.
@@ -186,7 +199,7 @@ namespace hyper
     typedef float float32;
 
     /// @brief Gets the minimum value that a 32-bit floating-point value can hold.
-    /// @return
+    /// @return 1.175494 x 10^-38
     template<>
     inline constexpr float32 min_value() noexcept
     {
@@ -194,18 +207,34 @@ namespace hyper
     }
 
     /// @brief Gets the maximum value that a 32-bit floating-point value can hold.
-    /// @return
+    /// @return 3.402823 x 10^38
     template<>
     inline constexpr float32 max_value() noexcept
     {
         return FLT_MAX;
     }
 
+    /// @brief Gets the value representing infinity for a 32-bit floating-point value.
+    /// @return Infinity.
+    template<>
+    inline constexpr float32 infinity() noexcept
+    {
+        return HUGE_VALF;
+    }
+
+    /// @brief Gets the value representing negative infinity for a 32-bit floating-point value.
+    /// @return Negative infinity.
+    template<>
+    inline constexpr float32 negative_infinity() noexcept
+    {
+        return -HUGE_VALF;
+    }
+
     /// @brief 64-bit floating-point value
     typedef double float64;
 
     /// @brief Gets the minimum value that a 64-bit floating-point value can hold.
-    /// @return
+    /// @return 2.225074 x 10^-308
     template<>
     inline constexpr float64 min_value() noexcept
     {
@@ -213,11 +242,27 @@ namespace hyper
     }
 
     /// @brief Gets the maximum value that a 64-bit floating-point value can hold.
-    /// @return
+    /// @return 1.797693 x 10^308
     template<>
     inline constexpr float64 max_value() noexcept
     {
         return DBL_MAX;
+    }
+
+    /// @brief Gets the value representing infinity for a 64-bit floating-point value.
+    /// @return Infinity.
+    template<>
+    inline constexpr float64 infinity() noexcept
+    {
+        return HUGE_VAL;
+    }
+
+    /// @brief Gets the value representing negative infinity for a 64-bit floating-point value.
+    /// @return Negative infinity.
+    template<>
+    inline constexpr float64 negative_infinity() noexcept
+    {
+        return -HUGE_VAL;
     }
 }
 
