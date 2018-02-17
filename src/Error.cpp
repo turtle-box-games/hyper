@@ -2,24 +2,21 @@
 
 namespace hyper
 {
-    constexpr Error::Error() noexcept
-        : _cause(nullptr)
+    Error::Error() noexcept
+        : _cause(SharedPointer<Error>(nullptr))
     {
         // ...
     }
 
-    constexpr Error::Error(Error *cause) noexcept
+    Error::Error(SharedPointer<Error> cause) noexcept
         : _cause(cause)
     {
         // ...
     }
 
-    Error::~Error() noexcept
-    {
-        _cause = nullptr;
-    }
+    Error::~Error() noexcept = default;
 
-    Error *Error::cause() const noexcept
+    SharedPointer<Error> Error::cause() const noexcept
     {
         return _cause;
     }
