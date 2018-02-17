@@ -188,9 +188,9 @@ TEST(byte, ToIntMax) {
 }
 
 TEST(byte, MinValue) {
-    EXPECT_EQ(byte(0), min_value<byte>());
+    EXPECT_EQ(byte(0), minValue<byte>());
 }
 
 TEST(byte, MaxValue) {
-    EXPECT_EQ(byte(255), max_value<byte>());
+    EXPECT_EQ(byte(255), maxValue<byte>());
 }

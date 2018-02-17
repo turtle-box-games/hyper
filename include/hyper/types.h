@@ -15,13 +15,13 @@ namespace hyper
     /// @tparam T Type to get the minimum value of.
     /// @return Minimum value that can be contained by @p T.
     template<typename T>
-    T min_value();
+    T minValue();
 
     /// @brief Gets the maximum value that a type can hold.
     /// @tparam T Type to get the maximum value of.
     /// @return Maximum value that can be contained by @p T.
     template<typename T>
-    T max_value();
+    T maxValue();
 
     /// @brief Gets the representation of infinity for the given type.
     /// @tparam T Type to get infinity for.
@@ -33,7 +33,7 @@ namespace hyper
     /// @tparam T Type to get negative infinity for.
     /// @return Negative infinity for the type.
     template<typename T>
-    T negative_infinity();
+    T negativeInfinity();
 
     /// @brief 8-bit signed integer.
     /// @details Values can range from -128 to 127.
@@ -42,7 +42,7 @@ namespace hyper
     /// @brief Gets the minimum value that an 8-bit signed integer can hold.
     /// @return -128
     template<>
-    inline constexpr int8 min_value() noexcept
+    inline constexpr int8 minValue() noexcept
     {
         return INT8_MIN;
     }
@@ -50,7 +50,7 @@ namespace hyper
     /// @brief Gets the maximum value that an 8-bit signed integer can hold.
     /// @return 127
     template<>
-    inline constexpr int8 max_value() noexcept
+    inline constexpr int8 maxValue() noexcept
     {
         return INT8_MAX;
     }
@@ -62,7 +62,7 @@ namespace hyper
     /// @brief Gets the minimum value that an 8-bit unsigned integer can hold.
     /// @return 0
     template<>
-    inline constexpr uint8 min_value() noexcept
+    inline constexpr uint8 minValue() noexcept
     {
         return 0;
     }
@@ -70,7 +70,7 @@ namespace hyper
     /// @brief Gets the maximum value that an 8-bit unsigned integer can hold.
     /// @return 255
     template<>
-    inline constexpr uint8 max_value() noexcept
+    inline constexpr uint8 maxValue() noexcept
     {
         return UINT8_MAX;
     }
@@ -82,7 +82,7 @@ namespace hyper
     /// @brief Gets the minimum value that a 16-bit signed integer can hold.
     /// @return -32,768
     template<>
-    inline constexpr int16 min_value() noexcept
+    inline constexpr int16 minValue() noexcept
     {
         return INT16_MIN;
     }
@@ -90,7 +90,7 @@ namespace hyper
     /// @brief Gets the maximum value that a 16-bit signed integer can hold.
     /// @return 32,767
     template<>
-    inline constexpr int16 max_value() noexcept
+    inline constexpr int16 maxValue() noexcept
     {
         return INT16_MAX;
     }
@@ -102,7 +102,7 @@ namespace hyper
     /// @brief Gets the minimum value that a 16-bit unsigned integer can hold.
     /// @return 0
     template<>
-    inline constexpr uint16 min_value() noexcept
+    inline constexpr uint16 minValue() noexcept
     {
         return 0;
     }
@@ -110,7 +110,7 @@ namespace hyper
     /// @brief Gets the maximum value that a 16-bit unsigned integer can hold.
     /// @return 65,535
     template<>
-    inline constexpr uint16 max_value() noexcept
+    inline constexpr uint16 maxValue() noexcept
     {
         return UINT16_MAX;
     }
@@ -122,7 +122,7 @@ namespace hyper
     /// @brief Gets the minimum value that a 32-bit signed integer can hold.
     /// @return -2,147,483,648
     template<>
-    inline constexpr int32 min_value() noexcept
+    inline constexpr int32 minValue() noexcept
     {
         return INT32_MIN;
     }
@@ -130,7 +130,7 @@ namespace hyper
     /// @brief Gets the maximum value that a 32-bit signed integer can hold.
     /// @return 2,147,483,647
     template<>
-    inline constexpr int32 max_value() noexcept
+    inline constexpr int32 maxValue() noexcept
     {
         return INT32_MAX;
     }
@@ -142,7 +142,7 @@ namespace hyper
     /// @brief Gets the minimum value that a 32-bit unsigned integer can hold.
     /// @return 0
     template<>
-    inline constexpr uint32 min_value() noexcept
+    inline constexpr uint32 minValue() noexcept
     {
         return 0;
     }
@@ -150,7 +150,7 @@ namespace hyper
     /// @brief Gets the maximum value that a 32-bit unsigned integer can hold.
     /// @return 4,294,967,295
     template<>
-    inline constexpr uint32 max_value() noexcept
+    inline constexpr uint32 maxValue() noexcept
     {
         return UINT32_MAX;
     }
@@ -162,7 +162,7 @@ namespace hyper
     /// @brief Gets the minimum value that a 64-bit signed integer can hold.
     /// @return -9,223,372,036,854,775,808
     template<>
-    inline constexpr int64 min_value() noexcept
+    inline constexpr int64 minValue() noexcept
     {
         return INT64_MIN;
     }
@@ -170,7 +170,7 @@ namespace hyper
     /// @brief Gets the maximum value that a 64-bit signed integer can hold.
     /// @return 9,223,372,036,854,775,807
     template<>
-    inline constexpr int64 max_value() noexcept
+    inline constexpr int64 maxValue() noexcept
     {
         return INT64_MAX;
     }
@@ -182,7 +182,7 @@ namespace hyper
     /// @brief Gets the minimum value that a 64-bit unsigned integer can hold.
     /// @return 0
     template<>
-    inline constexpr uint64 min_value() noexcept
+    inline constexpr uint64 minValue() noexcept
     {
         return 0;
     }
@@ -190,7 +190,7 @@ namespace hyper
     /// @brief Gets the maximum value that a 64-bit unsigned integer can hold.
     /// @return 18,446,744,073,709,551,615
     template<>
-    inline constexpr uint64 max_value() noexcept
+    inline constexpr uint64 maxValue() noexcept
     {
         return UINT64_MAX;
     }
@@ -201,7 +201,7 @@ namespace hyper
     /// @brief Gets the minimum value that a 32-bit floating-point value can hold.
     /// @return 1.175494 x 10^-38
     template<>
-    inline constexpr float32 min_value() noexcept
+    inline constexpr float32 minValue() noexcept
     {
         return FLT_MIN;
     }
@@ -209,7 +209,7 @@ namespace hyper
     /// @brief Gets the maximum value that a 32-bit floating-point value can hold.
     /// @return 3.402823 x 10^38
     template<>
-    inline constexpr float32 max_value() noexcept
+    inline constexpr float32 maxValue() noexcept
     {
         return FLT_MAX;
     }
@@ -225,7 +225,7 @@ namespace hyper
     /// @brief Gets the value representing negative infinity for a 32-bit floating-point value.
     /// @return Negative infinity.
     template<>
-    inline constexpr float32 negative_infinity() noexcept
+    inline constexpr float32 negativeInfinity() noexcept
     {
         return -HUGE_VALF;
     }
@@ -236,7 +236,7 @@ namespace hyper
     /// @brief Gets the minimum value that a 64-bit floating-point value can hold.
     /// @return 2.225074 x 10^-308
     template<>
-    inline constexpr float64 min_value() noexcept
+    inline constexpr float64 minValue() noexcept
     {
         return DBL_MIN;
     }
@@ -244,7 +244,7 @@ namespace hyper
     /// @brief Gets the maximum value that a 64-bit floating-point value can hold.
     /// @return 1.797693 x 10^308
     template<>
-    inline constexpr float64 max_value() noexcept
+    inline constexpr float64 maxValue() noexcept
     {
         return DBL_MAX;
     }
@@ -260,7 +260,7 @@ namespace hyper
     /// @brief Gets the value representing negative infinity for a 64-bit floating-point value.
     /// @return Negative infinity.
     template<>
-    inline constexpr float64 negative_infinity() noexcept
+    inline constexpr float64 negativeInfinity() noexcept
     {
         return -HUGE_VAL;
     }

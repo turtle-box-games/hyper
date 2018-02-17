@@ -135,17 +135,17 @@ namespace hyper
     /// @brief Minimum value that a byte can hold.
     /// @return 0
     template<>
-    inline constexpr byte min_value()
+    inline constexpr byte minValue()
     {
-        return byte(min_value<uint8>());
+        return byte(minValue<uint8>());
     }
 
     /// @brief Maximum value that a byte can hold.
     /// @return 255
     template<>
-    inline constexpr byte max_value()
+    inline constexpr byte maxValue()
     {
-        return byte(max_value<uint8>());
+        return byte(maxValue<uint8>());
     }
 }
 
