@@ -35,6 +35,7 @@ set(TOP_LEVEL_SRC_FILES
         ScopedPointerTest.cpp
         ScopedArrayTest.cpp
         SharedPointerTest.cpp
+        SharedArrayTest.cpp
         TypesTest.cpp)
 
 add_executable(base_test ${TOP_LEVEL_SRC_FILES})
