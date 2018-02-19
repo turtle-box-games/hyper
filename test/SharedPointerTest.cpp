@@ -46,21 +46,6 @@ TEST(SharedPointer, Free) {
     EXPECT_TRUE(result);
 }
 
-TEST(SharedPointer, ResetNull) {
-    SharedPointer<int> sp(new int);
-    sp.expire();
-    EXPECT_FALSE((bool)sp);
-}
-
-TEST(SharedPointer, ResetFree) {
-    bool result = false;
-    SharedPointer<SharedPointerDestructorCapture> sp(
-            new SharedPointerDestructorCapture(&result)
-    );
-    sp.expire();
-    EXPECT_TRUE(result);
-}
-
 TEST(SharedPointer, Swap) {
     const auto val1 = 42;
     const auto val2 = 24;

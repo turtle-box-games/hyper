@@ -51,15 +51,6 @@ namespace hyper
             checkedDeleteArray(_ptr);
         }
 
-        /// @brief Forces the pointer to be destroyed and resources released.
-        void expire() noexcept
-        {
-            // Reuse the swap method to reference a nullptr.
-            // This temporary scoped pointer to swap with immediately
-            // goes out of scope, thus calling the destructor.
-            ScopedArray<T>(nullptr).swap(*this);
-        }
-
         /// @brief Swaps the contents of two scoped pointers.
         /// @param other Scoped pointer to swap with.
         void swap(ScopedArray &other) noexcept

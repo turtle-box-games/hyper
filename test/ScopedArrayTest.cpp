@@ -54,23 +54,6 @@ TEST(ScopedArray, Free) {
     EXPECT_EQ(freeCount, SAMPLE_ARRAY_SIZE);
 }
 
-TEST(ScopedArray, ExpireNull) {
-    ScopedArray<int> sa(new int[SAMPLE_ARRAY_SIZE]);
-    sa.expire();
-    EXPECT_FALSE((bool)sa);
-}
-
-TEST(ScopedArray, ExpireFree) {
-    int freeCount = 0;
-    ScopedArray<ScopedArrayDestructorCapture> sa(
-            new ScopedArrayDestructorCapture[SAMPLE_ARRAY_SIZE]
-    );
-    for(size_t i = 0; i < SAMPLE_ARRAY_SIZE; ++i)
-        sa[i] = ScopedArrayDestructorCapture(&freeCount);
-    sa.expire();
-    EXPECT_EQ(freeCount, SAMPLE_ARRAY_SIZE * 2); // x2 because swapping causes two destructor calls per instance.
-}
-
 TEST(ScopedArray, Swap) {
     const auto val1 = 42;
     const auto val2 = 24;

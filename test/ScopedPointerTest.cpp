@@ -46,21 +46,6 @@ TEST(ScopedPointer, Free) {
     EXPECT_TRUE(result);
 }
 
-TEST(ScopedPointer, ResetNull) {
-    ScopedPointer<int> sp(new int);
-    sp.expire();
-    EXPECT_FALSE((bool)sp);
-}
-
-TEST(ScopedPointer, ResetFree) {
-    bool result = false;
-    ScopedPointer<ScopedPointerDestructorCapture> sp(
-            new ScopedPointerDestructorCapture(&result)
-    );
-    sp.expire();
-    EXPECT_TRUE(result);
-}
-
 TEST(ScopedPointer, Swap) {
     const auto val1 = 42;
     const auto val2 = 24;

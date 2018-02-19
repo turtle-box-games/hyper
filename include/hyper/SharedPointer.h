@@ -115,12 +115,6 @@ namespace hyper
         ///   The underlying pointer will not be released unless all other references have been released.
         ~SharedPointer() noexcept
         {
-            expire();
-        }
-
-        /// @brief Removes this pointer's reference to the raw pointer.
-        void expire() noexcept
-        {
             if(_impl != nullptr)
             {
                 // Release reference counter if this instance is the last one using it.
@@ -128,12 +122,6 @@ namespace hyper
                     delete _impl;
                 _impl = nullptr;
             }
-        }
-
-        /// @brief Forces the pointer to be destroyed, all references invalidated, and resources released.
-        void release() noexcept
-        {
-            checkedDelete(_impl);
         }
 
         /// @brief Swaps the contents of two Shared pointers.
@@ -152,7 +140,6 @@ namespace hyper
         ///   The pointer is asserted to be non-null.
         constexpr T &operator*() const noexcept
         {
-            ASSERTF(_impl != nullptr, "Attempt to use a disposed shared pointer");
             auto ptr = _impl->getReference();
             ASSERTF(ptr != nullptr, "Attempt to dereference null pointer");
             return *ptr;
@@ -165,7 +152,6 @@ namespace hyper
         ///   The pointer is asserted to be non-null.
         constexpr T *operator->() const noexcept
         {
-            ASSERTF(_impl != nullptr, "Attempt to use a disposed shared pointer");
             auto ptr = _impl->getReference();
             ASSERTF(ptr != nullptr, "Attempt to dereference null pointer");
             return ptr;
@@ -176,7 +162,7 @@ namespace hyper
         /// @return True if the pointer is not null, or false if it is null.
         constexpr explicit operator bool() const noexcept
         {
-            return _impl != nullptr && _impl->getReference() != nullptr;
+            return _impl->getReference() != nullptr;
         }
 
         /// @brief Assignment operator.
@@ -200,13 +186,8 @@ namespace hyper
         {
             if(_impl == other._impl)
                 return true;
-            else if(_impl != nullptr && other._impl != nullptr)
-            {
-                if(_impl->getReference() == other._impl->getReference())
-                    return true;
-            }
             else
-                return false;
+                return _impl->getReference() == other._impl->getReference();
         }
 
         /// @brief Inequality operator.
