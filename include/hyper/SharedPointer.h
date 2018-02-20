@@ -7,6 +7,7 @@
 
 #include "assert.h"
 #include "ScalarDestructor.h"
+#include "ReferenceCounter.h"
 
 namespace hyper
 {
@@ -21,65 +22,13 @@ namespace hyper
     class SharedPointer
     {
     private:
-        /// @brief Underlying implementation for tracking references.
-        /// @details All smart pointers that refer to the same instance share a single instance of this class.
-        ///   This allows the smart pointers to "communicate" when they are no longer being used.
-        /// @todo Implement locking to be safe in multi-threaded scenarios.
-        class ReferenceCounter
-        {
-        private:
-            size_t _count;
-            T *_ptr;
-
-        public:
-            /// @brief Default constructor.
-            /// @details Creates a new reference counter.
-            /// @param ptr Pointer to count references to.
-            constexpr ReferenceCounter(T *ptr) noexcept
-                : _count(1), _ptr(ptr)
-            {
-                // ...
-            }
-
-            /// @brief Destructor.
-            /// @details Resets the count to zero and releases the memory held by the pointer, if any.
-            ~ReferenceCounter()
-            {
-                _count = 0;
-                Destructor destructor;
-                destructor(_ptr);
-            }
-
-            /// @brief Increments the reference count by one.
-            void increment() noexcept
-            {
-                _count++;
-            }
-
-            /// @brief Decrements the reference count by one.
-            /// @return True if there are still references to the pointer.
-            /// @return False if the last reference was just released and the pointer can be freed.
-            bool decrement() noexcept
-            {
-                ASSERTF(_count > 0, "Attempted to decrement reference count below zero");
-                return 0 < --_count;
-            }
-
-            /// @brief Retrieves the raw pointer.
-            /// @return Pointer being counted.
-            constexpr T *getReference() const noexcept
-            {
-                return _ptr;
-            }
-        };
-
-        ReferenceCounter *_impl;
+        ReferenceCounter<T, Destructor> *_impl;
 
     public:
         /// @brief Default constructor.
         /// @details Creates a new shared pointer with the default constructor of type @tparam T.
         constexpr explicit SharedPointer() noexcept
-                : _impl(new ReferenceCounter(new T))
+                : _impl(new ReferenceCounter<T, Destructor>(new T))
         {
             // ...
         }
@@ -88,7 +37,7 @@ namespace hyper
         /// @details Creates a new shared pointer with an existing reference.
         /// @param ptr Raw pointer to wrap.
         constexpr explicit SharedPointer(T *&&ptr) noexcept
-                : _impl(new ReferenceCounter(ptr))
+                : _impl(new ReferenceCounter<T, Destructor>(ptr))
         {
             // ...
         }
