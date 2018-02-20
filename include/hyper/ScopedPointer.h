@@ -4,8 +4,8 @@
 #ifndef HYPER_SCOPEDPOINTER_H
 #define HYPER_SCOPEDPOINTER_H
 
-#include "pointer_utility.h"
 #include "assert.h"
+#include "ScalarDestructor.h"
 
 namespace hyper
 {
@@ -15,7 +15,7 @@ namespace hyper
     ///   Instances of this class should have the only references to a raw pointer.
     ///   This class is designed in such a way to attempt to prevent external references.
     /// @tparam T Type the pointer references.
-    template<typename T>
+    template<typename T, typename Destructor = ScalarDestructor<T>>
     class ScopedPointer
     {
     private:
@@ -47,7 +47,8 @@ namespace hyper
         /// @details Releases the resources referenced by the pointer.
         ~ScopedPointer() noexcept
         {
-            checkedDelete(_ptr);
+            Destructor destructor;
+            destructor(_ptr);
         }
 
         /// @brief Swaps the contents of two scoped pointers.

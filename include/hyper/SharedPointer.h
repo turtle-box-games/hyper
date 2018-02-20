@@ -5,8 +5,8 @@
 #ifndef HYPER_SHAREDPOINTER_H
 #define HYPER_SHAREDPOINTER_H
 
-#include "pointer_utility.h"
 #include "assert.h"
+#include "ScalarDestructor.h"
 
 namespace hyper
 {
@@ -17,7 +17,7 @@ namespace hyper
     ///   Instances of this class should have the only references to a raw pointer.
     ///   This class is designed in such a way to attempt to prevent external references.
     /// @tparam T Type the pointer references.
-    template<typename T>
+    template<typename T, typename Destructor = ScalarDestructor<T>>
     class SharedPointer
     {
     private:
@@ -46,7 +46,8 @@ namespace hyper
             ~ReferenceCounter()
             {
                 _count = 0;
-                checkedDelete(_ptr);
+                Destructor destructor;
+                destructor(_ptr);
             }
 
             /// @brief Increments the reference count by one.

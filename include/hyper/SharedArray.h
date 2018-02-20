@@ -5,8 +5,8 @@
 #ifndef HYPER_SHAREDARRAY_H
 #define HYPER_SHAREDARRAY_H
 
-#include "pointer_utility.h"
 #include "assert.h"
+#include "VectorDestructor.h"
 
 namespace hyper
 {
@@ -17,7 +17,7 @@ namespace hyper
     ///   Instances of this class should have the only references to a raw pointer.
     ///   This class is designed in such a way to attempt to prevent external references.
     /// @tparam T Type the elements in the array.
-    template<typename T>
+    template<typename T, typename Destructor = VectorDestructor<T>>
     class SharedArray
     {
     private:
@@ -46,7 +46,8 @@ namespace hyper
             ~ReferenceCounter()
             {
                 _count = 0;
-                checkedDeleteArray(_arr);
+                Destructor destructor;
+                destructor(_arr);
             }
 
             /// @brief Increments the reference count by one.
