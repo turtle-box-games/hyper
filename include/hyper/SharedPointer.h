@@ -6,7 +6,7 @@
 #define HYPER_SHAREDPOINTER_H
 
 #include "assert.h"
-#include "ScalarDestructor.h"
+#include "DefaultDestructor.h"
 #include "ReferenceCounter.h"
 
 namespace hyper
@@ -18,7 +18,7 @@ namespace hyper
     ///   Instances of this class should have the only references to a raw pointer.
     ///   This class is designed in such a way to attempt to prevent external references.
     /// @tparam T Type the pointer references.
-    template<typename T, typename Destructor = ScalarDestructor<T>>
+    template<typename T, typename Destructor = DefaultDestructor<T>>
     class SharedPointer
     {
     private:
@@ -161,6 +161,139 @@ namespace hyper
     {
         first.swap(second);
     }
+
+    template<typename T, typename Destructor>
+    class SharedPointer<T[], Destructor>
+    {
+    private:
+        ReferenceCounter<T, Destructor> *_impl;
+
+    public:
+        /// @brief Default constructor.
+        /// @details Creates a new shared pointer with the default constructor of type @tparam T.
+        constexpr explicit SharedPointer(size_t size) noexcept
+                : _impl(new ReferenceCounter<T, Destructor>(new T[size]))
+        {
+            // ...
+        }
+
+        /// @brief General constructor.
+        /// @details Creates a new shared pointer with an existing reference.
+        /// @param ptr Raw pointer to wrap.
+        constexpr explicit SharedPointer(T *&&ptr) noexcept
+                : _impl(new ReferenceCounter<T, Destructor>(ptr))
+        {
+            // ...
+        }
+
+        /// @brief Copy constructor.
+        /// @details Creates a new shared pointer that references an existing one.
+        /// @param other Existing shared pointer.
+        SharedPointer(const SharedPointer &other) noexcept
+                : _impl(other._impl)
+        {
+            _impl->increment();
+        }
+
+        /// @brief Move constructor.
+        /// @details Creates a new shared pointer from a temporary one.
+        /// @param other Temporary shared pointer.
+        SharedPointer(SharedPointer &&other) noexcept
+                : _impl(other._impl)
+        {
+            other._impl = nullptr;
+        }
+
+        /// @brief Destructor.
+        /// @details Releases the resources referenced by the shared pointer.
+        ///   The underlying pointer will not be released unless all other references have been released.
+        ~SharedPointer() noexcept
+        {
+            if(_impl != nullptr)
+            {
+                // Release reference counter if this instance is the last one using it.
+                if(!_impl->decrement())
+                    delete _impl;
+                _impl = nullptr;
+            }
+        }
+
+        /// @brief Swaps the contents of two Shared pointers.
+        /// @param other Shared pointer to swap with.
+        void swap(SharedPointer &other) noexcept
+        {
+            auto temp = other._impl;
+            other._impl = _impl;
+            _impl = temp;
+        }
+
+        /// @brief Subscript operator.
+        /// @details Provides access to a specified element in the array.
+        /// @param index Base-zero index of the element to access.
+        /// @return Element at the specified index.
+        T &operator[](size_t index) noexcept
+        {
+            auto arr = _impl->getReference();
+            ASSERTF(arr != nullptr, "Attempt to dereference null pointer");
+            return arr[index];
+        }
+
+        /// @brief Subscript operator.
+        /// @details Retrieves a specified element in the array.
+        /// @param index Base-zero index of the element to access.
+        /// @return Element at the specified index.
+        constexpr T &operator[](size_t index) const noexcept
+        {
+            auto arr = _impl->getReference();
+            ASSERTF(arr != nullptr, "Attempt to dereference null pointer");
+            return arr[index];
+        }
+
+        /// @brief Explicit bool cast.
+        /// @details Checks if the pointer can be safely de-referenced (is not null).
+        /// @return True if the pointer is not null, or false if it is null.
+        constexpr explicit operator bool() const noexcept
+        {
+            return _impl->getReference() != nullptr;
+        }
+
+        /// @brief Assignment operator.
+        /// @details Overwrites the current pointer with a copy of another.
+        /// @param other Other pointer to overwrite the existing one with.
+        /// @return The current pointer.
+        SharedPointer &operator=(SharedPointer other)
+        {
+            swap(other);
+            return *this;
+        }
+
+        /// @brief Equality operator.
+        /// @details Checks if two shared pointers reference the same raw pointer.
+        /// @param other Other instance to compare against.
+        /// @return True if the instances reference the same pointer.
+        /// @return False if the instances reference different pointers.
+        /// @return True if both instances reference null.
+        /// @return False if only one instance references null.
+        constexpr bool operator==(const SharedPointer &other) const noexcept
+        {
+            if(_impl == other._impl)
+                return true;
+            else
+                return _impl->getReference() == other._impl->getReference();
+        }
+
+        /// @brief Inequality operator.
+        /// @details Checks if two shared pointers don't reference the same raw pointer.
+        /// @param other Other instance to compare against.
+        /// @return True if the instances reference different pointers.
+        /// @return False if the instances reference the same pointer.
+        /// @return True if only one instance references null.
+        /// @return False if both instances reference null.
+        constexpr bool operator!=(const SharedPointer &other) const noexcept
+        {
+            return !(this == other);
+        }
+    };
 }
 
 #endif //HYPER_SHAREDPOINTER_H

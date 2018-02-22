@@ -5,7 +5,7 @@
 #define HYPER_SCOPEDPOINTER_H
 
 #include "assert.h"
-#include "ScalarDestructor.h"
+#include "DefaultDestructor.h"
 
 namespace hyper
 {
@@ -15,7 +15,7 @@ namespace hyper
     ///   Instances of this class should have the only references to a raw pointer.
     ///   This class is designed in such a way to attempt to prevent external references.
     /// @tparam T Type the pointer references.
-    template<typename T, typename Destructor = ScalarDestructor<T>>
+    template<typename T, typename Destructor = DefaultDestructor<T>>
     class ScopedPointer
     {
     private:

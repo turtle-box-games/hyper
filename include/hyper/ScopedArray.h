@@ -5,7 +5,7 @@
 #define HYPER_SCOPEDARRAY_H
 
 #include "assert.h"
-#include "VectorDestructor.h"
+#include "DefaultDestructor.h"
 
 namespace hyper
 {
@@ -15,7 +15,7 @@ namespace hyper
     ///   Instances of this class should have the only references to a raw pointer.
     ///   This class is designed in such a way to attempt to prevent external references.
     /// @tparam T Type of the array elements.
-    template<typename T, typename Destructor = VectorDestructor<T>>
+    template<typename T, typename Destructor = DefaultDestructor<T[]>>
     class ScopedArray
     {
     private:
