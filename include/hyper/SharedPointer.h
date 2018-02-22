@@ -91,7 +91,7 @@ namespace hyper
         ///   The pointer is asserted to be non-null.
         constexpr T &operator*() const noexcept
         {
-            auto ptr = _impl->getReference();
+            auto ptr = _impl->getPointer();
             ASSERTF(ptr != nullptr, "Attempt to dereference null pointer");
             return *ptr;
         }
@@ -103,7 +103,7 @@ namespace hyper
         ///   The pointer is asserted to be non-null.
         constexpr T *operator->() const noexcept
         {
-            auto ptr = _impl->getReference();
+            auto ptr = _impl->getPointer();
             ASSERTF(ptr != nullptr, "Attempt to dereference null pointer");
             return ptr;
         }
@@ -113,7 +113,7 @@ namespace hyper
         /// @return True if the pointer is not null, or false if it is null.
         constexpr explicit operator bool() const noexcept
         {
-            return _impl->getReference() != nullptr;
+            return _impl->getPointer() != nullptr;
         }
 
         /// @brief Assignment operator.
@@ -138,7 +138,7 @@ namespace hyper
             if(_impl == other._impl)
                 return true;
             else
-                return _impl->getReference() == other._impl->getReference();
+                return _impl->getPointer() == other._impl->getPointer();
         }
 
         /// @brief Inequality operator.
@@ -235,7 +235,7 @@ namespace hyper
         /// @return Element at the specified index.
         T &operator[](size_t index) noexcept
         {
-            auto arr = _impl->getReference();
+            auto arr = _impl->getPointer();
             ASSERTF(arr != nullptr, "Attempt to dereference null pointer");
             return arr[index];
         }
@@ -246,7 +246,7 @@ namespace hyper
         /// @return Element at the specified index.
         constexpr T &operator[](size_t index) const noexcept
         {
-            auto arr = _impl->getReference();
+            auto arr = _impl->getPointer();
             ASSERTF(arr != nullptr, "Attempt to dereference null pointer");
             return arr[index];
         }
@@ -256,7 +256,7 @@ namespace hyper
         /// @return True if the pointer is not null, or false if it is null.
         constexpr explicit operator bool() const noexcept
         {
-            return _impl->getReference() != nullptr;
+            return _impl->getPointer() != nullptr;
         }
 
         /// @brief Assignment operator.
@@ -281,7 +281,7 @@ namespace hyper
             if(_impl == other._impl)
                 return true;
             else
-                return _impl->getReference() == other._impl->getReference();
+                return _impl->getPointer() == other._impl->getPointer();
         }
 
         /// @brief Inequality operator.

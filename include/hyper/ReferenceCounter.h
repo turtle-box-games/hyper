@@ -26,7 +26,7 @@ namespace hyper
         /// @brief Default constructor.
         /// @details Creates a new reference counter.
         /// @param ptr Pointer to count references to.
-        constexpr ReferenceCounter(T *ptr) noexcept
+        constexpr explicit ReferenceCounter(T *ptr) noexcept
                 : _count(1), _ptr(ptr)
         {
             // ...
@@ -58,7 +58,7 @@ namespace hyper
 
         /// @brief Retrieves the raw pointer.
         /// @return Pointer being counted.
-        constexpr T *getReference() const noexcept
+        constexpr T *getPointer() const noexcept
         {
             return _ptr;
         }
