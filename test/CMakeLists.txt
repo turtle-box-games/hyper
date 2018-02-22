@@ -33,7 +33,6 @@ endif()
 set(TOP_LEVEL_SRC_FILES
         ByteTest.cpp
         ScopedPointerTest.cpp
-        ScopedArrayTest.cpp
         SharedPointerTest.cpp
         SharedArrayTest.cpp
         TypesTest.cpp)

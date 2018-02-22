@@ -1,6 +1,9 @@
 #include "gtest/gtest.h"
 #include "hyper/ScopedPointer.h"
 
+#define SAMPLE_ARRAY_SIZE 100
+#define SAMPLE_VALUE 42
+
 using namespace hyper;
 
 class ScopedPointerDestructorCapture
@@ -29,6 +32,41 @@ struct ScopedPointerSampleData
 
     ScopedPointerSampleData(int val)
             : value(val)
+    {
+        // ...
+    }
+};
+
+class ScopedArrayDestructorCapture
+{
+private:
+    int *_destructorCallCount;
+
+public:
+    ScopedArrayDestructorCapture()
+            : _destructorCallCount(nullptr)
+    {
+        // ...
+    }
+
+    ScopedArrayDestructorCapture(int *count)
+            : _destructorCallCount(count)
+    {
+        // ...
+    }
+
+    ~ScopedArrayDestructorCapture()
+    {
+        (*_destructorCallCount)++;
+    }
+};
+
+struct ScopedArraySampleValue
+{
+    int value;
+
+    ScopedArraySampleValue()
+            : value(SAMPLE_VALUE)
     {
         // ...
     }
@@ -90,4 +128,53 @@ TEST(ScopedPointer, BoolCastTrue) {
 TEST(ScopedPointer, BoolCastFalse) {
     ScopedPointer<int> sp(nullptr);
     EXPECT_FALSE((bool)sp);
+}
+
+TEST(ScopedPointer, ArrayFree) {
+    int freeCount = -SAMPLE_ARRAY_SIZE; // Negative because copying instances triggers destructor.
+    {
+        ScopedPointer<ScopedArrayDestructorCapture[]> sa(new ScopedArrayDestructorCapture[SAMPLE_ARRAY_SIZE]);
+        // freeCount == 0 here.
+        for(size_t i = 0; i < SAMPLE_ARRAY_SIZE; ++i)
+            sa[i] = ScopedArrayDestructorCapture(&freeCount); // Copy occurs, this is why freeCount starts as negative.
+        // sa should be freed when this scope exits,
+        // which will increment freeCount for every destructor called.
+    }
+    EXPECT_EQ(freeCount, SAMPLE_ARRAY_SIZE);
+}
+
+TEST(ScopedPointer, ArraySwap) {
+    const auto val1 = 42;
+    const auto val2 = 24;
+    ScopedPointer<int[]> sa1(new int[SAMPLE_ARRAY_SIZE]);
+    ScopedPointer<int[]> sa2(new int[SAMPLE_ARRAY_SIZE]);
+    sa1[0] = val1;
+    sa2[0] = val2;
+    sa1.swap(sa2);
+    EXPECT_EQ(sa1[0], val2);
+    EXPECT_EQ(sa2[0], val1);
+}
+
+TEST(ScopedPointer, SubscriptGet) {
+    ScopedPointer<ScopedArraySampleValue[]> sa(SAMPLE_ARRAY_SIZE);
+    for(size_t i = 0; i < SAMPLE_ARRAY_SIZE; ++i)
+        EXPECT_EQ(sa[i].value, SAMPLE_VALUE);
+}
+
+TEST(ScopedPointer, SubscriptSet) {
+    ScopedPointer<size_t[]> sa(SAMPLE_ARRAY_SIZE);
+    for(size_t i = 0; i < SAMPLE_ARRAY_SIZE; ++i) {
+        sa[i] = i;
+        EXPECT_EQ(sa[i], i);
+    }
+}
+
+TEST(ScopedPointer, ArrayBoolCastTrue) {
+    ScopedPointer<int[]> sa(new int[SAMPLE_ARRAY_SIZE]);
+    EXPECT_TRUE((bool)sa);
+}
+
+TEST(ScopedPointer, ArrayBoolCastFalse) {
+    ScopedPointer<int[]> sa(nullptr);
+    EXPECT_FALSE((bool)sa);
 }
