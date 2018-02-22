@@ -18,6 +18,7 @@ namespace hyper
     ///   Instances of this class should have the only references to a raw pointer.
     ///   This class is designed in such a way to attempt to prevent external references.
     /// @tparam T Type the pointer references.
+    /// @tparam Destructor Type of functor used to destroy instances.
     template<typename T, typename Destructor = DefaultDestructor<T>>
     class SharedPointer
     {
@@ -153,15 +154,15 @@ namespace hyper
         }
     };
 
-    /// @brief Swaps the references of two shared pointers.
-    /// @param first First smart pointer to swap.
-    /// @param second Second smart pointer to swap.
-    template<typename T>
-    void swap(SharedPointer<T> &first, SharedPointer<T> &second)
-    {
-        first.swap(second);
-    }
-
+    /// @brief Smart pointer for arrays that can be shared throughout the application.
+    /// @details Smart pointer that tracks its references.
+    ///   The pointer will automatically be destroyed (and resources freed)
+    ///   when there are no more references to it.
+    ///   Instances of this class should have the only references to a raw pointer.
+    ///   This class is designed in such a way to attempt to prevent external references.
+    ///   This is a template specialization for pointers to arrays.
+    /// @tparam T Type the pointer references.
+    /// @tparam Destructor Type of functor used to destroy instances.
     template<typename T, typename Destructor>
     class SharedPointer<T[], Destructor>
     {
@@ -170,7 +171,8 @@ namespace hyper
 
     public:
         /// @brief Default constructor.
-        /// @details Creates a new shared pointer with the default constructor of type @tparam T.
+        /// @details Creates a new scoped pointer to a new array.
+        /// @param size Number of items in the array.
         constexpr explicit SharedPointer(size_t size) noexcept
                 : _impl(new ReferenceCounter<T, Destructor>(new T[size]))
         {
@@ -294,6 +296,15 @@ namespace hyper
             return !(this == other);
         }
     };
+
+    /// @brief Swaps the references of two shared pointers.
+    /// @param first First smart pointer to swap.
+    /// @param second Second smart pointer to swap.
+    template<typename T>
+    void swap(SharedPointer<T> &first, SharedPointer<T> &second)
+    {
+        first.swap(second);
+    }
 }
 
 #endif //HYPER_SHAREDPOINTER_H

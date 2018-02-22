@@ -15,6 +15,7 @@ namespace hyper
     ///   Instances of this class should have the only references to a raw pointer.
     ///   This class is designed in such a way to attempt to prevent external references.
     /// @tparam T Type the pointer references.
+    /// @tparam Destructor Type of functor used to destroy instances.
     template<typename T, typename Destructor = DefaultDestructor<T>>
     class ScopedPointer
     {
@@ -106,12 +107,14 @@ namespace hyper
         bool operator!=(const ScopedPointer &) = delete;
     };
 
-    /// @brief Smart pointer that can't be shared outside its scope.
+    /// @brief Smart pointer for arrays that can't be shared outside its scope.
     /// @details Smart pointer with a lifetime limited to its scope.
     ///   This operates on the RAII principle.
     ///   Instances of this class should have the only references to a raw pointer.
     ///   This class is designed in such a way to attempt to prevent external references.
+    ///   This is a template specialization for pointers to arrays.
     /// @tparam T Type the pointer references.
+    /// @tparam Destructor Type of functor used to destroy instances.
     template<typename T, typename Destructor>
     class ScopedPointer<T[], Destructor>
     {
@@ -120,7 +123,7 @@ namespace hyper
 
     public:
         /// @brief Default constructor.
-        /// @details Creates a new scoped pointer with the default constructor of type @tparam T.
+        /// @details Creates a new scoped pointer to a new array.
         /// @param size Number of items in the array.
         constexpr explicit ScopedPointer(size_t size) noexcept
                 : _ptr(new T[size])
