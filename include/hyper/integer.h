@@ -5,22 +5,11 @@
 #ifndef HYPER_INTEGER_H
 #define HYPER_INTEGER_H
 
-#include <cstdint> // For integer types.
+#include <cstdint>  // For integer types.
+#include "bounds.h" // For minValue() and maxValue().
 
 namespace hyper
 {
-    /// @brief Gets the minimum value that a type can hold.
-    /// @tparam T Type to get the minimum value of.
-    /// @return Minimum value that can be contained by @p T.
-    template<typename T>
-    T minValue();
-
-    /// @brief Gets the maximum value that a type can hold.
-    /// @tparam T Type to get the maximum value of.
-    /// @return Maximum value that can be contained by @p T.
-    template<typename T>
-    T maxValue();
-
     /// @brief 8-bit signed integer.
     /// @details Values can range from -128 to 127.
     typedef int8_t int8;

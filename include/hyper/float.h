@@ -5,23 +5,12 @@
 #ifndef HYPER_FLOAT_H
 #define HYPER_FLOAT_H
 
-#include <cfloat>  // For floating-point types.
-#include <cmath>   // For infinity values.
+#include <cfloat>   // For floating-point types.
+#include <cmath>    // For infinity values.
+#include "bounds.h" // For minValue() and maxValue().
 
 namespace hyper
 {
-    /// @brief Gets the minimum value that a type can hold.
-    /// @tparam T Type to get the minimum value of.
-    /// @return Minimum value that can be contained by @p T.
-    template<typename T>
-    T minValue();
-
-    /// @brief Gets the maximum value that a type can hold.
-    /// @tparam T Type to get the maximum value of.
-    /// @return Maximum value that can be contained by @p T.
-    template<typename T>
-    T maxValue();
-
     /// @brief Gets the representation of infinity for the given type.
     /// @tparam T Type to get infinity for.
     /// @return Infinity for the type.
