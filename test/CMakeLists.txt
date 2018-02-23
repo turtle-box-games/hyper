@@ -32,6 +32,7 @@ endif()
 # Add top-level namespace tests.
 set(TOP_LEVEL_SRC_FILES
         ByteTest.cpp
+        DefaultDestructorTest.cpp
         ScopedPointerTest.cpp
         SharedPointerTest.cpp
         TypesTest.cpp)
