@@ -4,7 +4,7 @@
 #ifndef HYPER_BYTE_H
 #define HYPER_BYTE_H
 
-#include "types.h"
+#include "integer.h"
 
 namespace hyper
 {
