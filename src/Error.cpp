@@ -1,3 +1,4 @@
+#include "hyper/utility.h"
 #include "hyper/Error.h"
 
 namespace hyper
@@ -9,7 +10,7 @@ namespace hyper
     }
 
     Error::Error(SharedPointer<Error> cause) noexcept
-        : _cause(cause)
+        : _cause(move(cause))
     {
         // ...
     }
