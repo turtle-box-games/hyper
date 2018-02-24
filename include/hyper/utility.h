@@ -58,7 +58,7 @@ namespace hyper
     template<typename T>
     constexpr typename removeReference<T>::type &&move(T &&arg) noexcept
     {
-        return static_cast<removeReference<T>::type &&>(arg);
+        return static_cast<typename removeReference<T>::type &&>(arg);
     }
 
     /// @brief Swaps the value of two variables.
