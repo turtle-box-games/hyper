@@ -5,7 +5,7 @@
 #define HYPER_BYTE_H
 
 #include "integer.h" // For uint8.
-#include "bounds.h"  // For minValue() and maxValue().
+#include "limits.h"  // For minValue() and maxValue().
 
 namespace hyper
 {

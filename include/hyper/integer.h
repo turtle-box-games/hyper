@@ -6,7 +6,7 @@
 #define HYPER_INTEGER_H
 
 #include <cstdint>  // For integer types.
-#include "bounds.h" // For minValue() and maxValue().
+#include "limits.h" // For minValue() and maxValue().
 
 namespace hyper
 {

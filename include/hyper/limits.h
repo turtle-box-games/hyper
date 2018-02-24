@@ -1,4 +1,4 @@
-/// @file bounds.h
+/// @file limits.h
 /// Template methods for getting upper and lower bounds of value types.
 
 #ifndef HYPER_BOUNDS_H

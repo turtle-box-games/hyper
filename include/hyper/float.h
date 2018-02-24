@@ -7,7 +7,7 @@
 
 #include <cfloat>   // For floating-point types.
 #include <cmath>    // For infinity values.
-#include "bounds.h" // For minValue() and maxValue().
+#include "limits.h" // For minValue() and maxValue().
 
 namespace hyper
 {
