@@ -9,7 +9,7 @@ namespace hyper
     /// @brief Strips reference modifiers from a type.
     /// @tparam T Type to strip references from.
     template<typename T>
-    struct removeReference
+    struct RemoveReference
     {
         /// @brief Non-reference type.
         /// @details This type has all references removed from @p T.
@@ -20,7 +20,7 @@ namespace hyper
     /// @details This specialization changes an lvalue reference type to just a type.
     /// @tparam T Type to strip references from.
     template<typename T>
-    struct removeReference<T&>
+    struct RemoveReference<T&>
     {
         /// @brief Non-reference type.
         /// @details This type has all references removed from @p T.
@@ -31,7 +31,7 @@ namespace hyper
     /// @details This specialization changes an rvalue reference type to just a type.
     /// @tparam T Type to strip references from.
     template<typename T>
-    struct removeReference<T&&>
+    struct RemoveReference<T&&>
     {
         /// @brief Non-reference type.
         /// @details This type has all references removed from @p T.
@@ -45,7 +45,7 @@ namespace hyper
     /// @param arg Expression to forward.
     /// @return Same expression passed in by @p arg, keeping lvalue and rvalue status.
     template<typename T>
-    constexpr T forward(typename removeReference<T>::type &arg) noexcept
+    constexpr T forward(typename RemoveReference<T>::type &arg) noexcept
     {
         return static_cast<T&&>(arg);
     }
@@ -56,9 +56,9 @@ namespace hyper
     /// @param arg Instance to move.
     /// @return Instance as an rvalue.
     template<typename T>
-    constexpr typename removeReference<T>::type &&move(T &&arg) noexcept
+    constexpr typename RemoveReference<T>::type &&move(T &&arg) noexcept
     {
-        return static_cast<typename removeReference<T>::type &&>(arg);
+        return static_cast<typename RemoveReference<T>::type &&>(arg);
     }
 
     /// @brief Swaps the value of two variables.
