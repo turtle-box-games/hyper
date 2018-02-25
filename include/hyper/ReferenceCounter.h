@@ -32,6 +32,10 @@ namespace hyper
             // ...
         }
 
+        /// @brief Copy constructor.
+        /// @details Copy constructor is deleted.
+        ReferenceCounter(const ReferenceCounter &other) = delete;
+
         /// @brief Destructor.
         /// @details Resets the count to zero and releases the memory held by the pointer, if any.
         ~ReferenceCounter()
@@ -62,6 +66,10 @@ namespace hyper
         {
             return _ptr;
         }
+
+        /// @brief Assignment operator.
+        /// @details Assignment operator is deleted.
+        ReferenceCounter *operator=(const ReferenceCounter &other) = delete;
     };
 }
 
