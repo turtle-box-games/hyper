@@ -21,11 +21,11 @@ elseif(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_GNUC
         OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     # use -Wall for gcc/clang.
     if(NOT CMAKE_CXX_FLAGS MATCHES "-Wall")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Weffc++")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
     endif()
 
     if(NOT CMAKE_C_FLAGS MATCHES "-Wall")
-        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Weffc++")
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra")
     endif()
 
 else()
