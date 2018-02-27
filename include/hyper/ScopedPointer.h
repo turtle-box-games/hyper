@@ -24,9 +24,10 @@ namespace hyper
 
     public:
         /// @brief Default constructor.
-        /// @details Creates a new scoped pointer with the default constructor of type @tparam T.
+        /// @details Creates a new scoped pointer that references null.
+        ///   This constructor is intended for assigning a usable pointer later.
         constexpr explicit ScopedPointer() noexcept
-                : _ptr(new T)
+                : _ptr(nullptr)
         {
             // ...
         }
@@ -123,10 +124,10 @@ namespace hyper
 
     public:
         /// @brief Default constructor.
-        /// @details Creates a new scoped pointer to a new array.
-        /// @param size Number of items in the array.
-        constexpr explicit ScopedPointer(size_t size) noexcept
-                : _ptr(new T[size])
+        /// @details Creates a new scoped pointer that references null.
+        ///   This constructor is intended for assigning a usable pointer later.
+        constexpr explicit ScopedPointer() noexcept
+                : _ptr(nullptr)
         {
             // ...
         }
