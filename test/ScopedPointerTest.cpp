@@ -102,7 +102,7 @@ TEST(ScopedPointer, DereferenceGet) {
 
 TEST(ScopedPointer, DereferenceSet) {
     const auto val = 42;
-    ScopedPointer<int> sp;
+    ScopedPointer<int> sp(new int);
     *sp = val;
     EXPECT_EQ(*sp, val);
 }
@@ -115,7 +115,7 @@ TEST(ScopedPointer, MemberAccessGet) {
 
 TEST(ScopedPointer, MemberAccessSet) {
     const auto val = 12345;
-    ScopedPointer<ScopedPointerSampleData> sp;
+    ScopedPointer<ScopedPointerSampleData> sp(new ScopedPointerSampleData);
     sp->value = val;
     EXPECT_EQ(sp->value, val);
 }
@@ -156,13 +156,13 @@ TEST(ScopedPointer, ArraySwap) {
 }
 
 TEST(ScopedPointer, SubscriptGet) {
-    ScopedPointer<ScopedArraySampleValue[]> sa(SAMPLE_ARRAY_SIZE);
+    ScopedPointer<ScopedArraySampleValue[]> sa(new ScopedArraySampleValue[SAMPLE_ARRAY_SIZE]);
     for(size_t i = 0; i < SAMPLE_ARRAY_SIZE; ++i)
         EXPECT_EQ(sa[i].value, SAMPLE_VALUE);
 }
 
 TEST(ScopedPointer, SubscriptSet) {
-    ScopedPointer<size_t[]> sa(SAMPLE_ARRAY_SIZE);
+    ScopedPointer<size_t[]> sa(new size_t[SAMPLE_ARRAY_SIZE]);
     for(size_t i = 0; i < SAMPLE_ARRAY_SIZE; ++i) {
         sa[i] = i;
         EXPECT_EQ(sa[i], i);
