@@ -5,7 +5,7 @@
 #define HYPER_SCOPEDPOINTER_H
 
 #include "assert.h"
-#include "DefaultDestructor.h"
+#include "DefaultDeleter.h"
 
 namespace hyper
 {
@@ -15,8 +15,8 @@ namespace hyper
     ///   Instances of this class should have the only references to a raw pointer.
     ///   This class is designed in such a way to attempt to prevent external references.
     /// @tparam T Type the pointer references.
-    /// @tparam Destructor Type of functor used to destroy instances.
-    template<typename T, typename Destructor = DefaultDestructor<T>>
+    /// @tparam Deleter Type of functor used to destroy instances.
+    template<typename T, typename Deleter = DefaultDeleter<T>>
     class ScopedPointer
     {
     private:
@@ -49,8 +49,8 @@ namespace hyper
         /// @details Releases the resources referenced by the pointer.
         ~ScopedPointer() noexcept
         {
-            Destructor destructor;
-            destructor(_ptr);
+            Deleter deleter;
+            deleter(_ptr);
         }
 
         /// @brief Swaps the contents of two scoped pointers.
@@ -115,9 +115,9 @@ namespace hyper
     ///   This class is designed in such a way to attempt to prevent external references.
     ///   This is a template specialization for pointers to arrays.
     /// @tparam T Type the pointer references.
-    /// @tparam Destructor Type of functor used to destroy instances.
-    template<typename T, typename Destructor>
-    class ScopedPointer<T[], Destructor>
+    /// @tparam Deleter Type of functor used to destroy instances.
+    template<typename T, typename Deleter>
+    class ScopedPointer<T[], Deleter>
     {
     private:
         T *_ptr;
@@ -149,8 +149,8 @@ namespace hyper
         /// @details Releases the resources referenced by the pointer.
         ~ScopedPointer() noexcept
         {
-            Destructor destructor;
-            destructor(_ptr);
+            Deleter deleter;
+            deleter(_ptr);
         }
 
         /// @brief Swaps the contents of two scoped pointers.

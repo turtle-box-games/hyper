@@ -50,7 +50,7 @@ public:
 TEST(DefaultDestructor, Scalar) {
     bool result = false;
     auto sdc    = new ScalarDestructorCapture(&result);
-    DefaultDestructor<ScalarDestructorCapture> destructor;
+    DefaultDeleter<ScalarDestructorCapture> destructor;
     destructor(sdc);
     EXPECT_TRUE(result);
 }
@@ -60,7 +60,7 @@ TEST(DefaultDestructor, Vector) {
     auto vdc  = new VectorDestructorCapture[SAMPLE_ARRAY_SIZE];
     for(size_t i = 0; i < SAMPLE_ARRAY_SIZE; ++i)
         vdc[i] = VectorDestructorCapture(&count);
-    DefaultDestructor<VectorDestructorCapture[]> destructor;
+    DefaultDeleter<VectorDestructorCapture[]> destructor;
     destructor(vdc);
     EXPECT_EQ(count, SAMPLE_ARRAY_SIZE);
 }

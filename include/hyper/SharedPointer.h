@@ -6,7 +6,7 @@
 #define HYPER_SHAREDPOINTER_H
 
 #include "assert.h"
-#include "DefaultDestructor.h"
+#include "DefaultDeleter.h"
 #include "ReferenceCounter.h"
 
 namespace hyper
@@ -18,18 +18,18 @@ namespace hyper
     ///   Instances of this class should have the only references to a raw pointer.
     ///   This class is designed in such a way to attempt to prevent external references.
     /// @tparam T Type the pointer references.
-    /// @tparam Destructor Type of functor used to destroy instances.
-    template<typename T, typename Destructor = DefaultDestructor<T>>
+    /// @tparam Deleter Type of functor used to destroy instances.
+    template<typename T, typename Deleter = DefaultDeleter<T>>
     class SharedPointer
     {
     private:
-        ReferenceCounter<T, Destructor> *_impl;
+        ReferenceCounter<T, Deleter> *_impl;
 
     public:
         /// @brief Default constructor.
         /// @details Creates a new shared pointer with the default constructor of type @tparam T.
         constexpr explicit SharedPointer() noexcept
-                : _impl(new ReferenceCounter<T, Destructor>(new T))
+                : _impl(new ReferenceCounter<T, Deleter>(new T))
         {
             // ...
         }
@@ -38,7 +38,7 @@ namespace hyper
         /// @details Creates a new shared pointer with an existing reference.
         /// @param ptr Raw pointer to wrap.
         constexpr explicit SharedPointer(T *&&ptr) noexcept
-                : _impl(new ReferenceCounter<T, Destructor>(ptr))
+                : _impl(new ReferenceCounter<T, Deleter>(ptr))
         {
             // ...
         }
@@ -162,19 +162,19 @@ namespace hyper
     ///   This class is designed in such a way to attempt to prevent external references.
     ///   This is a template specialization for pointers to arrays.
     /// @tparam T Type the pointer references.
-    /// @tparam Destructor Type of functor used to destroy instances.
-    template<typename T, typename Destructor>
-    class SharedPointer<T[], Destructor>
+    /// @tparam Deleter Type of functor used to destroy instances.
+    template<typename T, typename Deleter>
+    class SharedPointer<T[], Deleter>
     {
     private:
-        ReferenceCounter<T, Destructor> *_impl;
+        ReferenceCounter<T, Deleter> *_impl;
 
     public:
         /// @brief Default constructor.
         /// @details Creates a new scoped pointer to a new array.
         /// @param size Number of items in the array.
         constexpr explicit SharedPointer(size_t size) noexcept
-                : _impl(new ReferenceCounter<T, Destructor>(new T[size]))
+                : _impl(new ReferenceCounter<T, Deleter>(new T[size]))
         {
             // ...
         }
@@ -183,7 +183,7 @@ namespace hyper
         /// @details Creates a new shared pointer with an existing reference.
         /// @param ptr Raw pointer to wrap.
         constexpr explicit SharedPointer(T *&&ptr) noexcept
-                : _impl(new ReferenceCounter<T, Destructor>(ptr))
+                : _impl(new ReferenceCounter<T, Deleter>(ptr))
         {
             // ...
         }

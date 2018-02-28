@@ -12,7 +12,7 @@ namespace hyper
     ///   to destroy runtime instantiated objects.
     /// @tparam T Type of instance to delete.
     template<typename T>
-    class DefaultDestructor
+    class DefaultDeleter
     {
     public:
         /// @brief Deletes and frees memory held by an instance.
@@ -35,7 +35,7 @@ namespace hyper
     ///   to destroy runtime instantiated objects.
     /// @tparam T Type of scalar instance to delete.
     template<typename T>
-    class DefaultDestructor<T[]>
+    class DefaultDeleter<T[]>
     {
     public:
         /// @brief Deletes and frees memory held by an instance.

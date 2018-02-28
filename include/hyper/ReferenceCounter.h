@@ -13,9 +13,9 @@ namespace hyper
     /// @details All smart pointers that refer to the same instance share a single instance of this class.
     ///   This allows the smart pointers to "communicate" when they are no longer being used.
     /// @tparam T Type of instance to reference.
-    /// @tparam Destructor Type that acts as a functor for destroying the reference.
+    /// @tparam Deleter Type that acts as a functor for destroying the reference.
     /// @todo Implement locking to be safe in multi-threaded scenarios.
-    template<typename T, typename Destructor>
+    template<typename T, typename Deleter>
     class ReferenceCounter
     {
     private:
@@ -41,8 +41,8 @@ namespace hyper
         ~ReferenceCounter()
         {
             _count = 0;
-            Destructor destructor;
-            destructor(_ptr);
+            Deleter deleter;
+            deleter(_ptr);
         }
 
         /// @brief Increments the reference count by one.
