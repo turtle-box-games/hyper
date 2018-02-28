@@ -21,6 +21,7 @@ namespace hyper
     {
     private:
         T *_ptr;
+        Deleter _deleter;
 
     public:
         /// @brief Default constructor.
@@ -49,8 +50,7 @@ namespace hyper
         /// @details Releases the resources referenced by the pointer.
         ~ScopedPointer() noexcept
         {
-            Deleter deleter;
-            deleter(_ptr);
+            _deleter(_ptr);
         }
 
         /// @brief Swaps the contents of two scoped pointers.
@@ -121,6 +121,7 @@ namespace hyper
     {
     private:
         T *_ptr;
+        Deleter _deleter;
 
     public:
         /// @brief Default constructor.
@@ -149,8 +150,7 @@ namespace hyper
         /// @details Releases the resources referenced by the pointer.
         ~ScopedPointer() noexcept
         {
-            Deleter deleter;
-            deleter(_ptr);
+            _deleter(_ptr);
         }
 
         /// @brief Swaps the contents of two scoped pointers.

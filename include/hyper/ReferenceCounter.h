@@ -21,6 +21,7 @@ namespace hyper
     private:
         size_t _count;
         T *_ptr;
+        Deleter _deleter;
 
     public:
         /// @brief Default constructor.
@@ -41,8 +42,7 @@ namespace hyper
         ~ReferenceCounter()
         {
             _count = 0;
-            Deleter deleter;
-            deleter(_ptr);
+            _deleter(_ptr);
         }
 
         /// @brief Increments the reference count by one.
