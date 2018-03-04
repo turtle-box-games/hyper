@@ -53,6 +53,13 @@ namespace hyper
             _deleter(_ptr);
         }
 
+        /// @brief Retrieves the deleter used to free memory referenced by the pointer.
+        /// @return Deleter instance.
+        constexpr Deleter getDeleter() const noexcept
+        {
+            return _deleter;
+        }
+
         /// @brief Swaps the contents of two scoped pointers.
         /// @param other Scoped pointer to swap with.
         void swap(ScopedPointer &other) noexcept
@@ -151,6 +158,13 @@ namespace hyper
         ~ScopedPointer() noexcept
         {
             _deleter(_ptr);
+        }
+
+        /// @brief Retrieves the deleter used to free memory referenced by the pointer.
+        /// @return Deleter instance.
+        constexpr Deleter getDeleter() const noexcept
+        {
+            return _deleter;
         }
 
         /// @brief Swaps the contents of two scoped pointers.

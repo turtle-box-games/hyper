@@ -1,5 +1,6 @@
-#include "gtest/gtest.h"
+#include "gmock/gmock.h"
 #include "hyper/ScopedPointer.h"
+#include "mocks/DeleterMock.h"
 
 #define SAMPLE_ARRAY_SIZE 100
 #define SAMPLE_VALUE 42
@@ -84,6 +85,12 @@ TEST(ScopedPointer, Free) {
     EXPECT_TRUE(result);
 }
 
+TEST(ScopedPointer, GetDeleter) {
+    ScopedPointer<int, DeleterMock<int>> sp;
+    DeleterMock<int> deleter;
+    EXPECT_EQ(deleter, sp.getDeleter());
+}
+
 TEST(ScopedPointer, Swap) {
     const auto val1 = 42;
     const auto val2 = 24;
@@ -141,6 +148,12 @@ TEST(ScopedPointer, ArrayFree) {
         // which will increment freeCount for every destructor called.
     }
     EXPECT_EQ(freeCount, SAMPLE_ARRAY_SIZE);
+}
+
+TEST(ScopedPointer, ArrayGetDeleter) {
+    ScopedPointer<int[], DeleterMock<int>> sp;
+    DeleterMock<int> deleter;
+    EXPECT_EQ(deleter, sp.getDeleter());
 }
 
 TEST(ScopedPointer, ArraySwap) {
