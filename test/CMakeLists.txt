@@ -26,7 +26,7 @@ add_subdirectory(${CMAKE_BINARY_DIR}/googletest-src
 # dependencies automatically when using CMake 2.8.11 or
 # later. Otherwise we have to add them here ourselves.
 if (CMAKE_VERSION VERSION_LESS 2.8.11)
-    include_directories("${gtest_SOURCE_DIR}/include")
+    include_directories("${gmock_SOURCE_DIR}/include")
 endif()
 
 # Add top-level namespace tests.
@@ -40,7 +40,7 @@ set(TOP_LEVEL_SRC_FILES
         PairTest.cpp)
 
 add_executable(base_test ${TOP_LEVEL_SRC_FILES})
-target_link_libraries(base_test gtest_main)
+target_link_libraries(base_test gmock_main)
 add_test(NAME base_test COMMAND base_test)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions -fno-rtti")
