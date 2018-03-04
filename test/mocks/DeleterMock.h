@@ -4,13 +4,19 @@
 #include "gmock/gmock.h"
 
 template<typename T>
-class DeleterMock
+struct DeleterMock
 {
-    MOCK_METHOD1_T(functor, void(T *&ptr));
-    void operator()(T *&ptr)
-    {
-        functor(ptr);
+    MOCK_METHOD1_T(functor, void(T *&instance));
+    DeleterMock() { }
+    DeleterMock(const DeleterMock &) { }
+    void operator()(T *&instance) {
+        functor(instance);
     }
 };
+
+template<typename T>
+bool operator==(DeleterMock<T>, DeleterMock<T>) {
+    return true;
+}
 
 #endif //HYPER_TEST_DELETERMOCK_H
