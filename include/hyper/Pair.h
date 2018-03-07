@@ -36,6 +36,19 @@ namespace hyper
             // ...
         }
     };
+
+    /// @brief Creates a new pair.
+    /// @details Infers template parameters to create a new pair.
+    /// @tparam T1 Type of the first value.
+    /// @tparam T2 Type of the second value.
+    /// @param first First value.
+    /// @param value Second value.
+    /// @return Pair created from @c first and @c second.
+    template<typename T1, typename T2>
+    inline constexpr Pair<T1, T2> createPair(T1 first, T2 second) noexcept
+    {
+        return Pair<T1, T2>(first, second);
+    }
 }
 
 #endif //HYPER_PAIR_H
