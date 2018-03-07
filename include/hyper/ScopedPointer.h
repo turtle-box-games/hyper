@@ -42,6 +42,16 @@ namespace hyper
             // ...
         }
 
+        /// @brief Specific constructor.
+        /// @details Creates a new scoped pointer with an existing reference and deleter.
+        /// @param ptr Raw pointer to wrap.
+        /// @param deleter Functor used to delete @p ptr.
+        constexpr explicit ScopedPointer(T *&&ptr, Deleter deleter) noexcept
+                : _ptr(ptr), _deleter(deleter)
+        {
+            // ...
+        }
+
         /// @brief Copy constructor.
         /// @details Copy constructor is disabled.
         ScopedPointer(const ScopedPointer &) = delete;
@@ -145,6 +155,16 @@ namespace hyper
         /// @param ptr Raw pointer to wrap.
         constexpr explicit ScopedPointer(T *&&ptr) noexcept
                 : _ptr(ptr)
+        {
+            // ...
+        }
+
+        /// @brief Specific constructor.
+        /// @details Creates a new scoped pointer with an existing reference and deleter.
+        /// @param ptr Raw pointer to wrap.
+        /// @param deleter Functor used to delete @p ptr.
+        constexpr explicit ScopedPointer(T *&&ptr, Deleter deleter) noexcept
+                : _ptr(ptr), _deleter(deleter)
         {
             // ...
         }
