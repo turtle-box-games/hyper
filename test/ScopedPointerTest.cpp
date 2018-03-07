@@ -1,29 +1,12 @@
 #include "gmock/gmock.h"
 #include "hyper/ScopedPointer.h"
 #include "mocks/DeleterMock.h"
+#include "util/FunctorSpy.h"
 
 #define SAMPLE_ARRAY_SIZE 100
 #define SAMPLE_VALUE 42
 
 using namespace hyper;
-
-class ScopedPointerDestructorCapture
-{
-private:
-    bool *_destructorCalled;
-
-public:
-    ScopedPointerDestructorCapture(bool *flag)
-            : _destructorCalled(flag)
-    {
-        // ...
-    }
-
-    ~ScopedPointerDestructorCapture()
-    {
-        *_destructorCalled = true;
-    }
-};
 
 struct ScopedPointerSampleData
 {
@@ -35,30 +18,6 @@ struct ScopedPointerSampleData
             : value(val)
     {
         // ...
-    }
-};
-
-class ScopedArrayDestructorCapture
-{
-private:
-    int *_destructorCallCount;
-
-public:
-    ScopedArrayDestructorCapture()
-            : _destructorCallCount(nullptr)
-    {
-        // ...
-    }
-
-    ScopedArrayDestructorCapture(int *count)
-            : _destructorCallCount(count)
-    {
-        // ...
-    }
-
-    ~ScopedArrayDestructorCapture()
-    {
-        (*_destructorCallCount)++;
     }
 };
 
@@ -74,15 +33,12 @@ struct ScopedArraySampleValue
 };
 
 TEST(ScopedPointer, Free) {
-    bool result = false;
+    int count = 0;
+    FunctorSpy<void(int *)> spy(&count);
     {
-        ScopedPointer<ScopedPointerDestructorCapture> sp(
-                new ScopedPointerDestructorCapture(&result)
-        );
-        // sp should be freed when this scope exits,
-        // which will set result to true if the destructor was called.
+        ScopedPointer<int, FunctorSpy<void(int *)>> sp(new int, spy);
     }
-    EXPECT_TRUE(result);
+    EXPECT_EQ(count, 1);
 }
 
 TEST(ScopedPointer, GetDeleter) {
@@ -138,16 +94,12 @@ TEST(ScopedPointer, BoolCastFalse) {
 }
 
 TEST(ScopedPointer, ArrayFree) {
-    int freeCount = -SAMPLE_ARRAY_SIZE; // Negative because copying instances triggers destructor.
+    int count = 0;
+    FunctorSpy<void(int *)> spy(&count);
     {
-        ScopedPointer<ScopedArrayDestructorCapture[]> sa(new ScopedArrayDestructorCapture[SAMPLE_ARRAY_SIZE]);
-        // freeCount == 0 here.
-        for(size_t i = 0; i < SAMPLE_ARRAY_SIZE; ++i)
-            sa[i] = ScopedArrayDestructorCapture(&freeCount); // Copy occurs, this is why freeCount starts as negative.
-        // sa should be freed when this scope exits,
-        // which will increment freeCount for every destructor called.
+        ScopedPointer<int[], FunctorSpy<void(int *)>> sp(new int[5], spy);
     }
-    EXPECT_EQ(freeCount, SAMPLE_ARRAY_SIZE);
+    EXPECT_EQ(count, 1);
 }
 
 TEST(ScopedPointer, ArrayGetDeleter) {
