@@ -2,35 +2,11 @@
 #include "hyper/ScopedPointer.h"
 #include "mocks/DeleterMock.h"
 #include "util/FunctorSpy.h"
+#include "util/SimpleWrapper.h"
 
 #define SAMPLE_ARRAY_SIZE 100
-#define SAMPLE_VALUE 42
 
 using namespace hyper;
-
-struct ScopedPointerSampleData
-{
-    int value;
-
-    ScopedPointerSampleData() = default;
-
-    ScopedPointerSampleData(int val)
-            : value(val)
-    {
-        // ...
-    }
-};
-
-struct ScopedArraySampleValue
-{
-    int value;
-
-    ScopedArraySampleValue()
-            : value(SAMPLE_VALUE)
-    {
-        // ...
-    }
-};
 
 TEST(ScopedPointer, Free) {
     int count = 0;
@@ -72,13 +48,13 @@ TEST(ScopedPointer, DereferenceSet) {
 
 TEST(ScopedPointer, MemberAccessGet) {
     const auto val = 777;
-    ScopedPointer<ScopedPointerSampleData> sp(new ScopedPointerSampleData(val));
+    ScopedPointer<SimpleWrapper> sp(new SimpleWrapper(val));
     EXPECT_EQ(sp->value, val);
 }
 
 TEST(ScopedPointer, MemberAccessSet) {
     const auto val = 12345;
-    ScopedPointer<ScopedPointerSampleData> sp(new ScopedPointerSampleData);
+    ScopedPointer<SimpleWrapper> sp(new SimpleWrapper);
     sp->value = val;
     EXPECT_EQ(sp->value, val);
 }
@@ -121,9 +97,9 @@ TEST(ScopedPointer, ArraySwap) {
 }
 
 TEST(ScopedPointer, SubscriptGet) {
-    ScopedPointer<ScopedArraySampleValue[]> sa(new ScopedArraySampleValue[SAMPLE_ARRAY_SIZE]);
+    ScopedPointer<SimpleWrapper[]> sa(new SimpleWrapper[SAMPLE_ARRAY_SIZE]);
     for(size_t i = 0; i < SAMPLE_ARRAY_SIZE; ++i)
-        EXPECT_EQ(sa[i].value, SAMPLE_VALUE);
+        EXPECT_EQ(sa[i].value, SimpleWrapper::defaultValue);
 }
 
 TEST(ScopedPointer, SubscriptSet) {

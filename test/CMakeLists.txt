@@ -29,6 +29,8 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
     include_directories("${gmock_SOURCE_DIR}/include")
 endif()
 
+add_subdirectory(util)
+
 # Add top-level namespace tests.
 set(TOP_LEVEL_SRC_FILES
         ByteTest.cpp
@@ -40,7 +42,7 @@ set(TOP_LEVEL_SRC_FILES
         PairTest.cpp)
 
 add_executable(base_test ${TOP_LEVEL_SRC_FILES})
-target_link_libraries(base_test gmock_main)
+target_link_libraries(base_test gmock_main test_util)
 add_test(NAME base_test COMMAND base_test)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions -fno-rtti")
