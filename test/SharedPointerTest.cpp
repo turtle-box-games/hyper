@@ -1,87 +1,26 @@
-#include "gtest/gtest.h"
+#include "gmock/gmock.h"
 #include "hyper/SharedPointer.h"
+#include "mocks/DeleterMock.h"
+#include "util/FunctorSpy.h"
+#include "util/SimpleWrapper.h"
 
 #define SAMPLE_ARRAY_SIZE 100
-#define SAMPLE_VALUE 42
 
 using namespace hyper;
 
-class SharedPointerDestructorCapture
-{
-private:
-    bool *_destructorCalled;
-
-public:
-    SharedPointerDestructorCapture(bool *flag)
-            : _destructorCalled(flag)
-    {
-        // ...
-    }
-
-    ~SharedPointerDestructorCapture()
-    {
-        *_destructorCalled = true;
-    }
-};
-
-struct SharedPointerSampleData
-{
-    int value;
-
-    SharedPointerSampleData() = default;
-
-    SharedPointerSampleData(int val)
-            : value(val)
-    {
-        // ...
-    }
-};
-
-class SharedArrayDestructorCapture
-{
-private:
-    int *_destructorCallCount;
-
-public:
-    SharedArrayDestructorCapture()
-            : _destructorCallCount(nullptr)
-    {
-        // ...
-    }
-
-    SharedArrayDestructorCapture(int *count)
-            : _destructorCallCount(count)
-    {
-        // ...
-    }
-
-    ~SharedArrayDestructorCapture()
-    {
-        (*_destructorCallCount)++;
-    }
-};
-
-struct SharedArraySampleValue
-{
-    int value;
-
-    SharedArraySampleValue()
-            : value(SAMPLE_VALUE)
-    {
-        // ...
-    }
-};
-
 TEST(SharedPointer, Free) {
-    bool result = false;
+    int count = 0;
+    FunctorSpy<void(int *), DefaultDeleter<int>> spy(&count, DefaultDeleter<int>());
     {
-        SharedPointer<SharedPointerDestructorCapture> sp(
-                new SharedPointerDestructorCapture(&result)
-        );
-        // sp should be freed when this scope exits,
-        // which will set result to true if the destructor was called.
+        SharedPointer<int, FunctorSpy<void(int *), DefaultDeleter<int>>> sp(new int, spy);
     }
-    EXPECT_TRUE(result);
+    EXPECT_EQ(count, 1);
+}
+
+TEST(SharedPointer, GetDeleter) {
+    SharedPointer<int, DeleterMock<int>> sp;
+    DeleterMock<int> deleter;
+    EXPECT_EQ(deleter, sp.getDeleter());
 }
 
 TEST(SharedPointer, Swap) {
@@ -102,20 +41,20 @@ TEST(SharedPointer, DereferenceGet) {
 
 TEST(SharedPointer, DereferenceSet) {
     const auto val = 42;
-    SharedPointer<int> sp;
+    SharedPointer<int> sp(new int);
     *sp = val;
     EXPECT_EQ(*sp, val);
 }
 
 TEST(SharedPointer, MemberAccessGet) {
     const auto val = 777;
-    SharedPointer<SharedPointerSampleData> sp(new SharedPointerSampleData(val));
+    SharedPointer<SimpleWrapper> sp(new SimpleWrapper(val));
     EXPECT_EQ(sp->value, val);
 }
 
 TEST(SharedPointer, MemberAccessSet) {
     const auto val = 12345;
-    SharedPointer<SharedPointerSampleData> sp;
+    SharedPointer<SimpleWrapper> sp(new SimpleWrapper);
     sp->value = val;
     EXPECT_EQ(sp->value, val);
 }
@@ -131,16 +70,18 @@ TEST(SharedPointer, BoolCastFalse) {
 }
 
 TEST(SharedPointer, ArrayFree) {
-    int freeCount = -SAMPLE_ARRAY_SIZE; // Negative because copying instances triggers destructor.
+    int count = 0;
+    FunctorSpy<void(int *), DefaultDeleter<int[]>> spy(&count, DefaultDeleter<int[]>());
     {
-        SharedPointer<SharedArrayDestructorCapture[]> sa(new SharedArrayDestructorCapture[SAMPLE_ARRAY_SIZE]);
-        // freeCount == 0 here.
-        for(size_t i = 0; i < SAMPLE_ARRAY_SIZE; ++i)
-            sa[i] = SharedArrayDestructorCapture(&freeCount); // Copy occurs, this is why freeCount starts as negative.
-        // sa should be freed when this scope exits,
-        // which will increment freeCount for every destructor called.
+        SharedPointer<int[], FunctorSpy<void(int *), DefaultDeleter<int[]>>> sp(new int[5], spy);
     }
-    EXPECT_EQ(freeCount, SAMPLE_ARRAY_SIZE);
+    EXPECT_EQ(count, 1);
+}
+
+TEST(SharedPointer, ArrayGetDeleter) {
+    SharedPointer<int[], DeleterMock<int>> sp(nullptr);
+    DeleterMock<int> deleter;
+    EXPECT_EQ(deleter, sp.getDeleter());
 }
 
 TEST(SharedPointer, ArraySwap) {
@@ -156,13 +97,13 @@ TEST(SharedPointer, ArraySwap) {
 }
 
 TEST(SharedPointer, SubscriptGet) {
-    SharedPointer<SharedArraySampleValue[]> sa(SAMPLE_ARRAY_SIZE);
+    SharedPointer<SimpleWrapper[]> sa(new SimpleWrapper[SAMPLE_ARRAY_SIZE]);
     for(size_t i = 0; i < SAMPLE_ARRAY_SIZE; ++i)
-        EXPECT_EQ(sa[i].value, SAMPLE_VALUE);
+        EXPECT_EQ(sa[i].value, SimpleWrapper::defaultValue);
 }
 
 TEST(SharedPointer, SubscriptSet) {
-    SharedPointer<size_t[]> sa(SAMPLE_ARRAY_SIZE);
+    SharedPointer<size_t[]> sa(new size_t[SAMPLE_ARRAY_SIZE]);
     for(size_t i = 0; i < SAMPLE_ARRAY_SIZE; ++i) {
         sa[i] = i;
         EXPECT_EQ(sa[i], i);
