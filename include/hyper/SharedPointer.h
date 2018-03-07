@@ -43,6 +43,16 @@ namespace hyper
             // ...
         }
 
+        /// @brief Specific constructor.
+        /// @details Creates a new shared pointer with an existing reference and deleter.
+        /// @param ptr Raw pointer to wrap.
+        /// @param deleter Functor used to delete @p ptr.
+        constexpr explicit SharedPointer(T *&&ptr, Deleter deleter) noexcept
+                : _impl(new ReferenceCounter<T, Deleter>(ptr, deleter))
+        {
+            // ...
+        }
+
         /// @brief Copy constructor.
         /// @details Creates a new shared pointer that references an existing one.
         /// @param other Existing shared pointer.
@@ -73,6 +83,13 @@ namespace hyper
                     delete _impl;
                 _impl = nullptr;
             }
+        }
+
+        /// @brief Retrieves the deleter used to free memory referenced by the pointer.
+        /// @return Deleter instance.
+        constexpr Deleter getDeleter() const noexcept
+        {
+            return _impl->getDeleter();
         }
 
         /// @brief Swaps the contents of two Shared pointers.
@@ -188,6 +205,16 @@ namespace hyper
             // ...
         }
 
+        /// @brief Specific constructor.
+        /// @details Creates a new shared pointer with an existing reference and deleter.
+        /// @param ptr Raw pointer to wrap.
+        /// @param deleter Functor used to delete @p ptr.
+        constexpr explicit SharedPointer(T *&&ptr, Deleter deleter) noexcept
+                : _impl(new ReferenceCounter<T, Deleter>(ptr, deleter))
+        {
+            // ...
+        }
+
         /// @brief Copy constructor.
         /// @details Creates a new shared pointer that references an existing one.
         /// @param other Existing shared pointer.
@@ -218,6 +245,13 @@ namespace hyper
                     delete _impl;
                 _impl = nullptr;
             }
+        }
+
+        /// @brief Retrieves the deleter used to free memory referenced by the pointer.
+        /// @return Deleter instance.
+        constexpr Deleter getDeleter() const noexcept
+        {
+            return _impl->getDeleter();
         }
 
         /// @brief Swaps the contents of two Shared pointers.

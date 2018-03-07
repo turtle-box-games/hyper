@@ -33,6 +33,16 @@ namespace hyper
             // ...
         }
 
+        /// @brief Specific constructor.
+        /// @details Creates a new reference counter with a custom deleter.
+        /// @param ptr Raw pointer to wrap.
+        /// @param deleter Functor used to delete @p ptr.
+        constexpr explicit ReferenceCounter(T *ptr, Deleter deleter) noexcept
+                : _count(1), _ptr(ptr), _deleter(deleter)
+        {
+            // ...
+        }
+
         /// @brief Copy constructor.
         /// @details Copy constructor is deleted.
         ReferenceCounter(const ReferenceCounter &other) = delete;
@@ -43,6 +53,13 @@ namespace hyper
         {
             _count = 0;
             _deleter(_ptr);
+        }
+
+        /// @brief Retrieves the deleter used to free memory referenced by the pointer.
+        /// @return Deleter instance.
+        constexpr Deleter getDeleter() const noexcept
+        {
+            return _deleter;
         }
 
         /// @brief Increments the reference count by one.
