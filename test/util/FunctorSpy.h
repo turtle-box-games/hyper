@@ -1,26 +1,27 @@
 #ifndef HYPER_TEST_FUNCTORSPY_H
 #define HYPER_TEST_FUNCTORSPY_H
 
-template<typename Signature>
+template<typename Signature, typename Implementation>
 class FunctorSpy {};
 
-template<typename ReturnType, typename... Args>
-class FunctorSpy<ReturnType(Args...)>
+template<typename ReturnType, typename... Args, typename Implementation>
+class FunctorSpy<ReturnType(Args...), Implementation>
 {
 private:
     int *_count;
+    Implementation _impl;
 
 public:
-    FunctorSpy(int *count)
-            : _count(count)
+    FunctorSpy(int *count, Implementation impl)
+            : _count(count), _impl(impl)
     {
         // ...
     }
 
-    ReturnType operator()(Args...)
+    ReturnType operator()(Args... args)
     {
         (*_count)++;
-        return ReturnType();
+        return _impl(args...);
     }
 };
 

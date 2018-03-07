@@ -34,9 +34,9 @@ struct ScopedArraySampleValue
 
 TEST(ScopedPointer, Free) {
     int count = 0;
-    FunctorSpy<void(int *)> spy(&count);
+    FunctorSpy<void(int *), DefaultDeleter<int>> spy(&count, DefaultDeleter<int>());
     {
-        ScopedPointer<int, FunctorSpy<void(int *)>> sp(new int, spy);
+        ScopedPointer<int, FunctorSpy<void(int *), DefaultDeleter<int>>> sp(new int, spy);
     }
     EXPECT_EQ(count, 1);
 }
@@ -95,9 +95,9 @@ TEST(ScopedPointer, BoolCastFalse) {
 
 TEST(ScopedPointer, ArrayFree) {
     int count = 0;
-    FunctorSpy<void(int *)> spy(&count);
+    FunctorSpy<void(int *), DefaultDeleter<int[]>> spy(&count, DefaultDeleter<int[]>());
     {
-        ScopedPointer<int[], FunctorSpy<void(int *)>> sp(new int[5], spy);
+        ScopedPointer<int[], FunctorSpy<void(int *), DefaultDeleter<int[]>>> sp(new int[5], spy);
     }
     EXPECT_EQ(count, 1);
 }
