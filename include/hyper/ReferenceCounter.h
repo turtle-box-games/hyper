@@ -1,8 +1,8 @@
 /// @file ReferenceCounter.h
 /// Underlying implementation for tracking references.
 
-#ifndef HYPER_REFERENCECOUNTER_H
-#define HYPER_REFERENCECOUNTER_H
+#ifndef HYPER_REFERENCE_COUNTER_H
+#define HYPER_REFERENCE_COUNTER_H
 
 #include <cstddef>
 #include "assert.h"
@@ -90,4 +90,4 @@ namespace hyper
     };
 }
 
-#endif //HYPER_REFERENCECOUNTER_H
+#endif // HYPER_REFERENCE_COUNTER_H

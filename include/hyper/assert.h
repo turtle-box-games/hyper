@@ -74,4 +74,4 @@ do \
  * which would mess up the formatting. */
 #endif
 
-#endif //HYPER_ASSERT_H
+#endif // HYPER_ASSERT_H

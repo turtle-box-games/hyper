@@ -2,8 +2,8 @@
 /// Definition of a smart pointer that can be shared throughout the application
 /// and it will automatically be freed when it is no longer referenced.
 
-#ifndef HYPER_SHAREDPOINTER_H
-#define HYPER_SHAREDPOINTER_H
+#ifndef HYPER_SHARED_POINTER_H
+#define HYPER_SHARED_POINTER_H
 
 #include "assert.h"
 #include "DefaultDeleter.h"
@@ -341,4 +341,4 @@ namespace hyper
     }
 }
 
-#endif //HYPER_SHAREDPOINTER_H
+#endif // HYPER_SHARED_POINTER_H

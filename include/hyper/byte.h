@@ -150,4 +150,4 @@ namespace hyper
     }
 }
 
-#endif //HYPER_BYTE_H
+#endif // HYPER_BYTE_H

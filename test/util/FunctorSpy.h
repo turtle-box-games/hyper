@@ -1,5 +1,5 @@
-#ifndef HYPER_TEST_FUNCTORSPY_H
-#define HYPER_TEST_FUNCTORSPY_H
+#ifndef HYPER_TEST_FUNCTOR_SPY_H
+#define HYPER_TEST_FUNCTOR_SPY_H
 
 template<typename Signature, typename Implementation>
 class FunctorSpy {};
@@ -25,4 +25,4 @@ public:
     }
 };
 
-#endif //HYPER_TEST_FUNCTORSPY_H
+#endif // HYPER_TEST_FUNCTOR_SPY_H

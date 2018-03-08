@@ -1,5 +1,5 @@
-#ifndef HYPER_TEST_SIMPLEWRAPPER_H
-#define HYPER_TEST_SIMPLEWRAPPER_H
+#ifndef HYPER_TEST_SIMPLE_WRAPPER_H
+#define HYPER_TEST_SIMPLE_WRAPPER_H
 
 struct SimpleWrapper
 {
@@ -10,4 +10,4 @@ struct SimpleWrapper
     explicit SimpleWrapper(int val);
 };
 
-#endif //HYPER_TEST_SIMPLEWRAPPER_H
+#endif // HYPER_TEST_SIMPLE_WRAPPER_H

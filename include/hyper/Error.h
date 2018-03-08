@@ -41,4 +41,4 @@ namespace hyper
     };
 }
 
-#endif //HYPER_ERROR_H
+#endif // HYPER_ERROR_H

@@ -171,4 +171,4 @@ namespace hyper
     }
 }
 
-#endif //HYPER_INTEGER_H
+#endif // HYPER_INTEGER_H

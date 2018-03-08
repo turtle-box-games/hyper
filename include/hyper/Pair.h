@@ -51,4 +51,4 @@ namespace hyper
     }
 }
 
-#endif //HYPER_PAIR_H
+#endif // HYPER_PAIR_H

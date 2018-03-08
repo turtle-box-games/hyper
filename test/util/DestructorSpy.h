@@ -28,4 +28,4 @@ public:
     ~DestructorSpy();
 };
 
-#endif //HYPER_TEST_DESTRUCTOR_SPY_H
+#endif // HYPER_TEST_DESTRUCTOR_SPY_H

@@ -76,4 +76,4 @@ namespace hyper
     }
 }
 
-#endif //HYPER_UTILITY_H
+#endif // HYPER_UTILITY_H

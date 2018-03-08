@@ -1,8 +1,8 @@
 /// @file limits.h
 /// Template methods for getting upper and lower bounds of value types.
 
-#ifndef HYPER_BOUNDS_H
-#define HYPER_BOUNDS_H
+#ifndef HYPER_LIMITS_H
+#define HYPER_LIMITS_H
 
 namespace hyper
 {
@@ -19,4 +19,4 @@ namespace hyper
     T maxValue();
 }
 
-#endif //HYPER_BOUNDS_H
+#endif // HYPER_LIMITS_H

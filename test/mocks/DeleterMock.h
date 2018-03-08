@@ -1,5 +1,5 @@
-#ifndef HYPER_TEST_DELETERMOCK_H
-#define HYPER_TEST_DELETERMOCK_H
+#ifndef HYPER_TEST_DELETER_MOCK_H
+#define HYPER_TEST_DELETER_MOCK_H
 
 #include "gmock/gmock.h"
 
@@ -19,4 +19,4 @@ bool operator==(DeleterMock<T>, DeleterMock<T>) {
     return true;
 }
 
-#endif //HYPER_TEST_DELETERMOCK_H
+#endif // HYPER_TEST_DELETER_MOCK_H

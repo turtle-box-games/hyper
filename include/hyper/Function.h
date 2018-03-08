@@ -91,4 +91,4 @@ namespace hyper
     };
 }
 
-#endif //HYPER_FUNCTION_H
+#endif // HYPER_FUNCTION_H

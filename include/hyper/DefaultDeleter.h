@@ -1,8 +1,8 @@
 /// @file DefaultDeleter.h
 /// Strategy for destroying runtime instantiated objects using the default delete methods.
 
-#ifndef HYPER_DEFAULTDESTRUCTOR_H
-#define HYPER_DEFAULTDESTRUCTOR_H
+#ifndef HYPER_DEFAULT_DESTRUCTOR_H
+#define HYPER_DEFAULT_DESTRUCTOR_H
 
 namespace hyper
 {
@@ -53,4 +53,4 @@ namespace hyper
     };
 }
 
-#endif //HYPER_DEFAULTDESTRUCTOR_H
+#endif // HYPER_DEFAULT_DESTRUCTOR_H

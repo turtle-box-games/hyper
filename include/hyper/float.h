@@ -94,4 +94,4 @@ namespace hyper
     }
 }
 
-#endif //HYPER_FLOAT_H
+#endif // HYPER_FLOAT_H
