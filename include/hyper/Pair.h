@@ -42,7 +42,7 @@ namespace hyper
     /// @tparam T1 Type of the first value.
     /// @tparam T2 Type of the second value.
     /// @param first First value.
-    /// @param value Second value.
+    /// @param second Second value.
     /// @return Pair created from @c first and @c second.
     template<typename T1, typename T2>
     inline constexpr Pair<T1, T2> createPair(T1 first, T2 second) noexcept

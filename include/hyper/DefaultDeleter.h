@@ -1,4 +1,4 @@
-/// @file DefaultDestructor.h
+/// @file DefaultDeleter.h
 /// Strategy for destroying runtime instantiated objects using the default delete methods.
 
 #ifndef HYPER_DEFAULTDESTRUCTOR_H

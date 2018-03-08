@@ -23,7 +23,7 @@ namespace hyper
 
     public:
         /// @brief Default constructor.
-        /// @details Creates a new scoped pointer that references a default creation of @tparam T.
+        /// @details Creates a new scoped pointer that references a default construction of @c T.
         constexpr explicit ScopedPointer() noexcept
                 : _ptr(new T)
         {
