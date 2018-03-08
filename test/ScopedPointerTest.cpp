@@ -1,121 +1,110 @@
-#include "gmock/gmock.h"
+#include "common.h"
 #include "hyper/ScopedPointer.h"
-#include "mocks/DeleterMock.h"
-#include "util/FunctorSpy.h"
+#include "util/DestructorSpy.h"
 #include "util/SimpleWrapper.h"
-
-#define SAMPLE_ARRAY_SIZE 100
 
 using namespace hyper;
 
-TEST(ScopedPointer, Free) {
-    int count = 0;
-    FunctorSpy<void(int *), DefaultDeleter<int>> spy(&count, DefaultDeleter<int>());
+TEST(ScopedPointer, DefaultConstructor) {
+    TEST_DESCRIPTION("Default constructor should set pointer to default");
+    ScopedPointer<int> scopedPointer;
+    EXPECT_TRUE((bool)scopedPointer);
+}
+
+TEST(ScopedPointer, Destructor) {
+    TEST_DESCRIPTION("Destructor should be called when the scope is left");
+    int callCount = 0;
     {
-        ScopedPointer<int, FunctorSpy<void(int *), DefaultDeleter<int>>> sp(new int, spy);
+        ScopedPointer<DestructorSpy> scopedPointer(
+                new DestructorSpy(&callCount)
+        );
     }
-    EXPECT_EQ(count, 1);
+    EXPECT_EQ(1, callCount);
 }
 
-TEST(ScopedPointer, GetDeleter) {
-    ScopedPointer<int, DeleterMock<int>> sp;
-    DeleterMock<int> deleter;
-    EXPECT_EQ(deleter, sp.getDeleter());
+TEST(ScopedPointer, GetDereference) {
+    TEST_DESCRIPTION("Should be able to retrieve value through pointer");
+    const int value = 42;
+    ScopedPointer<int> scopedPointer(new int(value));
+    EXPECT_EQ(value, *scopedPointer);
 }
 
-TEST(ScopedPointer, Swap) {
-    const auto val1 = 42;
-    const auto val2 = 24;
-    ScopedPointer<int> sp1(new int(val1));
-    ScopedPointer<int> sp2(new int(val2));
-    sp1.swap(sp2);
-    EXPECT_EQ(val1, *sp2);
-    EXPECT_EQ(val2, *sp1);
+TEST(ScopedPointer, SetDereference) {
+    TEST_DESCRIPTION("Should be able to update value through pointer");
+    const int value = 42;
+    ScopedPointer<int> scopedPointer(new int);
+    *scopedPointer = value;
+    EXPECT_EQ(value, *scopedPointer);
 }
 
-TEST(ScopedPointer, DereferenceGet) {
-    const auto val = 5;
-    ScopedPointer<int> sp(new int(val));
-    EXPECT_EQ(*sp, val);
+TEST(ScopedPointer, GetIndirect) {
+    TEST_DESCRIPTION("Should be able to retrieve member through pointer");
+    ScopedPointer<SimpleWrapper> scopedPointer(new SimpleWrapper);
+    EXPECT_EQ(SimpleWrapper::defaultValue, scopedPointer->value);
 }
 
-TEST(ScopedPointer, DereferenceSet) {
-    const auto val = 42;
-    ScopedPointer<int> sp(new int);
-    *sp = val;
-    EXPECT_EQ(*sp, val);
-}
-
-TEST(ScopedPointer, MemberAccessGet) {
-    const auto val = 777;
-    ScopedPointer<SimpleWrapper> sp(new SimpleWrapper(val));
-    EXPECT_EQ(sp->value, val);
-}
-
-TEST(ScopedPointer, MemberAccessSet) {
-    const auto val = 12345;
-    ScopedPointer<SimpleWrapper> sp(new SimpleWrapper);
-    sp->value = val;
-    EXPECT_EQ(sp->value, val);
+TEST(ScopedPointer, SetIndirect) {
+    TEST_DESCRIPTION("Should be able to update member through pointer");
+    const int value = 12345;
+    ScopedPointer<SimpleWrapper> scopedPointer(new SimpleWrapper);
+    scopedPointer->value = value;
+    EXPECT_EQ(value, scopedPointer->value);
 }
 
 TEST(ScopedPointer, BoolCastTrue) {
-    ScopedPointer<int> sp(new int);
-    EXPECT_TRUE((bool)sp);
+    TEST_DESCRIPTION("Cast to bool should return true for non-null pointers");
+    ScopedPointer<int> scopedPointer(new int);
+    EXPECT_TRUE((bool)scopedPointer);
 }
 
 TEST(ScopedPointer, BoolCastFalse) {
-    ScopedPointer<int> sp(nullptr);
-    EXPECT_FALSE((bool)sp);
+    TEST_DESCRIPTION("Cast to bool should return false for null pointers");
+    ScopedPointer<int> scopedPointer(nullptr);
+    EXPECT_FALSE((bool)scopedPointer);
 }
 
-TEST(ScopedPointer, ArrayFree) {
-    int count = 0;
-    FunctorSpy<void(int *), DefaultDeleter<int[]>> spy(&count, DefaultDeleter<int[]>());
+TEST(ScopedPointer, ArraySpecializationDefaultConstructor) {
+    TEST_DESCRIPTION("Default constructor should set pointer to null");
+    ScopedPointer<int[]> scopedPointer;
+    EXPECT_FALSE((bool)scopedPointer);
+}
+
+TEST(ScopedPointer, ArraySpecializationDestructor) {
+    TEST_DESCRIPTION("Destructor should be called on all elements when the scope is left");
+    const size_t length = 5;
+    int callCount = -static_cast<int>(length);
     {
-        ScopedPointer<int[], FunctorSpy<void(int *), DefaultDeleter<int[]>>> sp(new int[5], spy);
+        ScopedPointer<DestructorSpy[]> scopedPointer(
+                new DestructorSpy[length]
+        );
+        for(size_t i = 0; i < length; i++)
+            scopedPointer[i] = DestructorSpy(&callCount);
     }
-    EXPECT_EQ(count, 1);
+    EXPECT_EQ(length, callCount);
 }
 
-TEST(ScopedPointer, ArrayGetDeleter) {
-    ScopedPointer<int[], DeleterMock<int>> sp;
-    DeleterMock<int> deleter;
-    EXPECT_EQ(deleter, sp.getDeleter());
+TEST(ScopedPointer, ArraySpecializationGetSubscript) {
+    TEST_DESCRIPTION("Able to retrieve value from an element");
+    ScopedPointer<SimpleWrapper[]> scopedPointer(new SimpleWrapper[5]);
+    EXPECT_EQ(SimpleWrapper::defaultValue, scopedPointer[0].value);
 }
 
-TEST(ScopedPointer, ArraySwap) {
-    const auto val1 = 42;
-    const auto val2 = 24;
-    ScopedPointer<int[]> sa1(new int[SAMPLE_ARRAY_SIZE]);
-    ScopedPointer<int[]> sa2(new int[SAMPLE_ARRAY_SIZE]);
-    sa1[0] = val1;
-    sa2[0] = val2;
-    sa1.swap(sa2);
-    EXPECT_EQ(sa1[0], val2);
-    EXPECT_EQ(sa2[0], val1);
+TEST(ScopedPointer, ArraySpecializationSetSubscript) {
+    TEST_DESCRIPTION("Able to set value of an element");
+    const int value = 12345;
+    ScopedPointer<int[]> scopedPointer(new int[5]);
+    scopedPointer[1] = value;
+    EXPECT_EQ(value, scopedPointer[1]);
 }
 
-TEST(ScopedPointer, SubscriptGet) {
-    ScopedPointer<SimpleWrapper[]> sa(new SimpleWrapper[SAMPLE_ARRAY_SIZE]);
-    for(size_t i = 0; i < SAMPLE_ARRAY_SIZE; ++i)
-        EXPECT_EQ(sa[i].value, SimpleWrapper::defaultValue);
+TEST(ScopedPointer, ArraySpecializationBoolCastTrue) {
+    TEST_DESCRIPTION("Cast to bool should return true for non-null pointers");
+    ScopedPointer<int[]> scopedPointer(new int[5]);
+    EXPECT_TRUE((bool)scopedPointer);
 }
 
-TEST(ScopedPointer, SubscriptSet) {
-    ScopedPointer<size_t[]> sa(new size_t[SAMPLE_ARRAY_SIZE]);
-    for(size_t i = 0; i < SAMPLE_ARRAY_SIZE; ++i) {
-        sa[i] = i;
-        EXPECT_EQ(sa[i], i);
-    }
-}
-
-TEST(ScopedPointer, ArrayBoolCastTrue) {
-    ScopedPointer<int[]> sa(new int[SAMPLE_ARRAY_SIZE]);
-    EXPECT_TRUE((bool)sa);
-}
-
-TEST(ScopedPointer, ArrayBoolCastFalse) {
-    ScopedPointer<int[]> sa(nullptr);
-    EXPECT_FALSE((bool)sa);
+TEST(ScopedPointer, ArraySpecializationBoolCastFalse) {
+    TEST_DESCRIPTION("Cast to bool should return false for null pointers");
+    ScopedPointer<int[]> scopedPointer(nullptr);
+    EXPECT_FALSE((bool)scopedPointer);
 }
