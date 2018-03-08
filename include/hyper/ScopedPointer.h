@@ -1,34 +1,31 @@
 /// @file ScopedPointer.h
-/// Definition of a smart pointer that frees itself once the scope it was declared in is left.
+/// Definition a smart pointer that limits usage to the scope it is declared in.
 
-#ifndef HYPER_SCOPEDPOINTER_H
-#define HYPER_SCOPEDPOINTER_H
+#ifndef HYPER_SCOPED_POINTER_H
+#define HYPER_SCOPED_POINTER_H
 
 #include "assert.h"
 #include "DefaultDeleter.h"
+#include "utility.h"
 
 namespace hyper
 {
     /// @brief Smart pointer that can't be shared outside its scope.
     /// @details Smart pointer with a lifetime limited to its scope.
     ///   This operates on the RAII principle.
-    ///   Instances of this class should have the only references to a raw pointer.
-    ///   This class is designed in such a way to attempt to prevent external references.
+    ///   The smart pointer cannot be updated to reference a different pointer.
     /// @tparam T Type the pointer references.
-    /// @tparam Deleter Type of functor used to destroy instances.
-    template<typename T, typename Deleter = DefaultDeleter<T>>
+    template<typename T>
     class ScopedPointer
     {
     private:
         T *_ptr;
-        Deleter _deleter;
 
     public:
         /// @brief Default constructor.
-        /// @details Creates a new scoped pointer that references null.
-        ///   This constructor is intended for assigning a usable pointer later.
+        /// @details Creates a new scoped pointer that references a default creation of @tparam T.
         constexpr explicit ScopedPointer() noexcept
-                : _ptr(nullptr)
+                : _ptr(new T)
         {
             // ...
         }
@@ -42,41 +39,26 @@ namespace hyper
             // ...
         }
 
-        /// @brief Specific constructor.
-        /// @details Creates a new scoped pointer with an existing reference and deleter.
-        /// @param ptr Raw pointer to wrap.
-        /// @param deleter Functor used to delete @p ptr.
-        constexpr explicit ScopedPointer(T *&&ptr, Deleter deleter) noexcept
-                : _ptr(ptr), _deleter(deleter)
-        {
-            // ...
-        }
-
         /// @brief Copy constructor.
         /// @details Copy constructor is disabled.
+        ///   Copy operation would violate single reference.
         ScopedPointer(const ScopedPointer &) = delete;
+
+        /// @brief Move constructor.
+        /// @details Move constructor is disabled.
+        ///   Move operation would violate scope of pointer.
+        ScopedPointer(ScopedPointer &&other) noexcept
+                : _ptr(other._ptr)
+        {
+            other._ptr = nullptr;
+        }
 
         /// @brief Destructor.
         /// @details Releases the resources referenced by the pointer.
         ~ScopedPointer() noexcept
         {
-            _deleter(_ptr);
-        }
-
-        /// @brief Retrieves the deleter used to free memory referenced by the pointer.
-        /// @return Deleter instance.
-        constexpr Deleter getDeleter() const noexcept
-        {
-            return _deleter;
-        }
-
-        /// @brief Swaps the contents of two scoped pointers.
-        /// @param other Scoped pointer to swap with.
-        void swap(ScopedPointer &other) noexcept
-        {
-            T *temp = other._ptr;
-            other._ptr = _ptr;
-            _ptr = temp;
+            DefaultDeleter<T> deleter;
+            deleter(_ptr);
         }
 
         /// @brief Member access operator.
@@ -114,6 +96,11 @@ namespace hyper
         ///   Assigning pointer values would invalidate the scope of the pointer.
         ScopedPointer &operator=(const ScopedPointer &) = delete;
 
+        /// @brief Move operator.
+        /// @details Move operator is disabled.
+        ///   Moving pointer values would invalidate the scope of the pointer.
+        ScopedPointer &operator=(ScopedPointer &&) = delete;
+
         /// @brief Equality operator.
         /// @details Equality operator is disabled.
         ///   Scoped pointers should never reference the same raw pointer.
@@ -124,26 +111,21 @@ namespace hyper
         ///   Scoped pointers should never reference the same raw pointer.
         bool operator!=(const ScopedPointer &) = delete;
     };
-
-    /// @brief Smart pointer for arrays that can't be shared outside its scope.
+    /// @brief Smart pointer for an array that can't be shared outside its scope.
     /// @details Smart pointer with a lifetime limited to its scope.
     ///   This operates on the RAII principle.
-    ///   Instances of this class should have the only references to a raw pointer.
-    ///   This class is designed in such a way to attempt to prevent external references.
+    ///   The smart pointer cannot be updated to reference a different pointer.
     ///   This is a template specialization for pointers to arrays.
     /// @tparam T Type the pointer references.
-    /// @tparam Deleter Type of functor used to destroy instances.
-    template<typename T, typename Deleter>
-    class ScopedPointer<T[], Deleter>
+    template<typename T>
+    class ScopedPointer<T[]>
     {
     private:
         T *_ptr;
-        Deleter _deleter;
 
     public:
         /// @brief Default constructor.
         /// @details Creates a new scoped pointer that references null.
-        ///   This constructor is intended for assigning a usable pointer later.
         constexpr explicit ScopedPointer() noexcept
                 : _ptr(nullptr)
         {
@@ -159,46 +141,27 @@ namespace hyper
             // ...
         }
 
-        /// @brief Specific constructor.
-        /// @details Creates a new scoped pointer with an existing reference and deleter.
-        /// @param ptr Raw pointer to wrap.
-        /// @param deleter Functor used to delete @p ptr.
-        constexpr explicit ScopedPointer(T *&&ptr, Deleter deleter) noexcept
-                : _ptr(ptr), _deleter(deleter)
-        {
-            // ...
-        }
-
         /// @brief Copy constructor.
         /// @details Copy constructor is disabled.
+        ///   Copy operation would violate single reference.
         ScopedPointer(const ScopedPointer &) = delete;
+
+        /// @brief Move constructor.
+        /// @details Move constructor is disabled.
+        ///   Move operation would violate scope of pointer.
+        ScopedPointer(ScopedPointer &&) = delete;
 
         /// @brief Destructor.
         /// @details Releases the resources referenced by the pointer.
         ~ScopedPointer() noexcept
         {
-            _deleter(_ptr);
-        }
-
-        /// @brief Retrieves the deleter used to free memory referenced by the pointer.
-        /// @return Deleter instance.
-        constexpr Deleter getDeleter() const noexcept
-        {
-            return _deleter;
-        }
-
-        /// @brief Swaps the contents of two scoped pointers.
-        /// @param other Scoped pointer to swap with.
-        void swap(ScopedPointer &other) noexcept
-        {
-            T *temp = other._ptr;
-            other._ptr = _ptr;
-            _ptr = temp;
+            DefaultDeleter<T[]> deleter;
+            deleter(_ptr);
         }
 
         /// @brief Subscript operator.
         /// @details Provides access to a specified element in the array.
-        /// @param index Base-zero index of the element to access.
+        /// @param index Index of the element to access, starting at zero.
         /// @return Element at the specified index.
         T &operator[](size_t index) noexcept
         {
@@ -208,7 +171,7 @@ namespace hyper
 
         /// @brief Subscript operator.
         /// @details Retrieves a specified element in the array.
-        /// @param index Base-zero index of the element to access.
+        /// @param index Index of the element to access, starting at zero.
         /// @return Element at the specified index.
         constexpr T &operator[](size_t index) const noexcept
         {
@@ -229,6 +192,11 @@ namespace hyper
         ///   Assigning pointer values would invalidate the scope of the pointer.
         ScopedPointer &operator=(const ScopedPointer &) = delete;
 
+        /// @brief Move operator.
+        /// @details Move operator is disabled.
+        ///   Moving pointer values would invalidate the scope of the pointer.
+        ScopedPointer &operator=(ScopedPointer &&) = delete;
+
         /// @brief Equality operator.
         /// @details Equality operator is disabled.
         ///   Scoped pointers should never reference the same raw pointer.
@@ -239,15 +207,6 @@ namespace hyper
         ///   Scoped pointers should never reference the same raw pointer.
         bool operator!=(const ScopedPointer &) = delete;
     };
-
-    /// @brief Swaps the references of two scoped pointers.
-    /// @param first First smart pointer to swap.
-    /// @param second Second smart pointer to swap.
-    template<typename T>
-    void swap(ScopedPointer<T> &first, ScopedPointer<T> &second)
-    {
-        first.swap(second);
-    }
 }
 
-#endif //HYPER_SCOPEDPOINTER_H
+#endif // HYPER_SCOPED_POINTER_H
