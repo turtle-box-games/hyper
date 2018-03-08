@@ -7,8 +7,7 @@
 /// @brief Detects and reports destructor calls.
 /// @example destructor_spy.cpp
 ///   How to use the spy in tests.
-class DestructorSpy
-{
+class DestructorSpy {
 private:
     int *_callCount;
 

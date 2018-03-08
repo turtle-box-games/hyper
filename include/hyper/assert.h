@@ -35,10 +35,8 @@
 /// @example assert.cpp
 ///   Example of asserting a condition is true without a message.
 #define ASSERT(condition) \
-do \
-{ \
-    if(!(condition)) \
-    { \
+do { \
+    if(!(condition)) { \
         fprintf(stderr, "Assertion failed: " #condition "\n" \
             "\tat " SOURCE_LOCATION  "\n"); \
         abort(); \
@@ -58,10 +56,8 @@ do \
 /// @example assertf.cpp
 ///   Example of asserting with a custom message and formatting variables.
 #define ASSERTF(condition, message, vars...) \
-do \
-{ \
-    if(!(condition)) \
-    { \
+do { \
+    if(!(condition)) { \
         fprintf(stderr, "Assertion failed: " #condition "\n" \
             "\tat " SOURCE_LOCATION "\n"); \
         fprintf(stderr, "\t" message "\n", ##vars); \

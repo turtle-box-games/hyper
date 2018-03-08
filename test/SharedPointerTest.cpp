@@ -61,12 +61,12 @@ TEST(SharedPointer, MemberAccessSet) {
 
 TEST(SharedPointer, BoolCastTrue) {
     SharedPointer<int> sp(new int);
-    EXPECT_TRUE((bool)sp);
+    EXPECT_TRUE((bool) sp);
 }
 
 TEST(SharedPointer, BoolCastFalse) {
     SharedPointer<int> sp(nullptr);
-    EXPECT_FALSE((bool)sp);
+    EXPECT_FALSE((bool) sp);
 }
 
 TEST(SharedPointer, ArrayFree) {
@@ -98,13 +98,13 @@ TEST(SharedPointer, ArraySwap) {
 
 TEST(SharedPointer, SubscriptGet) {
     SharedPointer<SimpleWrapper[]> sa(new SimpleWrapper[SAMPLE_ARRAY_SIZE]);
-    for(size_t i = 0; i < SAMPLE_ARRAY_SIZE; ++i)
+    for (size_t i = 0; i < SAMPLE_ARRAY_SIZE; ++i)
         EXPECT_EQ(sa[i].value, SimpleWrapper::defaultValue);
 }
 
 TEST(SharedPointer, SubscriptSet) {
     SharedPointer<size_t[]> sa(new size_t[SAMPLE_ARRAY_SIZE]);
-    for(size_t i = 0; i < SAMPLE_ARRAY_SIZE; ++i) {
+    for (size_t i = 0; i < SAMPLE_ARRAY_SIZE; ++i) {
         sa[i] = i;
         EXPECT_EQ(sa[i], i);
     }
@@ -112,10 +112,10 @@ TEST(SharedPointer, SubscriptSet) {
 
 TEST(SharedPointer, ArrayBoolCastTrue) {
     SharedPointer<int[]> sa(new int[SAMPLE_ARRAY_SIZE]);
-    EXPECT_TRUE((bool)sa);
+    EXPECT_TRUE((bool) sa);
 }
 
 TEST(SharedPointer, ArrayBoolCastFalse) {
     SharedPointer<int[]> sa(nullptr);
-    EXPECT_FALSE((bool)sa);
+    EXPECT_FALSE((bool) sa);
 }

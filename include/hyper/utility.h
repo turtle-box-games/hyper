@@ -4,13 +4,11 @@
 #ifndef HYPER_UTILITY_H
 #define HYPER_UTILITY_H
 
-namespace hyper
-{
+namespace hyper {
     /// @brief Strips reference modifiers from a type.
     /// @tparam T Type to strip references from.
     template<typename T>
-    struct RemoveReference
-    {
+    struct RemoveReference {
         /// @brief Non-reference type.
         /// @details This type has all references removed from @p T.
         typedef T type;
@@ -20,8 +18,7 @@ namespace hyper
     /// @details This specialization changes an lvalue reference type to just a type.
     /// @tparam T Type to strip references from.
     template<typename T>
-    struct RemoveReference<T&>
-    {
+    struct RemoveReference<T &> {
         /// @brief Non-reference type.
         /// @details This type has all references removed from @p T.
         typedef T type;
@@ -31,8 +28,7 @@ namespace hyper
     /// @details This specialization changes an rvalue reference type to just a type.
     /// @tparam T Type to strip references from.
     template<typename T>
-    struct RemoveReference<T&&>
-    {
+    struct RemoveReference<T &&> {
         /// @brief Non-reference type.
         /// @details This type has all references removed from @p T.
         typedef T type;
@@ -45,9 +41,8 @@ namespace hyper
     /// @param arg Expression to forward.
     /// @return Same expression passed in by @p arg, keeping lvalue and rvalue status.
     template<typename T>
-    constexpr T forward(typename RemoveReference<T>::type &arg) noexcept
-    {
-        return static_cast<T&&>(arg);
+    constexpr T forward(typename RemoveReference<T>::type &arg) noexcept {
+        return static_cast<T &&>(arg);
     }
 
     /// @brief Forces an reference to an instance to become an rvalue.
@@ -56,8 +51,7 @@ namespace hyper
     /// @param arg Instance to move.
     /// @return Instance as an rvalue.
     template<typename T>
-    constexpr typename RemoveReference<T>::type &&move(T &&arg) noexcept
-    {
+    constexpr typename RemoveReference<T>::type &&move(T &&arg) noexcept {
         return static_cast<typename RemoveReference<T>::type &&>(arg);
     }
 
@@ -68,10 +62,9 @@ namespace hyper
     /// @tparam T Type of values to swap.
     /// @note Types that have a more efficient swapping method should specialize this method.
     template<typename T>
-    void swap(T &first, T &second)
-    {
+    void swap(T &first, T &second) {
         T temp(move(first));
-        first  = move(second);
+        first = move(second);
         second = move(temp);
     }
 }

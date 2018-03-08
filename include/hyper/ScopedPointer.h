@@ -8,16 +8,14 @@
 #include "DefaultDeleter.h"
 #include "utility.h"
 
-namespace hyper
-{
+namespace hyper {
     /// @brief Smart pointer that can't be shared outside its scope.
     /// @details Smart pointer with a lifetime limited to its scope.
     ///   This operates on the RAII principle.
     ///   The smart pointer cannot be updated to reference a different pointer.
     /// @tparam T Type the pointer references.
     template<typename T>
-    class ScopedPointer
-    {
+    class ScopedPointer {
     private:
         T *_ptr;
 
@@ -25,8 +23,7 @@ namespace hyper
         /// @brief Default constructor.
         /// @details Creates a new scoped pointer that references a default construction of @c T.
         constexpr explicit ScopedPointer() noexcept
-                : _ptr(new T)
-        {
+                : _ptr(new T) {
             // ...
         }
 
@@ -34,8 +31,7 @@ namespace hyper
         /// @details Creates a new scoped pointer with an existing reference.
         /// @param ptr Raw pointer to wrap.
         constexpr explicit ScopedPointer(T *&&ptr) noexcept
-                : _ptr(ptr)
-        {
+                : _ptr(ptr) {
             // ...
         }
 
@@ -48,15 +44,13 @@ namespace hyper
         /// @details Move constructor is disabled.
         ///   Move operation would violate scope of pointer.
         ScopedPointer(ScopedPointer &&other) noexcept
-                : _ptr(other._ptr)
-        {
+                : _ptr(other._ptr) {
             other._ptr = nullptr;
         }
 
         /// @brief Destructor.
         /// @details Releases the resources referenced by the pointer.
-        ~ScopedPointer() noexcept
-        {
+        ~ScopedPointer() noexcept {
             DefaultDeleter<T> deleter;
             deleter(_ptr);
         }
@@ -66,8 +60,7 @@ namespace hyper
         /// @return Underlying reference.
         /// @note Be sure that it is safe to de-reference the pointer.
         ///   The pointer is asserted to be non-null.
-        constexpr T &operator*() const noexcept
-        {
+        constexpr T &operator*() const noexcept {
             ASSERTF(_ptr != nullptr, "Attempt to dereference null pointer");
             return *_ptr;
         }
@@ -77,8 +70,7 @@ namespace hyper
         /// @return Underlying reference.
         /// @note Be sure that it is safe to de-reference the pointer.
         ///   The pointer is asserted to be non-null.
-        constexpr T *operator->() const noexcept
-        {
+        constexpr T *operator->() const noexcept {
             ASSERTF(_ptr != nullptr, "Attempt to dereference null pointer");
             return _ptr;
         }
@@ -86,8 +78,7 @@ namespace hyper
         /// @brief Explicit bool cast.
         /// @details Checks if the pointer can be safely de-referenced (is not null).
         /// @return True if the pointer is not null, or false if it is null.
-        constexpr explicit operator bool() const noexcept
-        {
+        constexpr explicit operator bool() const noexcept {
             return _ptr != nullptr;
         }
 
@@ -111,6 +102,7 @@ namespace hyper
         ///   Scoped pointers should never reference the same raw pointer.
         bool operator!=(const ScopedPointer &) = delete;
     };
+
     /// @brief Smart pointer for an array that can't be shared outside its scope.
     /// @details Smart pointer with a lifetime limited to its scope.
     ///   This operates on the RAII principle.
@@ -118,8 +110,7 @@ namespace hyper
     ///   This is a template specialization for pointers to arrays.
     /// @tparam T Type the pointer references.
     template<typename T>
-    class ScopedPointer<T[]>
-    {
+    class ScopedPointer<T[]> {
     private:
         T *_ptr;
 
@@ -127,8 +118,7 @@ namespace hyper
         /// @brief Default constructor.
         /// @details Creates a new scoped pointer that references null.
         constexpr explicit ScopedPointer() noexcept
-                : _ptr(nullptr)
-        {
+                : _ptr(nullptr) {
             // ...
         }
 
@@ -136,8 +126,7 @@ namespace hyper
         /// @details Creates a new scoped pointer with an existing reference.
         /// @param ptr Raw pointer to wrap.
         constexpr explicit ScopedPointer(T *&&ptr) noexcept
-                : _ptr(ptr)
-        {
+                : _ptr(ptr) {
             // ...
         }
 
@@ -153,8 +142,7 @@ namespace hyper
 
         /// @brief Destructor.
         /// @details Releases the resources referenced by the pointer.
-        ~ScopedPointer() noexcept
-        {
+        ~ScopedPointer() noexcept {
             DefaultDeleter<T[]> deleter;
             deleter(_ptr);
         }
@@ -163,8 +151,7 @@ namespace hyper
         /// @details Provides access to a specified element in the array.
         /// @param index Index of the element to access, starting at zero.
         /// @return Element at the specified index.
-        T &operator[](size_t index) noexcept
-        {
+        T &operator[](size_t index) noexcept {
             ASSERTF(_ptr != nullptr, "Attempt to dereference null pointer");
             return _ptr[index];
         }
@@ -173,8 +160,7 @@ namespace hyper
         /// @details Retrieves a specified element in the array.
         /// @param index Index of the element to access, starting at zero.
         /// @return Element at the specified index.
-        constexpr T &operator[](size_t index) const noexcept
-        {
+        constexpr T &operator[](size_t index) const noexcept {
             ASSERTF(_ptr != nullptr, "Attempt to dereference null pointer");
             return _ptr[index];
         }
@@ -182,8 +168,7 @@ namespace hyper
         /// @brief Explicit bool cast.
         /// @details Checks if the pointer can be safely de-referenced (is not null).
         /// @return True if the pointer is not null, or false if it is null.
-        constexpr explicit operator bool() const noexcept
-        {
+        constexpr explicit operator bool() const noexcept {
             return _ptr != nullptr;
         }
 

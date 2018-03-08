@@ -7,21 +7,20 @@
 #include "integer.h" // For uint8.
 #include "limits.h"  // For minValue() and maxValue().
 
-namespace hyper
-{
+namespace hyper {
     /// @brief Single byte value that represents raw data.
     /// @details A byte is not intended to be read directly from.
     ///   It is for storing raw data and converting between types,
     ///   such as during a serialization or marshal process.
-    enum class byte : uint8 {};
+    enum class byte : uint8 {
+    };
 
     /// @brief Left-shift operator.
     /// @details Shifts a byte left by a specified number of bits.
     /// @param b Byte to shift.
     /// @param shift Number of bits to shift to the left.
     /// @return Left-shifted byte.
-    inline constexpr byte operator<<(byte b, int shift) noexcept
-    {
+    inline constexpr byte operator<<(byte b, int shift) noexcept {
         return byte(static_cast<uint8>(b) << shift);
     }
 
@@ -30,8 +29,7 @@ namespace hyper
     /// @param b Byte to shift.
     /// @param shift Number of bits to shift to the left.
     /// @return Left-shifted byte.
-    inline constexpr byte& operator<<=(byte& b, int shift) noexcept
-    {
+    inline constexpr byte &operator<<=(byte &b, int shift) noexcept {
         return b = byte(static_cast<uint8>(b) << shift);
     }
 
@@ -40,8 +38,7 @@ namespace hyper
     /// @param b Byte to shift.
     /// @param shift Number of bits to shift to the right.
     /// @return Right-shifted byte.
-    inline constexpr byte operator>>(byte b, int shift) noexcept
-    {
+    inline constexpr byte operator>>(byte b, int shift) noexcept {
         return byte(static_cast<uint8>(b) >> shift);
     }
 
@@ -50,8 +47,7 @@ namespace hyper
     /// @param b Byte to shift.
     /// @param shift Number of bits to shift to the right.
     /// @return Right-shifted byte.
-    inline constexpr byte& operator>>=(byte& b, int shift) noexcept
-    {
+    inline constexpr byte &operator>>=(byte &b, int shift) noexcept {
         return b = byte(static_cast<uint8>(b) >> shift);
     }
 
@@ -60,8 +56,7 @@ namespace hyper
     /// @param b Byte to operate on.
     /// @param v Byte to OR against.
     /// @return Result of the OR operation.
-    inline constexpr byte operator |(byte b, byte v) noexcept
-    {
+    inline constexpr byte operator|(byte b, byte v) noexcept {
         return byte(static_cast<uint8>(b) | static_cast<uint8>(v));
     }
 
@@ -70,8 +65,7 @@ namespace hyper
     /// @param b Byte to operate on.
     /// @param v Byte to OR against.
     /// @return Result of the OR operation.
-    inline constexpr byte& operator |=(byte& b, byte v) noexcept
-    {
+    inline constexpr byte &operator|=(byte &b, byte v) noexcept {
         return b = byte(static_cast<uint8>(b) | static_cast<uint8>(v));
     }
 
@@ -80,8 +74,7 @@ namespace hyper
     /// @param b Byte to operate on.
     /// @param v Byte to AND against.
     /// @return Result of the AND operation.
-    inline constexpr byte operator &(byte b, byte v) noexcept
-    {
+    inline constexpr byte operator&(byte b, byte v) noexcept {
         return byte(static_cast<uint8>(b) & static_cast<uint8>(v));
     }
 
@@ -90,8 +83,7 @@ namespace hyper
     /// @param b Byte to operate on.
     /// @param v Byte to AND against.
     /// @return Result of the AND operation.
-    inline constexpr byte& operator &=(byte& b, byte v) noexcept
-    {
+    inline constexpr byte &operator&=(byte &b, byte v) noexcept {
         return b = byte(static_cast<uint8>(b) & static_cast<uint8>(v));
     }
 
@@ -100,8 +92,7 @@ namespace hyper
     /// @param b Byte to operate on.
     /// @param v Byte to XOR against.
     /// @return Result of the XOR operation.
-    inline constexpr byte operator ^(byte b, byte v) noexcept
-    {
+    inline constexpr byte operator^(byte b, byte v) noexcept {
         return byte(static_cast<uint8>(b) ^ static_cast<uint8>(v));
     }
 
@@ -110,8 +101,7 @@ namespace hyper
     /// @param b Byte to operate on.
     /// @param v Byte to XOR against.
     /// @return Result of the XOR operation.
-    inline constexpr byte& operator ^=(byte& b, byte v) noexcept
-    {
+    inline constexpr byte &operator^=(byte &b, byte v) noexcept {
         return b = byte(static_cast<uint8>(b) ^ static_cast<uint8>(v));
     }
 
@@ -119,8 +109,7 @@ namespace hyper
     /// @details Performs a NOT operation on a byte.
     /// @param b Byte to operate on.
     /// @return Result of the NOT operation.
-    inline constexpr byte operator ~(byte b) noexcept
-    {
+    inline constexpr byte operator~(byte b) noexcept {
         return byte(~static_cast<uint8>(b));
     }
 
@@ -128,24 +117,21 @@ namespace hyper
     /// @details Convert a byte to an integer.
     /// @param b Byte to convert.
     /// @return Byte value as an integer.
-    inline constexpr int toInt(byte b) noexcept
-    {
+    inline constexpr int toInt(byte b) noexcept {
         return static_cast<int>(b);
     }
 
     /// @brief Minimum value that a byte can hold.
     /// @return 0
     template<>
-    inline constexpr byte minValue()
-    {
+    inline constexpr byte minValue() {
         return byte(minValue<uint8>());
     }
 
     /// @brief Maximum value that a byte can hold.
     /// @return 255
     template<>
-    inline constexpr byte maxValue()
-    {
+    inline constexpr byte maxValue() {
         return byte(maxValue<uint8>());
     }
 }

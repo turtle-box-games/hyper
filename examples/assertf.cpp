@@ -2,8 +2,7 @@
 #include <cstdio>
 #include "hyper/assert.h"
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     // Verify that two arguments are passed in.
     ASSERTF(argc == 3, "Must pass two arguments to program");
     int x = atoi(argv[1]);

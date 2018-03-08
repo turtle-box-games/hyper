@@ -8,7 +8,7 @@ using namespace hyper;
 TEST(ScopedPointer, DefaultConstructor) {
     TEST_DESCRIPTION("Default constructor should set pointer to default");
     ScopedPointer<int> scopedPointer;
-    EXPECT_TRUE((bool)scopedPointer);
+    EXPECT_TRUE((bool) scopedPointer);
 }
 
 TEST(ScopedPointer, Destructor) {
@@ -54,19 +54,19 @@ TEST(ScopedPointer, SetIndirect) {
 TEST(ScopedPointer, BoolCastTrue) {
     TEST_DESCRIPTION("Cast to bool should return true for non-null pointers");
     ScopedPointer<int> scopedPointer(new int);
-    EXPECT_TRUE((bool)scopedPointer);
+    EXPECT_TRUE((bool) scopedPointer);
 }
 
 TEST(ScopedPointer, BoolCastFalse) {
     TEST_DESCRIPTION("Cast to bool should return false for null pointers");
     ScopedPointer<int> scopedPointer(nullptr);
-    EXPECT_FALSE((bool)scopedPointer);
+    EXPECT_FALSE((bool) scopedPointer);
 }
 
 TEST(ScopedPointer, ArraySpecializationDefaultConstructor) {
     TEST_DESCRIPTION("Default constructor should set pointer to null");
     ScopedPointer<int[]> scopedPointer;
-    EXPECT_FALSE((bool)scopedPointer);
+    EXPECT_FALSE((bool) scopedPointer);
 }
 
 TEST(ScopedPointer, ArraySpecializationDestructor) {
@@ -77,7 +77,7 @@ TEST(ScopedPointer, ArraySpecializationDestructor) {
         ScopedPointer<DestructorSpy[]> scopedPointer(
                 new DestructorSpy[length]
         );
-        for(size_t i = 0; i < length; i++)
+        for (size_t i = 0; i < length; i++)
             scopedPointer[i] = DestructorSpy(&callCount);
     }
     EXPECT_EQ(length, callCount);
@@ -100,11 +100,11 @@ TEST(ScopedPointer, ArraySpecializationSetSubscript) {
 TEST(ScopedPointer, ArraySpecializationBoolCastTrue) {
     TEST_DESCRIPTION("Cast to bool should return true for non-null pointers");
     ScopedPointer<int[]> scopedPointer(new int[5]);
-    EXPECT_TRUE((bool)scopedPointer);
+    EXPECT_TRUE((bool) scopedPointer);
 }
 
 TEST(ScopedPointer, ArraySpecializationBoolCastFalse) {
     TEST_DESCRIPTION("Cast to bool should return false for null pointers");
     ScopedPointer<int[]> scopedPointer(nullptr);
-    EXPECT_FALSE((bool)scopedPointer);
+    EXPECT_FALSE((bool) scopedPointer);
 }

@@ -4,11 +4,14 @@
 #include "gmock/gmock.h"
 
 template<typename T>
-struct DeleterMock
-{
-    MOCK_METHOD1_T(functor, void(T *&instance));
-    DeleterMock() { }
-    DeleterMock(const DeleterMock &) { }
+struct DeleterMock {
+    MOCK_METHOD1_T(functor, void(T
+            *&instance));
+
+    DeleterMock() {}
+
+    DeleterMock(const DeleterMock &) {}
+
     void operator()(T *&instance) {
         functor(instance);
     }

@@ -4,8 +4,7 @@
 #ifndef HYPER_LIMITS_H
 #define HYPER_LIMITS_H
 
-namespace hyper
-{
+namespace hyper {
     /// @brief Gets the minimum value that a type can hold.
     /// @tparam T Type to get the minimum value of.
     /// @return Minimum value that can be contained by @p T.

@@ -6,13 +6,11 @@
 
 #include "SharedPointer.h"
 
-namespace hyper
-{
+namespace hyper {
     /// @brief Base class for all error types.
     /// @details Error instances are used instead of throwing exceptions.
     /// @see Result
-    class Error
-    {
+    class Error {
     private:
         SharedPointer<Error> _cause;
 

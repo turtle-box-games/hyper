@@ -2,8 +2,7 @@
 
 using namespace hyper;
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     SharedPointer<int> sp(new int(5));
     {
         printf("%i\n", *sp);

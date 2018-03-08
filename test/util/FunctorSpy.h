@@ -2,24 +2,22 @@
 #define HYPER_TEST_FUNCTOR_SPY_H
 
 template<typename Signature, typename Implementation>
-class FunctorSpy {};
+class FunctorSpy {
+};
 
 template<typename ReturnType, typename... Args, typename Implementation>
-class FunctorSpy<ReturnType(Args...), Implementation>
-{
+class FunctorSpy<ReturnType(Args...), Implementation> {
 private:
     int *_count;
     Implementation _impl;
 
 public:
     FunctorSpy(int *count, Implementation impl)
-            : _count(count), _impl(impl)
-    {
+            : _count(count), _impl(impl) {
         // ...
     }
 
-    ReturnType operator()(Args... args)
-    {
+    ReturnType operator()(Args... args) {
         (*_count)++;
         return _impl(args...);
     }

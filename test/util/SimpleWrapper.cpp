@@ -3,13 +3,11 @@
 const int SimpleWrapper::defaultValue = 42;
 
 SimpleWrapper::SimpleWrapper()
-        : value(defaultValue)
-{
+        : value(defaultValue) {
     // ...
 }
 
 SimpleWrapper::SimpleWrapper(int val)
-        : value(val)
-{
+        : value(val) {
     // ...
 }
