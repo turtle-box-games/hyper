@@ -43,10 +43,7 @@ namespace hyper {
         /// @brief Move constructor.
         /// @details Move constructor is disabled.
         ///   Move operation would violate scope of pointer.
-        ScopedPointer(ScopedPointer &&other) noexcept
-                : _ptr(other._ptr) {
-            other._ptr = nullptr;
-        }
+        ScopedPointer(ScopedPointer &&) = delete;
 
         /// @brief Destructor.
         /// @details Releases the resources referenced by the pointer.
