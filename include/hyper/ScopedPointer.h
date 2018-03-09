@@ -81,26 +81,6 @@ namespace hyper {
         constexpr explicit operator bool() const noexcept {
             return _ptr != nullptr;
         }
-
-        /// @brief Assignment operator.
-        /// @details Assignment operator is disabled.
-        ///   Assigning pointer values would invalidate the scope of the pointer.
-        ScopedPointer &operator=(const ScopedPointer &) = delete;
-
-        /// @brief Move operator.
-        /// @details Move operator is disabled.
-        ///   Moving pointer values would invalidate the scope of the pointer.
-        ScopedPointer &operator=(ScopedPointer &&) = delete;
-
-        /// @brief Equality operator.
-        /// @details Equality operator is disabled.
-        ///   Scoped pointers should never reference the same raw pointer.
-        bool operator==(const ScopedPointer &) = delete;
-
-        /// @brief Inequality operator.
-        /// @brief Inequality operator is disabled.
-        ///   Scoped pointers should never reference the same raw pointer.
-        bool operator!=(const ScopedPointer &) = delete;
     };
 
     /// @brief Smart pointer for an array that can't be shared outside its scope.
@@ -171,26 +151,6 @@ namespace hyper {
         constexpr explicit operator bool() const noexcept {
             return _ptr != nullptr;
         }
-
-        /// @brief Assignment operator.
-        /// @details Assignment operator is disabled.
-        ///   Assigning pointer values would invalidate the scope of the pointer.
-        ScopedPointer &operator=(const ScopedPointer &) = delete;
-
-        /// @brief Move operator.
-        /// @details Move operator is disabled.
-        ///   Moving pointer values would invalidate the scope of the pointer.
-        ScopedPointer &operator=(ScopedPointer &&) = delete;
-
-        /// @brief Equality operator.
-        /// @details Equality operator is disabled.
-        ///   Scoped pointers should never reference the same raw pointer.
-        bool operator==(const ScopedPointer &) = delete;
-
-        /// @brief Inequality operator.
-        /// @brief Inequality operator is disabled.
-        ///   Scoped pointers should never reference the same raw pointer.
-        bool operator!=(const ScopedPointer &) = delete;
     };
 }
 
