@@ -4,8 +4,8 @@
 #ifndef HYPER_UNIQUE_POINTER_H
 #define HYPER_UNIQUE_POINTER_H
 
-#include "DefaultDeleter.h"
 #include "assert.h"
+#include "DefaultDeleter.h"
 
 namespace hyper {
     /// @brief Smart pointer that allows only a single reference to a value.
@@ -37,10 +37,6 @@ namespace hyper {
             // ...
         }
 
-        constexpr UniquePointer(UniquePointer &&other) noexcept {
-            swap(other);
-        }
-
         template<typename Subtype>
         constexpr explicit UniquePointer(UniquePointer<Subtype> &&other) noexcept {
             swap(other);
@@ -49,12 +45,6 @@ namespace hyper {
         ~UniquePointer() {
             DefaultDeleter<T> deleter;
             deleter(_ptr);
-        }
-
-        void swap(UniquePointer &other) noexcept {
-            auto temp = other._ptr;
-            other._ptr = temp;
-            _ptr = temp;
         }
 
         template<typename Subtype>
@@ -79,10 +69,6 @@ namespace hyper {
         }
 
         UniquePointer &operator=(UniquePointer const &other) = delete;
-
-        UniquePointer &operator=(UniquePointer &&other) noexcept {
-            swap(other);
-        }
 
         template<typename Subtype>
         UniquePointer &operator=(UniquePointer<Subtype> &&other) noexcept {
@@ -118,10 +104,6 @@ namespace hyper {
         constexpr explicit UniquePointer(Subtype *&&ptr) noexcept
                 : _ptr(ptr) {
             // ...
-        }
-
-        constexpr UniquePointer(UniquePointer &&other) noexcept {
-            swap(other);
         }
 
         template<typename Subtype>
@@ -163,14 +145,15 @@ namespace hyper {
 
         UniquePointer &operator=(UniquePointer const &other) = delete;
 
-        UniquePointer &operator=(UniquePointer &&other) noexcept {
-            swap(other);
-        }
-
         template<typename Subtype>
         UniquePointer &operator=(UniquePointer<Subtype[]> &&other) noexcept {
             swap(other);
         }
+    };
+
+    template<typename T, typename Subtype>
+    void swap(UniquePointer<T> first, UniquePointer<Subtype> second) noexcept {
+        first.swap(second);
     };
 
     template<typename T>
