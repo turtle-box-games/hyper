@@ -6,7 +6,6 @@
 #define HYPER_SHARED_POINTER_H
 
 #include "assert.h"
-#include "DefaultDeleter.h"
 #include "ReferenceCounter.h"
 
 namespace hyper {
@@ -17,17 +16,16 @@ namespace hyper {
     ///   Instances of this class should have the only references to a raw pointer.
     ///   This class is designed in such a way to attempt to prevent external references.
     /// @tparam T Type the pointer references.
-    /// @tparam Deleter Type of functor used to destroy instances.
-    template<typename T, typename Deleter = DefaultDeleter<T>>
+    template<typename T>
     class SharedPointer {
     private:
-        ReferenceCounter<T, Deleter> *_impl;
+        ReferenceCounter<T> *_impl;
 
     public:
         /// @brief Default constructor.
         /// @details Creates a new shared pointer with the default constructor of type @tparam T.
         constexpr explicit SharedPointer() noexcept
-                : _impl(new ReferenceCounter<T, Deleter>(new T)) {
+                : _impl(new ReferenceCounter<T>(new T)) {
             // ...
         }
 
@@ -35,16 +33,7 @@ namespace hyper {
         /// @details Creates a new shared pointer with an existing reference.
         /// @param ptr Raw pointer to wrap.
         constexpr explicit SharedPointer(T *&&ptr) noexcept
-                : _impl(new ReferenceCounter<T, Deleter>(ptr)) {
-            // ...
-        }
-
-        /// @brief Specific constructor.
-        /// @details Creates a new shared pointer with an existing reference and deleter.
-        /// @param ptr Raw pointer to wrap.
-        /// @param deleter Functor used to delete @p ptr.
-        constexpr explicit SharedPointer(T *&&ptr, Deleter deleter) noexcept
-                : _impl(new ReferenceCounter<T, Deleter>(ptr, deleter)) {
+                : _impl(new ReferenceCounter<T>(ptr)) {
             // ...
         }
 
@@ -74,12 +63,6 @@ namespace hyper {
                     delete _impl;
                 _impl = nullptr;
             }
-        }
-
-        /// @brief Retrieves the deleter used to free memory referenced by the pointer.
-        /// @return Deleter instance.
-        constexpr Deleter getDeleter() const noexcept {
-            return _impl->getDeleter();
         }
 
         /// @brief Swaps the contents of two Shared pointers.
@@ -162,18 +145,22 @@ namespace hyper {
     ///   This class is designed in such a way to attempt to prevent external references.
     ///   This is a template specialization for pointers to arrays.
     /// @tparam T Type the pointer references.
-    /// @tparam Deleter Type of functor used to destroy instances.
-    template<typename T, typename Deleter>
-    class SharedPointer<T[], Deleter> {
+    template<typename T>
+    class SharedPointer<T[]> {
     private:
-        ReferenceCounter<T, Deleter> *_impl;
+        ReferenceCounter<T[]> *_impl;
 
     public:
+        constexpr SharedPointer() noexcept
+                : _impl(new ReferenceCounter<T[]>(nullptr)) {
+            // ...
+        }
+
         /// @brief Default constructor.
         /// @details Creates a new scoped pointer to a new array.
         /// @param size Number of items in the array.
         constexpr explicit SharedPointer(size_t size) noexcept
-                : _impl(new ReferenceCounter<T, Deleter>(new T[size])) {
+                : _impl(new ReferenceCounter<T[]>(new T[size])) {
             // ...
         }
 
@@ -181,16 +168,7 @@ namespace hyper {
         /// @details Creates a new shared pointer with an existing reference.
         /// @param ptr Raw pointer to wrap.
         constexpr explicit SharedPointer(T *&&ptr) noexcept
-                : _impl(new ReferenceCounter<T, Deleter>(ptr)) {
-            // ...
-        }
-
-        /// @brief Specific constructor.
-        /// @details Creates a new shared pointer with an existing reference and deleter.
-        /// @param ptr Raw pointer to wrap.
-        /// @param deleter Functor used to delete @p ptr.
-        constexpr explicit SharedPointer(T *&&ptr, Deleter deleter) noexcept
-                : _impl(new ReferenceCounter<T, Deleter>(ptr, deleter)) {
+                : _impl(new ReferenceCounter<T[]>(ptr)) {
             // ...
         }
 
@@ -220,12 +198,6 @@ namespace hyper {
                     delete _impl;
                 _impl = nullptr;
             }
-        }
-
-        /// @brief Retrieves the deleter used to free memory referenced by the pointer.
-        /// @return Deleter instance.
-        constexpr Deleter getDeleter() const noexcept {
-            return _impl->getDeleter();
         }
 
         /// @brief Swaps the contents of two Shared pointers.

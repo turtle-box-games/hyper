@@ -1,121 +1,110 @@
-#include "gmock/gmock.h"
+#include "common.h"
 #include "hyper/SharedPointer.h"
-#include "mocks/DeleterMock.h"
-#include "util/FunctorSpy.h"
+#include "util/DestructorSpy.h"
 #include "util/SimpleWrapper.h"
-
-#define SAMPLE_ARRAY_SIZE 100
 
 using namespace hyper;
 
-TEST(SharedPointer, Free) {
-    int count = 0;
-    FunctorSpy<void(int *), DefaultDeleter<int>> spy(&count, DefaultDeleter<int>());
+TEST(SharedPointer, DefaultConstructor) {
+    TEST_DESCRIPTION("Default constructor should set pointer to default");
+    SharedPointer<int> sharedPointer;
+    EXPECT_TRUE((bool) sharedPointer);
+}
+
+TEST(SharedPointer, Destructor) {
+    TEST_DESCRIPTION("Destructor should be called when the scope is left");
+    int callCount = 0;
     {
-        SharedPointer<int, FunctorSpy<void(int *), DefaultDeleter<int>>> sp(new int, spy);
+        SharedPointer<DestructorSpy> sharedPointer(
+                new DestructorSpy(&callCount)
+        );
     }
-    EXPECT_EQ(count, 1);
+    EXPECT_EQ(1, callCount);
 }
 
-TEST(SharedPointer, GetDeleter) {
-    SharedPointer<int, DeleterMock<int>> sp;
-    DeleterMock<int> deleter;
-    EXPECT_EQ(deleter, sp.getDeleter());
+TEST(SharedPointer, GetDereference) {
+    TEST_DESCRIPTION("Should be able to retrieve value through pointer");
+    const int value = 42;
+    SharedPointer<int> sharedPointer(new int(value));
+    EXPECT_EQ(value, *sharedPointer);
 }
 
-TEST(SharedPointer, Swap) {
-    const auto val1 = 42;
-    const auto val2 = 24;
-    SharedPointer<int> sp1(new int(val1));
-    SharedPointer<int> sp2(new int(val2));
-    sp1.swap(sp2);
-    EXPECT_EQ(val1, *sp2);
-    EXPECT_EQ(val2, *sp1);
+TEST(SharedPointer, SetDereference) {
+    TEST_DESCRIPTION("Should be able to update value through pointer");
+    const int value = 42;
+    SharedPointer<int> sharedPointer(new int);
+    *sharedPointer = value;
+    EXPECT_EQ(value, *sharedPointer);
 }
 
-TEST(SharedPointer, DereferenceGet) {
-    const auto val = 5;
-    SharedPointer<int> sp(new int(val));
-    EXPECT_EQ(*sp, val);
+TEST(SharedPointer, GetIndirect) {
+    TEST_DESCRIPTION("Should be able to retrieve member through pointer");
+    SharedPointer<SimpleWrapper> sharedPointer(new SimpleWrapper);
+    EXPECT_EQ(SimpleWrapper::defaultValue, sharedPointer->value);
 }
 
-TEST(SharedPointer, DereferenceSet) {
-    const auto val = 42;
-    SharedPointer<int> sp(new int);
-    *sp = val;
-    EXPECT_EQ(*sp, val);
-}
-
-TEST(SharedPointer, MemberAccessGet) {
-    const auto val = 777;
-    SharedPointer<SimpleWrapper> sp(new SimpleWrapper(val));
-    EXPECT_EQ(sp->value, val);
-}
-
-TEST(SharedPointer, MemberAccessSet) {
-    const auto val = 12345;
-    SharedPointer<SimpleWrapper> sp(new SimpleWrapper);
-    sp->value = val;
-    EXPECT_EQ(sp->value, val);
+TEST(SharedPointer, SetIndirect) {
+    TEST_DESCRIPTION("Should be able to update member through pointer");
+    const int value = 12345;
+    SharedPointer<SimpleWrapper> sharedPointer(new SimpleWrapper);
+    sharedPointer->value = value;
+    EXPECT_EQ(value, sharedPointer->value);
 }
 
 TEST(SharedPointer, BoolCastTrue) {
-    SharedPointer<int> sp(new int);
-    EXPECT_TRUE((bool) sp);
+    TEST_DESCRIPTION("Cast to bool should return true for non-null pointers");
+    SharedPointer<int> sharedPointer(new int);
+    EXPECT_TRUE((bool) sharedPointer);
 }
 
 TEST(SharedPointer, BoolCastFalse) {
-    SharedPointer<int> sp(nullptr);
-    EXPECT_FALSE((bool) sp);
+    TEST_DESCRIPTION("Cast to bool should return false for null pointers");
+    SharedPointer<int> sharedPointer(nullptr);
+    EXPECT_FALSE((bool) sharedPointer);
 }
 
-TEST(SharedPointer, ArrayFree) {
-    int count = 0;
-    FunctorSpy<void(int *), DefaultDeleter<int[]>> spy(&count, DefaultDeleter<int[]>());
+TEST(SharedPointer, ArraySpecializationDefaultConstructor) {
+    TEST_DESCRIPTION("Default constructor should set pointer to null");
+    SharedPointer<int[]> sharedPointer;
+    EXPECT_FALSE((bool) sharedPointer);
+}
+
+TEST(SharedPointer, ArraySpecializationDestructor) {
+    TEST_DESCRIPTION("Destructor should be called on all elements when the scope is left");
+    const size_t length = 5;
+    int callCount = -static_cast<int>(length);
     {
-        SharedPointer<int[], FunctorSpy<void(int *), DefaultDeleter<int[]>>> sp(new int[5], spy);
+        SharedPointer<DestructorSpy[]> sharedPointer(
+                new DestructorSpy[length]
+        );
+        for (size_t i = 0; i < length; i++)
+            sharedPointer[i] = DestructorSpy(&callCount);
     }
-    EXPECT_EQ(count, 1);
+    EXPECT_EQ(length, callCount);
 }
 
-TEST(SharedPointer, ArrayGetDeleter) {
-    SharedPointer<int[], DeleterMock<int>> sp(nullptr);
-    DeleterMock<int> deleter;
-    EXPECT_EQ(deleter, sp.getDeleter());
+TEST(SharedPointer, ArraySpecializationGetSubscript) {
+    TEST_DESCRIPTION("Able to retrieve value from an element");
+    SharedPointer<SimpleWrapper[]> sharedPointer(new SimpleWrapper[5]);
+    EXPECT_EQ(SimpleWrapper::defaultValue, sharedPointer[0].value);
 }
 
-TEST(SharedPointer, ArraySwap) {
-    const auto val1 = 42;
-    const auto val2 = 24;
-    SharedPointer<int[]> sa1(new int[SAMPLE_ARRAY_SIZE]);
-    SharedPointer<int[]> sa2(new int[SAMPLE_ARRAY_SIZE]);
-    sa1[0] = val1;
-    sa2[0] = val2;
-    sa1.swap(sa2);
-    EXPECT_EQ(sa1[0], val2);
-    EXPECT_EQ(sa2[0], val1);
+TEST(SharedPointer, ArraySpecializationSetSubscript) {
+    TEST_DESCRIPTION("Able to set value of an element");
+    const int value = 12345;
+    SharedPointer<int[]> sharedPointer(new int[5]);
+    sharedPointer[1] = value;
+    EXPECT_EQ(value, sharedPointer[1]);
 }
 
-TEST(SharedPointer, SubscriptGet) {
-    SharedPointer<SimpleWrapper[]> sa(new SimpleWrapper[SAMPLE_ARRAY_SIZE]);
-    for (size_t i = 0; i < SAMPLE_ARRAY_SIZE; ++i)
-        EXPECT_EQ(sa[i].value, SimpleWrapper::defaultValue);
+TEST(SharedPointer, ArraySpecializationBoolCastTrue) {
+    TEST_DESCRIPTION("Cast to bool should return true for non-null pointers");
+    SharedPointer<int[]> sharedPointer(new int[5]);
+    EXPECT_TRUE((bool) sharedPointer);
 }
 
-TEST(SharedPointer, SubscriptSet) {
-    SharedPointer<size_t[]> sa(new size_t[SAMPLE_ARRAY_SIZE]);
-    for (size_t i = 0; i < SAMPLE_ARRAY_SIZE; ++i) {
-        sa[i] = i;
-        EXPECT_EQ(sa[i], i);
-    }
-}
-
-TEST(SharedPointer, ArrayBoolCastTrue) {
-    SharedPointer<int[]> sa(new int[SAMPLE_ARRAY_SIZE]);
-    EXPECT_TRUE((bool) sa);
-}
-
-TEST(SharedPointer, ArrayBoolCastFalse) {
-    SharedPointer<int[]> sa(nullptr);
-    EXPECT_FALSE((bool) sa);
+TEST(SharedPointer, ArraySpecializationBoolCastFalse) {
+    TEST_DESCRIPTION("Cast to bool should return false for null pointers");
+    SharedPointer<int[]> sharedPointer(nullptr);
+    EXPECT_FALSE((bool) sharedPointer);
 }

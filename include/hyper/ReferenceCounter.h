@@ -6,20 +6,19 @@
 
 #include <cstddef>
 #include "assert.h"
+#include "DefaultDeleter.h"
 
 namespace hyper {
     /// @brief Internal implementation for tracking references in smart pointers.
     /// @details All smart pointers that refer to the same instance share a single instance of this class.
     ///   This allows the smart pointers to "communicate" when they are no longer being used.
     /// @tparam T Type of instance to reference.
-    /// @tparam Deleter Type that acts as a functor for destroying the reference.
     /// @todo Implement locking to be safe in multi-threaded scenarios.
-    template<typename T, typename Deleter>
+    template<typename T>
     class ReferenceCounter {
     private:
         size_t _count;
         T *_ptr;
-        Deleter _deleter;
 
     public:
         /// @brief Default constructor.
@@ -27,15 +26,6 @@ namespace hyper {
         /// @param ptr Pointer to count references to.
         constexpr explicit ReferenceCounter(T *ptr) noexcept
                 : _count(1), _ptr(ptr) {
-            // ...
-        }
-
-        /// @brief Specific constructor.
-        /// @details Creates a new reference counter with a custom deleter.
-        /// @param ptr Raw pointer to wrap.
-        /// @param deleter Functor used to delete @p ptr.
-        constexpr explicit ReferenceCounter(T *ptr, Deleter deleter) noexcept
-                : _count(1), _ptr(ptr), _deleter(deleter) {
             // ...
         }
 
@@ -47,13 +37,65 @@ namespace hyper {
         /// @details Resets the count to zero and releases the memory held by the pointer, if any.
         ~ReferenceCounter() {
             _count = 0;
-            _deleter(_ptr);
+            DefaultDeleter<T> deleter;
+            deleter(_ptr);
         }
 
-        /// @brief Retrieves the deleter used to free memory referenced by the pointer.
-        /// @return Deleter instance.
-        constexpr Deleter getDeleter() const noexcept {
-            return _deleter;
+        /// @brief Increments the reference count by one.
+        void increment() noexcept {
+            _count++;
+        }
+
+        /// @brief Decrements the reference count by one.
+        /// @return True if there are still references to the pointer.
+        /// @return False if the last reference was just released and the pointer can be freed.
+        bool decrement() noexcept {
+            ASSERTF(_count > 0, "Attempted to decrement reference count below zero");
+            return 0 < --_count;
+        }
+
+        /// @brief Retrieves the raw pointer.
+        /// @return Pointer being counted.
+        constexpr T *getPointer() const noexcept {
+            return _ptr;
+        }
+
+        /// @brief Assignment operator.
+        /// @details Assignment operator is deleted.
+        ReferenceCounter *operator=(const ReferenceCounter &other) = delete;
+    };
+
+    /// @brief Internal implementation for tracking references in smart pointers.
+    /// @details All smart pointers that refer to the same instance share a single instance of this class.
+    ///   This allows the smart pointers to "communicate" when they are no longer being used.
+    ///   This is a template specialization for pointers to arrays.
+    /// @tparam T Type of instance to reference.
+    /// @todo Implement locking to be safe in multi-threaded scenarios.
+    template<typename T>
+    class ReferenceCounter<T[]> {
+    private:
+        size_t _count;
+        T *_ptr;
+
+    public:
+        /// @brief Default constructor.
+        /// @details Creates a new reference counter.
+        /// @param ptr Pointer to count references to.
+        constexpr explicit ReferenceCounter(T *ptr) noexcept
+                : _count(1), _ptr(ptr) {
+            // ...
+        }
+
+        /// @brief Copy constructor.
+        /// @details Copy constructor is deleted.
+        ReferenceCounter(const ReferenceCounter &other) = delete;
+
+        /// @brief Destructor.
+        /// @details Resets the count to zero and releases the memory held by the pointer, if any.
+        ~ReferenceCounter() {
+            _count = 0;
+            DefaultDeleter<T[]> deleter;
+            deleter(_ptr);
         }
 
         /// @brief Increments the reference count by one.
