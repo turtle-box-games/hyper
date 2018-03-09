@@ -36,6 +36,7 @@ set(TOP_LEVEL_SRC_FILES
         ByteTest.cpp
         DefaultDeleterTest.cpp
         ScopedPointerTest.cpp
+        UniquePointerTest.cpp
         SharedPointerTest.cpp
         IntegerTest.cpp
         FloatTest.cpp
