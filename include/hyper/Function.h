@@ -1,57 +1,51 @@
 /// @file Function.h
-/// Container for referencing a callable function.
+/// Container for referencing a callable instance.
 
 #ifndef HYPER_FUNCTION_H
 #define HYPER_FUNCTION_H
 
+#include "UniquePointer.h"
+
 namespace hyper {
     template<typename Signature>
     class Function {
+        // ...
+    };
+
+    template<typename ReturnValue, typename... Args>
+    class Function<ReturnValue(Args...)> {
     private:
-        Signature *_func;
+        class Callable {
+        public:
+            virtual ~Callable() = default;
+
+            virtual ReturnValue invoke(Args...) = 0;
+        };
+
+        template<typename Signature>
+        class ConcreteCallable : public Callable {
+        private:
+            Signature _func;
+
+        public:
+            explicit ConcreteCallable(const Signature &func)
+                    : _func(func) {
+                // ...
+            }
+
+            ~ConcreteCallable() override = default;
+
+            ReturnValue invoke(Args... args) {
+                return _func(args...);
+            }
+        };
+
+        UniquePointer<Callable> _callable;
 
     public:
-        constexpr Function() noexcept
-                : _func(nullptr) {
-            // ...
-        }
-
-        constexpr Function(Signature &func) noexcept
-                : _func(func) {
-            // ...
-        }
-
-        constexpr Function(const Function &other) noexcept
-                : _func(other._func) {
-            // ...
-        }
-
-        constexpr Function(Function &&other) noexcept
-                : _func(other._func) {
-            // ...
-        }
-
-        ~Function() noexcept {
-            _func = nullptr;
-        }
-
-        void swap(Function &other) noexcept {
-            // TODO
-        }
-
-        /// @brief Explicit bool cast.
-        /// @details Checks if the function can be safely called (is not null).
-        /// @return True if the function is not null, or false if it is null.
-        constexpr explicit operator bool() const noexcept {
-            return _func != nullptr;
-        }
-
-        /// @brief Assignment operator.
-        /// @details Overwrites the current function reference with a copy of another.
-        /// @param other Other function to overwrite the existing one with.
-        /// @return The current function.
-        SharedPointer &operator=(Function other) {
-            swap(other);
+        template<typename Sig>
+        Function& operator=(Sig func) {
+            _callable = createUnique(new ConcreteCallable<Sig>(func));
             return *this;
         }
 
@@ -63,7 +57,7 @@ namespace hyper {
         /// @return True if both instances reference null.
         /// @return False if only one instance references null.
         constexpr bool operator==(const Function &other) const noexcept {
-            return _func == other._func;
+            return _callable == other._callable;
         }
 
         /// @brief Inequality operator.
@@ -74,7 +68,12 @@ namespace hyper {
         /// @return True if only one instance references null.
         /// @return False if both instances reference null.
         constexpr bool operator!=(const Function &other) const noexcept {
-            return _func != other._func;
+            return _callable != other._callable;
+        }
+
+        ReturnValue operator()(Args... args) const {
+            ASSERTF((bool)_callable, "Function pointer is null");
+            return _callable->invoke(args...);
         }
     };
 }
