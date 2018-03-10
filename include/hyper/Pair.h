@@ -31,6 +31,49 @@ namespace hyper {
                 : first(a), second(b) {
             // ...
         }
+
+        /// @brief Equality operator.
+        /// @details Compares against another pair of the same type.
+        /// @return True if the first and second values of both pairs are equal, false otherwise.
+        constexpr inline bool operator==(Pair const &other) const noexcept {
+            return first == other.first && second == other.second;
+        }
+
+        /// @brief Inequality operator.
+        /// @details Compares against another pair of the same type.
+        /// @return True if the first or second values of both pairs are different, true otherwise.
+        constexpr inline bool operator!=(Pair const &other) const noexcept {
+            return !(this == other);
+        }
+
+        /// @brief Less-than comparison operator.
+        /// @details Compares against another pair of the same type to order them.
+        /// @return True if the first value is less than the first value in the other pair,
+        ///   or the first values are equal and the second value is less than the other pair's.
+        constexpr inline bool operator<(Pair const &other) const noexcept {
+            return first < other.first || (!(other.first < first) && second < other.second);
+        }
+
+        /// @brief Greater-than comparison operator.
+        /// @details Compares against another pair of the same type to order them.
+        /// @return True if the this pair is greater than the other pair.
+        constexpr inline bool operator>(Pair const &other) const noexcept {
+            return other < *this;
+        }
+
+        /// @brief Less-than or equal to comparison operator.
+        /// @details Compares against another pair of the same type to order them.
+        /// @return True if this pair is less-than or equal to the other pair.
+        constexpr inline bool operator<=(Pair const &other) const noexcept {
+            return !(other < *this);
+        }
+
+        /// @brief Greater-than or equal to comparison operator.
+        /// @details Compares against another pair of the same type to order them.
+        /// @return True if this pair is greater-than or equal to the other pair.
+        constexpr inline bool operator>=(Pair const &other) const noexcept {
+            return !(*this < other);
+        }
     };
 
     /// @brief Creates a new pair.
