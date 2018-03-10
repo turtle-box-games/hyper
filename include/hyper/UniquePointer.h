@@ -44,12 +44,15 @@ namespace hyper {
         }
 
         ~UniquePointer() {
+            expire();
+        }
+
+        void expire() noexcept {
             DefaultDeleter<T> deleter;
             deleter(_ptr);
         }
 
-        template<typename Subtype>
-        void swap(UniquePointer<Subtype> &other) noexcept {
+        void swap(UniquePointer &other) noexcept {
             auto temp = other._ptr;
             other._ptr = _ptr;
             _ptr = temp;
@@ -73,7 +76,18 @@ namespace hyper {
 
         template<typename Subtype>
         UniquePointer &operator=(UniquePointer<Subtype> &&other) noexcept {
-            swap(other);
+            expire();
+            _ptr = other.release();
+            return *this;
+        }
+
+        /// @private For use by this class only.
+        ///   This method exposes the underlying pointer, which makes it not unique.
+        ///   However it is required to share a pointer across template types.
+        constexpr T *release() noexcept {
+            auto ptr = _ptr;
+            _ptr = nullptr;
+            return ptr;
         }
     };
 
@@ -108,17 +122,20 @@ namespace hyper {
         }
 
         template<typename Subtype>
-        constexpr explicit UniquePointer(UniquePointer<Subtype> &&other) noexcept {
+        constexpr explicit UniquePointer(UniquePointer<Subtype[]> &&other) noexcept {
             swap(other);
         }
 
         ~UniquePointer() {
+            expire();
+        }
+
+        void expire() noexcept {
             DefaultDeleter<T[]> deleter;
             deleter(_ptr);
         }
 
-        template<typename Subtype>
-        void swap(UniquePointer<Subtype[]> &other) noexcept {
+        void swap(UniquePointer &other) noexcept {
             auto temp = other._ptr;
             other._ptr = _ptr;
             _ptr = temp;
@@ -142,7 +159,18 @@ namespace hyper {
 
         template<typename Subtype>
         UniquePointer &operator=(UniquePointer<Subtype[]> &&other) noexcept {
-            swap(other);
+            expire();
+            _ptr = other.release();
+            return *this;
+        }
+
+        /// @private For use by this class only.
+        ///   This method exposes the underlying pointer, which makes it not unique.
+        ///   However it is required to share a pointer across template types.
+        constexpr T *release() noexcept {
+            auto ptr = _ptr;
+            _ptr = nullptr;
+            return ptr;
         }
     };
 
