@@ -146,7 +146,7 @@ namespace hyper {
             return _ptr[index];
         }
 
-        constexpr T &operator[](size_t index) const noexcept {
+        constexpr const T &operator[](size_t index) const noexcept {
             ASSERTF(_ptr != nullptr, "Attempt to dereference null pointer");
             return _ptr[index];
         }

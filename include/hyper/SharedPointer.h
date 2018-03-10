@@ -222,7 +222,7 @@ namespace hyper {
         /// @details Retrieves a specified element in the array.
         /// @param index Base-zero index of the element to access.
         /// @return Element at the specified index.
-        constexpr T &operator[](size_t index) const noexcept {
+        constexpr const T &operator[](size_t index) const noexcept {
             auto arr = _impl->getPointer();
             ASSERTF(arr != nullptr, "Attempt to dereference null pointer");
             return arr[index];
