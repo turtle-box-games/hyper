@@ -6,6 +6,7 @@
 
 #include "assert.h"
 #include "DefaultDeleter.h"
+#include "utility.h"
 
 namespace hyper {
     /// @brief Smart pointer that allows only a single reference to a value.
@@ -50,7 +51,7 @@ namespace hyper {
         template<typename Subtype>
         void swap(UniquePointer<Subtype> &other) noexcept {
             auto temp = other._ptr;
-            other._ptr = temp;
+            other._ptr = _ptr;
             _ptr = temp;
         }
 
@@ -116,16 +117,10 @@ namespace hyper {
             deleter(_ptr);
         }
 
-        void swap(UniquePointer &other) noexcept {
-            auto temp = other._ptr;
-            other._ptr = temp;
-            _ptr = temp;
-        }
-
         template<typename Subtype>
         void swap(UniquePointer<Subtype[]> &other) noexcept {
             auto temp = other._ptr;
-            other._ptr = temp;
+            other._ptr = _ptr;
             _ptr = temp;
         }
 
@@ -158,7 +153,7 @@ namespace hyper {
 
     template<typename T>
     UniquePointer<T> createUnique(T *&&ptr) {
-        return UniquePointer<T>(ptr);
+        return UniquePointer<T>(move(ptr));
     }
 }
 
