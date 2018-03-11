@@ -8,7 +8,7 @@
 /// @example destructor_spy.cpp
 ///   How to use the spy in tests.
 class DestructorSpy {
-protected:
+private:
     int *_callCount;
 
 public:
@@ -25,6 +25,10 @@ public:
     /// @brief Destructor.
     /// @details Increments the counter every time this destructor is called.
     virtual ~DestructorSpy();
+
+protected:
+    /// @brief Increments the call count.
+    void increment();
 };
 
 /// @brief Subclass for destructor spy.

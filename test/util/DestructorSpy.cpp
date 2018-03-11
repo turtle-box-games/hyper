@@ -11,7 +11,12 @@ DestructorSpy::DestructorSpy(int *callCount)
 }
 
 DestructorSpy::~DestructorSpy() {
-    (*_callCount)++;
+    increment();
+}
+
+void DestructorSpy::increment() {
+    if(_callCount != nullptr)
+        (*_callCount)++;
 }
 
 DestructorSpySubclass::DestructorSpySubclass()
@@ -25,5 +30,5 @@ DestructorSpySubclass::DestructorSpySubclass(int *callCount)
 }
 
 DestructorSpySubclass::~DestructorSpySubclass() {
-    (*_callCount)++;
+    increment();
 }
