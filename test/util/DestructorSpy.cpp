@@ -13,3 +13,17 @@ DestructorSpy::DestructorSpy(int *callCount)
 DestructorSpy::~DestructorSpy() {
     (*_callCount)++;
 }
+
+DestructorSpySubclass::DestructorSpySubclass()
+        : DestructorSpy() {
+    // ...
+}
+
+DestructorSpySubclass::DestructorSpySubclass(int *callCount)
+        : DestructorSpy(callCount) {
+    // ...
+}
+
+DestructorSpySubclass::~DestructorSpySubclass() {
+    (*_callCount)++;
+}
