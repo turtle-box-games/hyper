@@ -63,6 +63,15 @@ TEST(UniquePointer, BoolCastFalse) {
     EXPECT_FALSE((bool) uniquePointer);
 }
 
+TEST(UniquePointer, Polymorphism) {
+    TEST_DESCRIPTION("Unique pointer should be able to have a sub-type of pointer assigned to it");
+    int callCount = 0;
+    {
+        UniquePointer<DestructorSpy> uniquePointer(new DestructorSpySubclass(&callCount));
+    }
+    EXPECT_EQ(2, callCount);
+}
+
 TEST(UniquePointer, ArraySpecializationDefaultConstructor) {
     TEST_DESCRIPTION("Default constructor should set pointer to null");
     UniquePointer<int[]> uniquePointer;
@@ -107,4 +116,18 @@ TEST(UniquePointer, ArraySpecializationBoolCastFalse) {
     TEST_DESCRIPTION("Cast to bool should return false for null pointers");
     UniquePointer<int[]> uniquePointer(nullptr);
     EXPECT_FALSE((bool) uniquePointer);
+}
+
+TEST(UniquePointer, ArraySpecializationPolymorphism) {
+    TEST_DESCRIPTION("Unique pointer should be able to have a sub-type of pointer assigned to it");
+    const size_t length = 5;
+    int callCount = -static_cast<int>(length * 2);
+    {
+        UniquePointer<DestructorSpy[]> uniquePointer(
+                new DestructorSpySubclass[length]
+        );
+        for (size_t i = 0; i < length; i++)
+            uniquePointer[i] = DestructorSpySubclass(&callCount);
+    }
+    EXPECT_EQ(length * 2, callCount);
 }
