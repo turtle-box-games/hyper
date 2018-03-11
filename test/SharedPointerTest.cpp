@@ -6,9 +6,9 @@
 using namespace hyper;
 
 TEST(SharedPointer, DefaultConstructor) {
-    TEST_DESCRIPTION("Default constructor should set pointer to default");
+    TEST_DESCRIPTION("Default constructor should set pointer to null");
     SharedPointer<int> sharedPointer;
-    EXPECT_TRUE((bool) sharedPointer);
+    EXPECT_FALSE((bool) sharedPointer);
 }
 
 TEST(SharedPointer, Destructor) {

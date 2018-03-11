@@ -23,9 +23,9 @@ namespace hyper {
 
     public:
         /// @brief Default constructor.
-        /// @details Creates a new shared pointer with the default constructor of type @tparam T.
+        /// @details Creates a new shared pointer referencing null.
         constexpr explicit SharedPointer() noexcept
-                : _impl(new ReferenceCounter<T>(new T)) {
+                : _impl(new ReferenceCounter<T>(nullptr)) {
             // ...
         }
 
