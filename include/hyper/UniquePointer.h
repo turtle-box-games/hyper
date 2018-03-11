@@ -33,12 +33,6 @@ namespace hyper {
         }
 
         template<typename Subtype>
-        constexpr explicit UniquePointer(Subtype *&&ptr) noexcept
-                : _ptr(ptr) {
-            // ...
-        }
-
-        template<typename Subtype>
         constexpr explicit UniquePointer(UniquePointer<Subtype> &&other) noexcept {
             swap(other);
         }
@@ -113,12 +107,6 @@ namespace hyper {
         }
 
         constexpr explicit UniquePointer(T *&&ptr) noexcept
-                : _ptr(ptr) {
-            // ...
-        }
-
-        template<typename Subtype>
-        constexpr explicit UniquePointer(Subtype *&&ptr) noexcept
                 : _ptr(ptr) {
             // ...
         }
