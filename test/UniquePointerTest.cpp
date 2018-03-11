@@ -72,6 +72,37 @@ TEST(UniquePointer, Polymorphism) {
     EXPECT_EQ(2, callCount);
 }
 
+TEST(UniquePointer, Subtype) {
+    TEST_DESCRIPTION("Unique pointer should accept another smart pointer of a sub-type");
+    int callCount = 0;
+    {
+        UniquePointer<DestructorSpy> uniquePointer;
+        uniquePointer = UniquePointer<DestructorSpySubclass>(new DestructorSpySubclass(&callCount));
+    }
+    EXPECT_EQ(2, callCount);
+}
+
+TEST(UniquePointer, SubtypeDelete) {
+    TEST_DESCRIPTION("Unique pointer should accept another smart pointer of a sub-type");
+    int callCount = 0;
+    {
+        UniquePointer<DestructorSpy> uniquePointer(new DestructorSpy(&callCount));
+        uniquePointer = UniquePointer<DestructorSpySubclass>(new DestructorSpySubclass(&callCount));
+    }
+    EXPECT_EQ(3, callCount);
+}
+
+TEST(UniquePointer, SubtypeConstructor) {
+    TEST_DESCRIPTION("Unique pointer move constructor should accept another smart pointer of a sub-type");
+    int callCount = 0;
+    {
+        UniquePointer<DestructorSpy> uniquePointer(
+                UniquePointer<DestructorSpySubclass>(new DestructorSpySubclass(&callCount))
+        );
+    }
+    EXPECT_EQ(2, callCount);
+}
+
 TEST(UniquePointer, ArraySpecializationDefaultConstructor) {
     TEST_DESCRIPTION("Default constructor should set pointer to null");
     UniquePointer<int[]> uniquePointer;
@@ -125,6 +156,48 @@ TEST(UniquePointer, ArraySpecializationPolymorphism) {
     {
         UniquePointer<DestructorSpy[]> uniquePointer(
                 new DestructorSpySubclass[length]
+        );
+        for (size_t i = 0; i < length; i++)
+            uniquePointer[i] = DestructorSpySubclass(&callCount);
+    }
+    EXPECT_EQ(length * 2, callCount);
+}
+
+TEST(UniquePointer, ArraySpecializationSubtype) {
+    TEST_DESCRIPTION("Unique pointer should accept another smart pointer of a sub-type");
+    const size_t length = 5;
+    int callCount = -static_cast<int>(length * 2);
+    {
+        UniquePointer<DestructorSpy[]> uniquePointer;
+        uniquePointer = UniquePointer<DestructorSpySubclass[]>(new DestructorSpySubclass[length]);
+        for (size_t i = 0; i < length; i++)
+            uniquePointer[i] = DestructorSpySubclass(&callCount);
+    }
+    EXPECT_EQ(length * 2, callCount);
+}
+
+TEST(UniquePointer, ArraySpecializationSubtypeDelete) {
+    TEST_DESCRIPTION("Unique pointer should delete original reference upon reassignment");
+    const size_t length = 5;
+    int callCount = -static_cast<int>(length * 2);
+    {
+        UniquePointer<DestructorSpy[]> uniquePointer(new DestructorSpy[length]);
+        for (size_t i = 0; i < length; i++)
+            uniquePointer[i] = DestructorSpy(&callCount);
+        uniquePointer = UniquePointer<DestructorSpySubclass[]>(new DestructorSpySubclass[length]);
+        for (size_t i = 0; i < length; i++)
+            uniquePointer[i] = DestructorSpySubclass(&callCount);
+    }
+    EXPECT_EQ(length * 4, callCount);
+}
+
+TEST(UniquePointer, ArraySpecializationSubtypeConstructor) {
+    TEST_DESCRIPTION("Unique pointer move constructor should accept another smart pointer of a sub-type");
+    const size_t length = 5;
+    int callCount = -static_cast<int>(length * 2);
+    {
+        UniquePointer<DestructorSpy[]> uniquePointer(
+                UniquePointer<DestructorSpySubclass[]>(new DestructorSpySubclass[length])
         );
         for (size_t i = 0; i < length; i++)
             uniquePointer[i] = DestructorSpySubclass(&callCount);
