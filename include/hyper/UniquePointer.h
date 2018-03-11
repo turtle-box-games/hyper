@@ -43,6 +43,8 @@ namespace hyper {
             swap(other);
         }
 
+        UniquePointer(const UniquePointer &) = delete;
+
         ~UniquePointer() {
             expire();
         }
@@ -125,6 +127,8 @@ namespace hyper {
         constexpr explicit UniquePointer(UniquePointer<Subtype[]> &&other) noexcept {
             swap(other);
         }
+
+        UniquePointer(const UniquePointer &) = delete;
 
         ~UniquePointer() {
             expire();
