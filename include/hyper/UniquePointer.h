@@ -49,6 +49,11 @@ namespace hyper {
             deleter(_ptr);
         }
 
+        void reset(T *&&ptr) noexcept {
+            expire();
+            _ptr = ptr;
+        }
+
         void swap(UniquePointer &other) noexcept {
             auto temp = other._ptr;
             other._ptr = _ptr;
@@ -73,8 +78,7 @@ namespace hyper {
 
         template<typename Subtype>
         UniquePointer &operator=(UniquePointer<Subtype> &&other) noexcept {
-            expire();
-            _ptr = other.release();
+            reset(other.release());
             return *this;
         }
 
@@ -129,6 +133,11 @@ namespace hyper {
             deleter(_ptr);
         }
 
+        void reset(T *&&ptr) noexcept {
+            expire();
+            _ptr = ptr;
+        }
+
         void swap(UniquePointer &other) noexcept {
             auto temp = other._ptr;
             other._ptr = _ptr;
@@ -153,8 +162,7 @@ namespace hyper {
 
         template<typename Subtype>
         UniquePointer &operator=(UniquePointer<Subtype[]> &&other) noexcept {
-            expire();
-            _ptr = other.release();
+            reset(other.release());
             return *this;
         }
 
