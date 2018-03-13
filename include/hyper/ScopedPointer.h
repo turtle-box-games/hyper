@@ -17,21 +17,21 @@ namespace hyper {
     template<typename T>
     class ScopedPointer {
     private:
-        T *_ptr;
+        T *_rawPointer;
 
     public:
         /// @brief Default constructor.
         /// @details Creates a new scoped pointer that references a default construction of @c T.
         constexpr explicit ScopedPointer() noexcept
-                : _ptr(new T) {
+                : _rawPointer(new T) {
             // ...
         }
 
         /// @brief General constructor.
         /// @details Creates a new scoped pointer with an existing reference.
-        /// @param ptr Raw pointer to wrap.
-        constexpr explicit ScopedPointer(T *&&ptr) noexcept
-                : _ptr(ptr) {
+        /// @param rawPointer Raw pointer to wrap.
+        constexpr explicit ScopedPointer(T *&&rawPointer) noexcept
+                : _rawPointer(rawPointer) {
             // ...
         }
 
@@ -49,7 +49,7 @@ namespace hyper {
         /// @details Releases the resources referenced by the pointer.
         ~ScopedPointer() noexcept {
             DefaultDeleter<T> deleter;
-            deleter(_ptr);
+            deleter(_rawPointer);
         }
 
         /// @brief Indirect access operator.
@@ -58,8 +58,8 @@ namespace hyper {
         /// @note Be sure that it is safe to de-reference the pointer.
         ///   The pointer is asserted to be non-null.
         constexpr T &operator*() const noexcept {
-            ASSERTF(_ptr != nullptr, "Attempt to dereference null pointer");
-            return *_ptr;
+            ASSERTF(_rawPointer != nullptr, "Attempt to dereference null pointer");
+            return *_rawPointer;
         }
 
         /// @brief Member access operator.
@@ -68,15 +68,15 @@ namespace hyper {
         /// @note Be sure that it is safe to de-reference the pointer.
         ///   The pointer is asserted to be non-null.
         constexpr T *operator->() const noexcept {
-            ASSERTF(_ptr != nullptr, "Attempt to dereference null pointer");
-            return _ptr;
+            ASSERTF(_rawPointer != nullptr, "Attempt to dereference null pointer");
+            return _rawPointer;
         }
 
         /// @brief Explicit bool cast.
         /// @details Checks if the pointer can be safely de-referenced (is not null).
         /// @return True if the pointer is not null, or false if it is null.
         constexpr explicit operator bool() const noexcept {
-            return _ptr != nullptr;
+            return _rawPointer != nullptr;
         }
     };
 
@@ -89,21 +89,21 @@ namespace hyper {
     template<typename T>
     class ScopedPointer<T[]> {
     private:
-        T *_ptr;
+        T *_rawPointer;
 
     public:
         /// @brief Default constructor.
         /// @details Creates a new scoped pointer that references null.
         constexpr explicit ScopedPointer() noexcept
-                : _ptr(nullptr) {
+                : _rawPointer(nullptr) {
             // ...
         }
 
         /// @brief General constructor.
         /// @details Creates a new scoped pointer with an existing reference.
-        /// @param ptr Raw pointer to wrap.
-        constexpr explicit ScopedPointer(T *&&ptr) noexcept
-                : _ptr(ptr) {
+        /// @param rawPointer Raw pointer to wrap.
+        constexpr explicit ScopedPointer(T *&&rawPointer) noexcept
+                : _rawPointer(rawPointer) {
             // ...
         }
 
@@ -121,7 +121,7 @@ namespace hyper {
         /// @details Releases the resources referenced by the pointer.
         ~ScopedPointer() noexcept {
             DefaultDeleter<T[]> deleter;
-            deleter(_ptr);
+            deleter(_rawPointer);
         }
 
         /// @brief Subscript operator.
@@ -129,8 +129,8 @@ namespace hyper {
         /// @param index Index of the element to access, starting at zero.
         /// @return Element at the specified index.
         T &operator[](size_t index) noexcept {
-            ASSERTF(_ptr != nullptr, "Attempt to dereference null pointer");
-            return _ptr[index];
+            ASSERTF(_rawPointer != nullptr, "Attempt to dereference null pointer");
+            return _rawPointer[index];
         }
 
         /// @brief Subscript operator.
@@ -138,15 +138,15 @@ namespace hyper {
         /// @param index Index of the element to access, starting at zero.
         /// @return Element at the specified index.
         constexpr const T &operator[](size_t index) const noexcept {
-            ASSERTF(_ptr != nullptr, "Attempt to dereference null pointer");
-            return _ptr[index];
+            ASSERTF(_rawPointer != nullptr, "Attempt to dereference null pointer");
+            return _rawPointer[index];
         }
 
         /// @brief Explicit bool cast.
         /// @details Checks if the pointer can be safely de-referenced (is not null).
         /// @return True if the pointer is not null, or false if it is null.
         constexpr explicit operator bool() const noexcept {
-            return _ptr != nullptr;
+            return _rawPointer != nullptr;
         }
     };
 }

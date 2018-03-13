@@ -19,21 +19,21 @@ namespace hyper {
     template<typename T>
     class UniquePointer {
     private:
-        T *_ptr;
+        T *_rawPointer;
 
     public:
         /// @brief Default constructor.
         /// @details Creates a new unique pointer that references null.
         constexpr UniquePointer() noexcept
-                : _ptr(nullptr) {
+                : _rawPointer(nullptr) {
             // ...
         }
 
         /// @brief General constructor.
         /// @details Creates a new unique pointer that wraps an existing raw pointer.
-        /// @param ptr Raw pointer to wrap.
-        constexpr explicit UniquePointer(T *&&ptr) noexcept
-                : _ptr(ptr) {
+        /// @param rawPointer Raw pointer to wrap.
+        constexpr explicit UniquePointer(T *&&rawPointer) noexcept
+                : _rawPointer(rawPointer) {
             // ...
         }
 
@@ -43,7 +43,7 @@ namespace hyper {
         /// @tparam Subtype Any compatible pointer type.
         template<typename Subtype>
         constexpr explicit UniquePointer(UniquePointer<Subtype> &&other) noexcept
-                : _ptr(other.release()) {
+                : _rawPointer(other.release()) {
             // ...
         }
 
@@ -62,25 +62,25 @@ namespace hyper {
         ///   The pointer and any resources it references are released.
         void expire() noexcept {
             DefaultDeleter<T> deleter;
-            deleter(_ptr);
+            deleter(_rawPointer);
         }
 
         /// @brief Re-initializes the unique pointer.
         /// @details Changes the raw pointer that the instance wraps.
         ///   The existing pointer, if not null, is freed.
-        /// @param ptr New pointer to wrap.
-        void reset(T *&&ptr = nullptr) noexcept {
+        /// @param rawPointer New pointer to wrap.
+        void reset(T *&&rawPointer = nullptr) noexcept {
             expire();
-            _ptr = ptr;
+            _rawPointer = rawPointer;
         }
 
         /// @brief Swaps with another instance.
         /// @details Exchanges the underlying pointer between two instances of the same type.
         /// @param other Other pointer to swap with.
         void swap(UniquePointer &other) noexcept {
-            auto temp = other._ptr;
-            other._ptr = _ptr;
-            _ptr = temp;
+            auto temp = other._rawPointer;
+            other._rawPointer = _rawPointer;
+            _rawPointer = temp;
         }
 
         /// @brief Indirect access operator.
@@ -89,8 +89,8 @@ namespace hyper {
         /// @note Be sure that it is safe to de-reference the pointer.
         ///   The pointer is asserted to be non-null.
         constexpr T &operator*() const noexcept {
-            ASSERTF(_ptr != nullptr, "Attempt to dereference null pointer");
-            return *_ptr;
+            ASSERTF(_rawPointer != nullptr, "Attempt to dereference null pointer");
+            return *_rawPointer;
         }
 
         /// @brief Member access operator.
@@ -99,15 +99,15 @@ namespace hyper {
         /// @note Be sure that it is safe to de-reference the pointer.
         ///   The pointer is asserted to be non-null.
         constexpr T *operator->() const noexcept {
-            ASSERTF(_ptr != nullptr, "Attempt to dereference null pointer");
-            return _ptr;
+            ASSERTF(_rawPointer != nullptr, "Attempt to dereference null pointer");
+            return _rawPointer;
         }
 
         /// @brief Explicit bool cast.
         /// @details Checks if the pointer can be safely de-referenced (is not null).
         /// @return True if the pointer is not null, or false if it is null.
         constexpr explicit operator bool() const noexcept {
-            return _ptr != nullptr;
+            return _rawPointer != nullptr;
         }
 
         /// @brief Copy assignment operator.
@@ -129,8 +129,8 @@ namespace hyper {
         ///   This method exposes the underlying pointer, which makes it not unique.
         ///   However it is required to share a pointer across template types.
         constexpr T *release() noexcept {
-            auto ptr = _ptr;
-            _ptr = nullptr;
+            auto ptr = _rawPointer;
+            _rawPointer = nullptr;
             return ptr;
         }
     };
@@ -146,13 +146,13 @@ namespace hyper {
     template<typename T>
     class UniquePointer<T[]> {
     private:
-        T *_ptr;
+        T *_rawPointer;
 
     public:
         /// @brief Default constructor.
         /// @details Creates a new unique pointer that references null.
         constexpr UniquePointer() noexcept
-                : _ptr(nullptr) {
+                : _rawPointer(nullptr) {
             // ...
         }
 
@@ -160,7 +160,7 @@ namespace hyper {
         /// @details Creates a new unique pointer that wraps an existing raw pointer.
         /// @param ptr Raw pointer to wrap.
         constexpr explicit UniquePointer(T *&&ptr) noexcept
-                : _ptr(ptr) {
+                : _rawPointer(ptr) {
             // ...
         }
 
@@ -170,7 +170,7 @@ namespace hyper {
         /// @tparam Subtype Any compatible pointer type.
         template<typename Subtype>
         constexpr explicit UniquePointer(UniquePointer<Subtype[]> &&other) noexcept
-                : _ptr(other.release()) {
+                : _rawPointer(other.release()) {
             // ...
         }
 
@@ -189,25 +189,25 @@ namespace hyper {
         ///   The pointer and any resources it references are released.
         void expire() noexcept {
             DefaultDeleter<T[]> deleter;
-            deleter(_ptr);
+            deleter(_rawPointer);
         }
 
         /// @brief Re-initializes the unique pointer.
         /// @details Changes the raw pointer that the instance wraps.
         ///   The existing pointer, if not null, is freed.
-        /// @param ptr New pointer to wrap.
-        void reset(T *&&ptr = nullptr) noexcept {
+        /// @param rawPointer New pointer to wrap.
+        void reset(T *&&rawPointer = nullptr) noexcept {
             expire();
-            _ptr = ptr;
+            _rawPointer = rawPointer;
         }
 
         /// @brief Swaps with another instance.
         /// @details Exchanges the underlying pointer between two instances of the same type.
         /// @param other Other pointer to swap with.
         void swap(UniquePointer &other) noexcept {
-            auto temp = other._ptr;
-            other._ptr = _ptr;
-            _ptr = temp;
+            auto temp = other._rawPointer;
+            other._rawPointer = _rawPointer;
+            _rawPointer = temp;
         }
 
         /// @brief Subscript operator.
@@ -215,8 +215,8 @@ namespace hyper {
         /// @param index Index of the element to access, starting at zero.
         /// @return Element at the specified index.
         T &operator[](size_t index) noexcept {
-            ASSERTF(_ptr != nullptr, "Attempt to dereference null pointer");
-            return _ptr[index];
+            ASSERTF(_rawPointer != nullptr, "Attempt to dereference null pointer");
+            return _rawPointer[index];
         }
 
         /// @brief Subscript operator.
@@ -224,15 +224,15 @@ namespace hyper {
         /// @param index Index of the element to access, starting at zero.
         /// @return Element at the specified index.
         constexpr const T &operator[](size_t index) const noexcept {
-            ASSERTF(_ptr != nullptr, "Attempt to dereference null pointer");
-            return _ptr[index];
+            ASSERTF(_rawPointer != nullptr, "Attempt to dereference null pointer");
+            return _rawPointer[index];
         }
 
         /// @brief Explicit bool cast.
         /// @details Checks if the pointer can be safely de-referenced (is not null).
         /// @return True if the pointer is not null, or false if it is null.
         constexpr explicit operator bool() const noexcept {
-            return _ptr != nullptr;
+            return _rawPointer != nullptr;
         }
 
         /// @brief Copy assignment operator.
@@ -254,8 +254,8 @@ namespace hyper {
         ///   This method exposes the underlying pointer, which makes it not unique.
         ///   However it is required to share a pointer across template types.
         constexpr T *release() noexcept {
-            auto ptr = _ptr;
-            _ptr = nullptr;
+            auto ptr = _rawPointer;
+            _rawPointer = nullptr;
             return ptr;
         }
     };
