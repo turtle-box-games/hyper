@@ -103,6 +103,60 @@ TEST(UniquePointer, SubtypeConstructor) {
     EXPECT_EQ(2, callCount);
 }
 
+TEST(UniquePointer, Expire) {
+    TEST_DESCRIPTION("Unique pointer should set internal reference to null when calling expire");
+    UniquePointer<int> uniquePointer(new int);
+    uniquePointer.expire();
+    EXPECT_FALSE((bool) uniquePointer);
+}
+
+TEST(UniquePointer, ExpireDelete) {
+    TEST_DESCRIPTION("Unique pointer should delete the existing reference when calling expire");
+    int callCount = 0;
+    UniquePointer<DestructorSpy> uniquePointer(
+            new DestructorSpy(&callCount)
+    );
+    uniquePointer.expire();
+    EXPECT_EQ(1, callCount);
+}
+
+TEST(UniquePointer, ExpireDeleteSubtype) {
+    TEST_DESCRIPTION("Unique pointer should delete the existing reference correctly for sub-types when calling expire");
+    int callCount = 0;
+    UniquePointer<DestructorSpy> uniquePointer(
+            new DestructorSpySubclass(&callCount)
+    );
+    uniquePointer.expire();
+    EXPECT_EQ(2, callCount);
+}
+
+TEST(UniquePointer, Reset) {
+    TEST_DESCRIPTION("Unique pointer should be able to reset to a new pointer");
+    UniquePointer<int> uniquePointer;
+    uniquePointer.reset(new int);
+    EXPECT_TRUE((bool) uniquePointer);
+}
+
+TEST(UniquePointer, ResetDelete) {
+    TEST_DESCRIPTION("Unique pointer should delete existing reference when resetting");
+    int callCount = 0;
+    UniquePointer<DestructorSpy> uniquePointer(
+            new DestructorSpy(&callCount)
+    );
+    uniquePointer.reset(new DestructorSpy);
+    EXPECT_EQ(1, callCount);
+}
+
+TEST(UniquePointer, ResetDeleteSubtype) {
+    TEST_DESCRIPTION("Unique pointer should delete the existing reference correctly for sub-types when resetting");
+    int callCount = 0;
+    UniquePointer<DestructorSpy> uniquePointer(
+            new DestructorSpySubclass(&callCount)
+    );
+    uniquePointer.reset(new DestructorSpy);
+    EXPECT_EQ(2, callCount);
+}
+
 TEST(UniquePointer, ArraySpecializationDefaultConstructor) {
     TEST_DESCRIPTION("Default constructor should set pointer to null");
     UniquePointer<int[]> uniquePointer;
@@ -202,5 +256,71 @@ TEST(UniquePointer, ArraySpecializationSubtypeConstructor) {
         for (size_t i = 0; i < length; i++)
             uniquePointer[i] = DestructorSpySubclass(&callCount);
     }
+    EXPECT_EQ(length * 2, callCount);
+}
+
+TEST(UniquePointer, ArraySpecializationExpire) {
+    TEST_DESCRIPTION("Unique pointer should set internal reference to null when calling expire");
+    UniquePointer<int[]> uniquePointer(new int[5]);
+    uniquePointer.expire();
+    EXPECT_FALSE((bool) uniquePointer);
+}
+
+TEST(UniquePointer, ArraySpecializationExpireDelete) {
+    TEST_DESCRIPTION("Unique pointer should delete the existing reference when calling expire");
+    const size_t length = 5;
+    int callCount = -static_cast<int>(length);
+    UniquePointer<DestructorSpy[]> uniquePointer(
+            new DestructorSpy[length]
+    );
+    for (size_t i = 0; i < length; i++)
+        uniquePointer[i] = DestructorSpy(&callCount);
+    uniquePointer.expire();
+    EXPECT_EQ(length, callCount);
+}
+
+TEST(UniquePointer, ArraySpecializationExpireDeleteSubtype) {
+    TEST_DESCRIPTION("Unique pointer should delete the existing reference correctly for sub-types when calling expire");
+    const size_t length = 5;
+    int callCount = -static_cast<int>(length * 2);
+    UniquePointer<DestructorSpy[]> uniquePointer(
+            new DestructorSpySubclass[length]
+    );
+    for (size_t i = 0; i < length; i++)
+        uniquePointer[i] = DestructorSpySubclass(&callCount);
+    uniquePointer.expire();
+    EXPECT_EQ(length * 2, callCount);
+}
+
+TEST(UniquePointer, ArraySpecializationReset) {
+    TEST_DESCRIPTION("Unique pointer should be able to reset to a new pointer");
+    UniquePointer<int[]> uniquePointer;
+    uniquePointer.reset(new int[5]);
+    EXPECT_TRUE((bool) uniquePointer);
+}
+
+TEST(UniquePointer, ArraySpecializationResetDelete) {
+    TEST_DESCRIPTION("Unique pointer should delete existing reference when resetting");
+    const size_t length = 5;
+    int callCount = -static_cast<int>(length);
+    UniquePointer<DestructorSpy[]> uniquePointer(
+            new DestructorSpy[length]
+    );
+    for (size_t i = 0; i < length; i++)
+        uniquePointer[i] = DestructorSpy(&callCount);
+    uniquePointer.reset(new DestructorSpy[length]);
+    EXPECT_EQ(length, callCount);
+}
+
+TEST(UniquePointer, ArraySpecializationResetDeleteSubtype) {
+    TEST_DESCRIPTION("Unique pointer should delete the existing reference correctly for sub-types when resetting");
+    const size_t length = 5;
+    int callCount = -static_cast<int>(length * 2);
+    UniquePointer<DestructorSpy[]> uniquePointer(
+            new DestructorSpySubclass[length]
+    );
+    for (size_t i = 0; i < length; i++)
+        uniquePointer[i] = DestructorSpySubclass(&callCount);
+    uniquePointer.reset(new DestructorSpy[length]);
     EXPECT_EQ(length * 2, callCount);
 }
