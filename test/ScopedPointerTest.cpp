@@ -63,12 +63,6 @@ TEST(ScopedPointer, BoolCastFalse) {
     EXPECT_FALSE((bool) scopedPointer);
 }
 
-TEST(ScopedPointer, ArraySpecializationDefaultConstructor) {
-    TEST_DESCRIPTION("Default constructor should set pointer to null");
-    ScopedPointer<int[]> scopedPointer;
-    EXPECT_FALSE((bool) scopedPointer);
-}
-
 TEST(ScopedPointer, ArraySpecializationDestructor) {
     TEST_DESCRIPTION("Destructor should be called on all elements when the scope is left");
     const size_t length = 5;

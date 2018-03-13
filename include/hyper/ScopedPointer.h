@@ -92,13 +92,6 @@ namespace hyper {
         T *_rawPointer;
 
     public:
-        /// @brief Default constructor.
-        /// @details Creates a new scoped pointer that references null.
-        constexpr explicit ScopedPointer() noexcept
-                : _rawPointer(nullptr) {
-            // ...
-        }
-
         /// @brief General constructor.
         /// @details Creates a new scoped pointer with an existing reference.
         /// @param rawPointer Raw pointer to wrap.
