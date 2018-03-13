@@ -52,7 +52,7 @@ namespace hyper {
             deleter(_ptr);
         }
 
-        /// @brief Member access operator.
+        /// @brief Indirect access operator.
         /// @details Provides access to the underlying reference.
         /// @return Underlying reference.
         /// @note Be sure that it is safe to de-reference the pointer.
