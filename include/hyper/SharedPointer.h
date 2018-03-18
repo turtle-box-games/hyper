@@ -123,6 +123,11 @@ namespace hyper {
         ReferenceCounter<T> *_impl;
     };
 
+    /// @brief Smart pointer for arrays that allows multiple references to a single instance.
+    /// @details Smart pointer that holds a shared reference.
+    ///   References to the pointer are tracked,
+    ///   and when there aren't any references remaining, the pointer will be freed.
+    /// @tparam T Type the pointer references.
     template<typename T>
     class SharedPointer<T[]> {
     public:
