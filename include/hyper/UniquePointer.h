@@ -125,6 +125,8 @@ namespace hyper {
             return *this;
         }
 
+        /// @brief Releases the pointer being held and returns it so another instance may own it.
+        /// @return Pointer held by the instance.
         /// @private For use by this class only.
         ///   This method exposes the underlying pointer, which makes it not unique.
         ///   However it is required to share a pointer across template types.
@@ -250,6 +252,8 @@ namespace hyper {
             return *this;
         }
 
+        /// @brief Releases the pointer being held and returns it so another instance may own it.
+        /// @return Pointer held by the instance.
         /// @private For use by this class only.
         ///   This method exposes the underlying pointer, which makes it not unique.
         ///   However it is required to share a pointer across template types.
