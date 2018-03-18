@@ -16,10 +16,6 @@ namespace hyper {
     /// @todo Implement locking to be safe in multi-threaded scenarios.
     template<typename T>
     class ReferenceCounter {
-    private:
-        size_t _count;
-        T *_ptr;
-
     public:
         /// @brief Default constructor.
         /// @details Creates a new reference counter.
@@ -63,6 +59,10 @@ namespace hyper {
         /// @brief Assignment operator.
         /// @details Assignment operator is deleted.
         ReferenceCounter *operator=(const ReferenceCounter &other) = delete;
+
+    private:
+        size_t _count;
+        T *_ptr;
     };
 
     /// @brief Internal implementation for tracking references in smart pointers.
@@ -73,10 +73,6 @@ namespace hyper {
     /// @todo Implement locking to be safe in multi-threaded scenarios.
     template<typename T>
     class ReferenceCounter<T[]> {
-    private:
-        size_t _count;
-        T *_ptr;
-
     public:
         /// @brief Default constructor.
         /// @details Creates a new reference counter.
@@ -120,6 +116,10 @@ namespace hyper {
         /// @brief Assignment operator.
         /// @details Assignment operator is deleted.
         ReferenceCounter *operator=(const ReferenceCounter &other) = delete;
+
+    private:
+        size_t _count;
+        T *_ptr;
     };
 }
 

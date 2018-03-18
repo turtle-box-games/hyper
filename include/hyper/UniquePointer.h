@@ -18,9 +18,6 @@ namespace hyper {
     /// @tparam T Type the pointer references.
     template<typename T>
     class UniquePointer {
-    private:
-        T *_rawPointer;
-
     public:
         /// @brief Default constructor.
         /// @details Creates a new unique pointer that references null.
@@ -135,6 +132,9 @@ namespace hyper {
             _rawPointer = nullptr;
             return ptr;
         }
+
+    private:
+        T *_rawPointer;
     };
 
     /// @brief Smart pointer for arrays that allows only a single reference to a value.
@@ -147,9 +147,6 @@ namespace hyper {
     /// @tparam T Type the pointer references.
     template<typename T>
     class UniquePointer<T[]> {
-    private:
-        T *_rawPointer;
-
     public:
         /// @brief Default constructor.
         /// @details Creates a new unique pointer that references null.
@@ -262,6 +259,9 @@ namespace hyper {
             _rawPointer = nullptr;
             return ptr;
         }
+
+    private:
+        T *_rawPointer;
     };
 
     /// @brief Specialized implementation of swap for unique pointers.

@@ -11,9 +11,6 @@ namespace hyper {
     /// @details Error instances are used instead of throwing exceptions.
     /// @see Result
     class Error {
-    private:
-        SharedPointer<Error> _cause;
-
     public:
         /// @brief Default constructor.
         /// @details Creates a new error with no nested cause.
@@ -36,6 +33,9 @@ namespace hyper {
         /// @details Retrieves the underlying error that caused this one.
         /// @return Underlying error or null if there was none.
         SharedPointer<Error> cause() const noexcept;
+
+    private:
+        SharedPointer<Error> _cause;
     };
 }
 
