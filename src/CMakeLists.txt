@@ -1,7 +1,8 @@
 include(DisableExceptionsRtti)
 
 set(SRC_FILES
-        Error.cpp)
+        Error.cpp
+        Counter.cpp)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_GNUC
         OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
