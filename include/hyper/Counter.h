@@ -13,16 +13,16 @@ namespace hyper {
     public:
         /// @brief Default constructor.
         /// @details Creates a counter starting at zero.
-        constexpr Counter() noexcept;
+        Counter() noexcept;
 
         /// @brief General constructor.
         /// @details Creates a counter starting at a specified value.
         /// @param initial Value to start the counter at.
-        constexpr explicit Counter(size_t initial) noexcept;
+        explicit Counter(size_t initial) noexcept;
 
         /// @brief Retrieves the current value of the counter.
         /// @return Value of the counter.
-        constexpr size_t value() const noexcept;
+        size_t value() const noexcept;
 
         /// @brief Increments the counter by one.
         /// @return Value prior to incrementing the counter.

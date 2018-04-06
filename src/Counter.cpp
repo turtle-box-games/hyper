@@ -1,17 +1,17 @@
 #include "hyper/Counter.h"
 
 namespace hyper {
-    constexpr Counter::Counter() noexcept
+    Counter::Counter() noexcept
         : _count(0) {
         // ...
     }
 
-    constexpr Counter::Counter(size_t initial) noexcept
+    Counter::Counter(size_t initial) noexcept
         : _count(initial) {
         // ...
     }
 
-    constexpr size_t Counter::value() const noexcept {
+    size_t Counter::value() const noexcept {
         return _count;
     }
 
