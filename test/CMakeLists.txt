@@ -34,6 +34,7 @@ add_subdirectory(util)
 # Add top-level namespace tests.
 set(TOP_LEVEL_SRC_FILES
         ByteTest.cpp
+        CounterTest.cpp
         DefaultDeleterTest.cpp
         ScopedPointerTest.cpp
         UniquePointerTest.cpp
@@ -43,7 +44,7 @@ set(TOP_LEVEL_SRC_FILES
         PairTest.cpp)
 
 add_executable(base_test ${TOP_LEVEL_SRC_FILES})
-target_link_libraries(base_test gmock_main test_util)
+target_link_libraries(base_test gmock_main test_util hyper)
 add_test(NAME base_test COMMAND base_test)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions -fno-rtti")
