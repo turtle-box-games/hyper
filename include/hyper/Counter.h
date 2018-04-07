@@ -34,6 +34,10 @@ namespace hyper {
         ///   The value will not underflow.
         size_t decrement() noexcept;
 
+        /// @brief Resets the counter to zero.
+        /// @return Value of the counter prior to resetting it.
+        size_t reset() noexcept;
+
         /// @brief Pre-increment operator.
         /// @details Increments the counter and returns the new value.
         /// @return Updated counter after the increase.

@@ -49,6 +49,20 @@ TEST(Counter, DecrementValue) {
     EXPECT_EQ(initial, counter.decrement());
 }
 
+TEST(Counter, Reset) {
+    TEST_DESCRIPTION("Reset should change value to zero");
+    Counter counter(42);
+    counter.reset();
+    EXPECT_EQ(0, counter.value());
+}
+
+TEST(Counter, ResetValue) {
+    TEST_DESCRIPTION("Reset method should return original value");
+    const size_t initial = 42;
+    Counter counter(initial);
+    EXPECT_EQ(initial, counter.reset());
+}
+
 TEST(Counter, PreIncrement) {
     const size_t initial  = 42;
     const size_t expected = initial + 1;

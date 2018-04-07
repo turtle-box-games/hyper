@@ -28,6 +28,12 @@ namespace hyper {
         return value;
     }
 
+    size_t Counter::reset() noexcept {
+        auto value = _count;
+        _count = 0;
+        return value;
+    }
+
     Counter &Counter::operator++() noexcept {
         increment();
         return *this;
