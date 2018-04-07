@@ -6,6 +6,7 @@
 
 #include <cstddef>
 #include "assert.h"
+#include "Counter.h"
 #include "DefaultDeleter.h"
 
 namespace hyper {
@@ -21,7 +22,7 @@ namespace hyper {
         /// @details Creates a new reference counter.
         /// @param ptr Pointer to count references to.
         constexpr explicit ReferenceCounter(T *ptr) noexcept
-                : _count(1), _ptr(ptr) {
+                : _counter(1), _rawPointer(ptr) {
             // ...
         }
 
@@ -32,28 +33,28 @@ namespace hyper {
         /// @brief Destructor.
         /// @details Resets the count to zero and releases the memory held by the pointer, if any.
         ~ReferenceCounter() {
-            _count = 0;
             DefaultDeleter<T> deleter;
-            deleter(_ptr);
+            deleter(_rawPointer);
         }
 
         /// @brief Increments the reference count by one.
         void increment() noexcept {
-            _count++;
+            _counter.increment();
         }
 
         /// @brief Decrements the reference count by one.
         /// @return True if there are still references to the pointer.
         /// @return False if the last reference was just released and the pointer can be freed.
         bool decrement() noexcept {
-            ASSERTF(_count > 0, "Attempted to decrement reference count below zero");
-            return 0 < --_count;
+            auto count = _counter.decrement();
+            ASSERTF(count > 0, "Attempted to decrement reference count below zero");
+            return count > 1;
         }
 
         /// @brief Retrieves the raw pointer.
         /// @return Pointer being counted.
         constexpr T *getPointer() const noexcept {
-            return _ptr;
+            return _rawPointer;
         }
 
         /// @brief Assignment operator.
@@ -61,8 +62,8 @@ namespace hyper {
         ReferenceCounter *operator=(const ReferenceCounter &other) = delete;
 
     private:
-        size_t _count;
-        T *_ptr;
+        Counter _counter;
+        T *_rawPointer;
     };
 
     /// @brief Internal implementation for tracking references in smart pointers.
@@ -78,7 +79,7 @@ namespace hyper {
         /// @details Creates a new reference counter.
         /// @param ptr Pointer to count references to.
         constexpr explicit ReferenceCounter(T *ptr) noexcept
-                : _count(1), _ptr(ptr) {
+                : _counter(1), _rawPointer(ptr) {
             // ...
         }
 
@@ -89,28 +90,28 @@ namespace hyper {
         /// @brief Destructor.
         /// @details Resets the count to zero and releases the memory held by the pointer, if any.
         ~ReferenceCounter() {
-            _count = 0;
             DefaultDeleter<T[]> deleter;
-            deleter(_ptr);
+            deleter(_rawPointer);
         }
 
         /// @brief Increments the reference count by one.
         void increment() noexcept {
-            _count++;
+            _counter.increment();
         }
 
         /// @brief Decrements the reference count by one.
         /// @return True if there are still references to the pointer.
         /// @return False if the last reference was just released and the pointer can be freed.
         bool decrement() noexcept {
-            ASSERTF(_count > 0, "Attempted to decrement reference count below zero");
-            return 0 < --_count;
+            auto count = _counter.decrement();
+            ASSERTF(count > 0, "Attempted to decrement reference count below zero");
+            return count > 1;
         }
 
         /// @brief Retrieves the raw pointer.
         /// @return Pointer being counted.
         constexpr T *getPointer() const noexcept {
-            return _ptr;
+            return _rawPointer;
         }
 
         /// @brief Assignment operator.
@@ -118,8 +119,8 @@ namespace hyper {
         ReferenceCounter *operator=(const ReferenceCounter &other) = delete;
 
     private:
-        size_t _count;
-        T *_ptr;
+        Counter _counter;
+        T *_rawPointer;
     };
 }
 
