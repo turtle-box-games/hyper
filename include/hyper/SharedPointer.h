@@ -5,9 +5,9 @@
 #define HYPER_SHARED_POINTER_H
 
 #include "assert.h"
-#include "DefaultDeleter.h"
 #include "utility.h"
-#include "ReferenceCounter.h"
+#include "DefaultDeleter.h"
+#include "Counter.h"
 
 namespace hyper {
     /// @brief Smart pointer that allows multiple references to a single instance.
@@ -241,8 +241,8 @@ namespace hyper {
     /// @param first First pointer to swap.
     /// @param second Second pointer to swap.
     /// @tparam T Type the smart pointers reference.
-    template<typename T, typename Subtype>
-    void swap(SharedPointer<T> first, SharedPointer<Subtype> second) noexcept {
+    template<typename T>
+    void swap(SharedPointer<T> first, SharedPointer<T> second) noexcept {
         first.swap(second);
     };
 
