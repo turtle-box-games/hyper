@@ -190,7 +190,8 @@ namespace hyper {
         /// @private For use by this class only.
         ///   This method exposes the underlying pointer, which can invalidate the counter.
         ///   However, it is required to share a pointer across template types.
-        void get(Counter *&counter, T *&rawPointer) const noexcept {
+        template<typename Subtype>
+        void get(Counter *&counter, Subtype *&rawPointer) const noexcept {
             counter    = _counter;
             rawPointer = _rawPointer;
         }
@@ -201,7 +202,8 @@ namespace hyper {
         /// @private For use by this class only.
         ///   This method exposes the underlying pointer, which can invalidate the counter.
         ///   However, it is required to share a pointer across template types.
-        void release(Counter *&counter, T *&rawPointer) noexcept {
+        template<typename Subtype>
+        void release(Counter *&counter, Subtype *&rawPointer) noexcept {
             get(counter, rawPointer);
             _counter    = nullptr;
             _rawPointer = nullptr;
@@ -394,7 +396,8 @@ namespace hyper {
         /// @private For use by this class only.
         ///   This method exposes the underlying pointer, which can invalidate the counter.
         ///   However, it is required to share a pointer across template types.
-        void get(Counter *&counter, T *&rawPointer) const noexcept {
+        template<typename Subtype>
+        void get(Counter *&counter, Subtype *&rawPointer) const noexcept {
             counter    = _counter;
             rawPointer = _rawPointer;
         }
@@ -405,7 +408,8 @@ namespace hyper {
         /// @private For use by this class only.
         ///   This method exposes the underlying pointer, which can invalidate the counter.
         ///   However, it is required to share a pointer across template types.
-        void release(Counter *&counter, T *&rawPointer) noexcept {
+        template<typename Subtype>
+        void release(Counter *&counter, Subtype *&rawPointer) noexcept {
             get(counter, rawPointer);
             _counter    = nullptr;
             _rawPointer = nullptr;
