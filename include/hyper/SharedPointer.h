@@ -41,6 +41,33 @@ namespace hyper {
             _counter->increment();
         }
 
+        /// @brief Copy constructor.
+        /// @details Shares a reference to an existing pointer.
+        /// @param other Existing pointer to reference.
+        /// @tparam Subtype Compatible pointer type.
+        template<typename Subtype>
+        explicit SharedPointer(const SharedPointer<Subtype> &other) noexcept {
+            other.get(_counter, _rawPointer);
+            _counter->increment();
+        }
+
+        /// @brief Move constructor.
+        /// @details Takes ownership of an existing pointer.
+        /// @param other Existing pointer to reference.
+        SharedPointer(SharedPointer &&other) noexcept
+                : _counter(other._counter), _rawPointer(other._rawPointer) {
+            other._counter = nullptr;
+        }
+
+        /// @brief Move constructor.
+        /// @details Takes ownership of an existing pointer.
+        /// @param other Existing pointer to reference.
+        /// @tparam Subtype Compatible pointer type.
+        template<typename Subtype>
+        explicit SharedPointer(SharedPointer<Subtype> &&other) noexcept {
+            other.release(_counter, _rawPointer);
+        }
+
         /// @brief Destructor.
         /// @details Releases a reference to the underlying pointer.
         ///   If there are no more references, then the pointer and any resources it holds are released.
@@ -112,15 +139,72 @@ namespace hyper {
         }
 
         /// @brief Copy assignment operator.
-        /// @details Replaces the reference held by this pointer to a copy of another one.
+        /// @details Replaces the reference held by this pointer with  a copy of another one.
         /// @param other Other reference to copy.
         /// @return Updated version of the existing pointer.
         SharedPointer &operator=(SharedPointer const &other) {
             expire();
-            _counter    = other._counter;
-            _rawPointer = other._rawPointer;
+            other.get(_counter, _rawPointer);
             _counter->increment();
             return *this;
+        }
+
+        /// @brief Copy assignment operator.
+        /// @details Replaces the reference held by this pointer with a copy of another one.
+        /// @param other Other reference to copy.
+        /// @return Updated version of the existing pointer.
+        /// @tparam Subtype Compatible type.
+        template<typename Subtype>
+        SharedPointer &operator=(SharedPointer<Subtype> const &other) {
+            expire();
+            other.get(_counter, _rawPointer);
+            _counter->increment();
+            return *this;
+        }
+
+        /// @brief Move assignment operator.
+        /// @details Replaces the reference held by this pointer with another one.
+        /// @param other Other reference to replace with.
+        /// @return Updated version of the existing pointer.
+        SharedPointer &operator=(SharedPointer &&other) {
+            expire();
+            other.release(_counter, _rawPointer);
+            return *this;
+        }
+
+        /// @brief Move assignment operator.
+        /// @details Replaces the reference held by this pointer with another one.
+        /// @param other Other reference to replace with.
+        /// @return Updated version of the existing pointer.
+        /// @tparam Subtype Compatible type.
+        template<typename Subtype>
+        SharedPointer &operator=(SharedPointer<Subtype> &&other) {
+            expire();
+            other.release(_counter, _rawPointer);
+            return *this;
+        }
+
+        /// @brief Retrieves the internal members of the shared pointer.
+        /// @param[out] counter Counter tracking the number of references.
+        /// @param[out] rawPointer Underlying raw pointer being tracked.
+        /// @private For use by this class only.
+        ///   This method exposes the underlying pointer, which can invalidate the counter.
+        ///   However, it is required to share a pointer across template types.
+        void get(Counter *&counter, T *&rawPointer) const noexcept {
+            counter    = _counter;
+            rawPointer = _rawPointer;
+        }
+
+        /// @brief Releases internal members of the shared pointer so that another instance can control them.
+        /// @param[out] counter Counter tracking the number of references.
+        /// @param[out] rawPointer Underlying raw pointer being tracked.
+        /// @private For use by this class only.
+        ///   This method exposes the underlying pointer, which can invalidate the counter.
+        ///   However, it is required to share a pointer across template types.
+        void release(Counter *&counter, T *&rawPointer) noexcept {
+            get(counter, rawPointer);
+            _counter    = nullptr;
+            _rawPointer = nullptr;
         }
 
     private:
@@ -159,6 +243,33 @@ namespace hyper {
             _counter->increment();
         }
 
+        /// @brief Copy constructor.
+        /// @details Shares a reference to an existing pointer.
+        /// @param other Existing pointer to reference.
+        /// @tparam Subtype Compatible pointer type.
+        template<typename Subtype>
+        explicit SharedPointer(const SharedPointer<Subtype> &other) noexcept {
+            other.get(_counter, _rawPointer);
+            _counter->increment();
+        }
+
+        /// @brief Move constructor.
+        /// @details Takes ownership of an existing pointer.
+        /// @param other Existing pointer to reference.
+        SharedPointer(SharedPointer &&other) noexcept
+                : _counter(other._counter), _rawPointer(other._rawPointer) {
+            other._counter = nullptr;
+        }
+
+        /// @brief Move constructor.
+        /// @details Takes ownership of an existing pointer.
+        /// @param other Existing pointer to reference.
+        /// @tparam Subtype Compatible pointer type.
+        template<typename Subtype>
+        explicit SharedPointer(SharedPointer<Subtype> &&other) noexcept {
+            other.release(_counter, _rawPointer);
+        }
+
         /// @brief Destructor.
         /// @details Releases a reference to the underlying pointer.
         ///   If there are no more references, then the pointer and any resources it holds are released.
@@ -173,7 +284,7 @@ namespace hyper {
             if(_counter != nullptr) {
                 if(1 == _counter->decrement()) {
                     delete _counter;
-                    DefaultDeleter<T[]> deleter;
+                    DefaultDeleter<T> deleter;
                     deleter(_rawPointer);
                 }
                 _counter = nullptr;
@@ -202,11 +313,23 @@ namespace hyper {
             other._rawPointer = tempPointer;
         }
 
+        /// @brief Subscript operator.
+        /// @details Provides access to a specified element in the array.
+        /// @param index Index of the element to access, starting at zero.
+        /// @return Element at the specified index.
+        /// @note Be sure that it is safe to de-reference the pointer.
+        ///   The pointer is asserted to be non-null.
         T &operator[](size_t index) noexcept {
             ASSERTF(_rawPointer != nullptr, "Attempt to dereference null pointer");
             return _rawPointer[index];
         }
 
+        /// @brief Subscript operator.
+        /// @details Provides access to a specified element in the array.
+        /// @param index Index of the element to access, starting at zero.
+        /// @return Element at the specified index.
+        /// @note Be sure that it is safe to de-reference the pointer.
+        ///   The pointer is asserted to be non-null.
         constexpr const T &operator[](size_t index) const noexcept {
             ASSERTF(_rawPointer != nullptr, "Attempt to dereference null pointer");
             return _rawPointer[index];
@@ -220,15 +343,72 @@ namespace hyper {
         }
 
         /// @brief Copy assignment operator.
-        /// @details Replaces the reference held by this pointer to a copy of another one.
+        /// @details Replaces the reference held by this pointer with  a copy of another one.
         /// @param other Other reference to copy.
         /// @return Updated version of the existing pointer.
         SharedPointer &operator=(SharedPointer const &other) {
             expire();
-            _counter    = other._counter;
-            _rawPointer = other._rawPointer;
+            other.get(_counter, _rawPointer);
             _counter->increment();
             return *this;
+        }
+
+        /// @brief Copy assignment operator.
+        /// @details Replaces the reference held by this pointer with a copy of another one.
+        /// @param other Other reference to copy.
+        /// @return Updated version of the existing pointer.
+        /// @tparam Subtype Compatible type.
+        template<typename Subtype>
+        SharedPointer &operator=(SharedPointer<Subtype> const &other) {
+            expire();
+            other.get(_counter, _rawPointer);
+            _counter->increment();
+            return *this;
+        }
+
+        /// @brief Move assignment operator.
+        /// @details Replaces the reference held by this pointer with another one.
+        /// @param other Other reference to replace with.
+        /// @return Updated version of the existing pointer.
+        SharedPointer &operator=(SharedPointer &&other) {
+            expire();
+            other.release(_counter, _rawPointer);
+            return *this;
+        }
+
+        /// @brief Move assignment operator.
+        /// @details Replaces the reference held by this pointer with another one.
+        /// @param other Other reference to replace with.
+        /// @return Updated version of the existing pointer.
+        /// @tparam Subtype Compatible type.
+        template<typename Subtype>
+        SharedPointer &operator=(SharedPointer<Subtype> &&other) {
+            expire();
+            other.release(_counter, _rawPointer);
+            return *this;
+        }
+
+        /// @brief Retrieves the internal members of the shared pointer.
+        /// @param[out] counter Counter tracking the number of references.
+        /// @param[out] rawPointer Underlying raw pointer being tracked.
+        /// @private For use by this class only.
+        ///   This method exposes the underlying pointer, which can invalidate the counter.
+        ///   However, it is required to share a pointer across template types.
+        void get(Counter *&counter, T *&rawPointer) const noexcept {
+            counter    = _counter;
+            rawPointer = _rawPointer;
+        }
+
+        /// @brief Releases internal members of the shared pointer so that another instance can control them.
+        /// @param[out] counter Counter tracking the number of references.
+        /// @param[out] rawPointer Underlying raw pointer being tracked.
+        /// @private For use by this class only.
+        ///   This method exposes the underlying pointer, which can invalidate the counter.
+        ///   However, it is required to share a pointer across template types.
+        void release(Counter *&counter, T *&rawPointer) noexcept {
+            get(counter, rawPointer);
+            _counter    = nullptr;
+            _rawPointer = nullptr;
         }
 
     private:

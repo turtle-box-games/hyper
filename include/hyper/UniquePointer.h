@@ -126,7 +126,7 @@ namespace hyper {
         /// @return Pointer held by the instance.
         /// @private For use by this class only.
         ///   This method exposes the underlying pointer, which makes it not unique.
-        ///   However it is required to share a pointer across template types.
+        ///   However, it is required to share a pointer across template types.
         constexpr T *release() noexcept {
             auto ptr = _rawPointer;
             _rawPointer = nullptr;
@@ -253,7 +253,7 @@ namespace hyper {
         /// @return Pointer held by the instance.
         /// @private For use by this class only.
         ///   This method exposes the underlying pointer, which makes it not unique.
-        ///   However it is required to share a pointer across template types.
+        ///   However, it is required to share a pointer across template types.
         constexpr T *release() noexcept {
             auto ptr = _rawPointer;
             _rawPointer = nullptr;
