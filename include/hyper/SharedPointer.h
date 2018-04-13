@@ -286,7 +286,7 @@ namespace hyper {
             if(_counter != nullptr) {
                 if(1 == _counter->decrement()) {
                     delete _counter;
-                    DefaultDeleter<T> deleter;
+                    DefaultDeleter<T[]> deleter;
                     deleter(_rawPointer);
                 }
                 _counter = nullptr;
