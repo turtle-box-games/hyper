@@ -34,6 +34,23 @@ namespace hyper {
         typedef T type;
     };
 
+    /// @brief Static check if a type is an lvalue and has a reference modifier.
+    /// @tparam T Type to check references of.
+    template<typename T>
+    struct IsLValueReference {
+        /// @brief Flag indicating whether the type is an lvalue and has a reference modifier.
+        static constexpr bool value = false;
+    };
+
+    /// @brief Static check if a type is an lvalue and has a reference modifier.
+    /// @details This specialization always results in true.
+    /// @tparam T Type to check references of.
+    template<typename T>
+    struct IsLValueReference<T&> {
+        /// @brief Flag indicating whether the type is an lvalue and has a reference modifier.
+        static constexpr bool value = true;
+    };
+
     /// @brief Forwards an expression reference as-is to another location.
     /// @details Forwards an rvalue reference as an rvalue
     ///   and an lvalue reference as an lvalue reference.
@@ -41,7 +58,19 @@ namespace hyper {
     /// @param arg Expression to forward.
     /// @return Same expression passed in by @p arg, keeping lvalue and rvalue status.
     template<typename T>
-    constexpr T forward(typename RemoveReference<T>::type &arg) noexcept {
+    constexpr T &&forward(typename RemoveReference<T>::type &arg) noexcept {
+        return static_cast<T &&>(arg);
+    }
+
+    /// @brief Forwards an expression reference as-is to another location.
+    /// @details Forwards an rvalue reference as an rvalue
+    ///   and an lvalue reference as an lvalue reference.
+    ///   This can be used to remove unnecessary moving and copying operations.
+    /// @param arg Expression to forward.
+    /// @return Same expression passed in by @p arg, keeping lvalue and rvalue status.
+    template<typename T>
+    constexpr T &&forward(typename RemoveReference<T>::type &&arg) noexcept {
+        static_assert(!IsLValueReference<T>::value, "Cannot forward lvalue as rvalue");
         return static_cast<T &&>(arg);
     }
 
