@@ -76,14 +76,44 @@ namespace hyper {
             // ...
         }
 
+        /// @brief Move constructor.
+        /// @param other Existing function to take ownership of.
+        Function(Function &&other) noexcept
+                : _callable(other._callable) {
+            // ...
+        }
+
+        /// @brief General constructor.
+        /// @param func Function to wrap.
+        /// @tparam CallableType Callable instance that satisfies the function signature.
         template<typename CallableType>
         explicit Function(CallableType func)
                 : _callable(createShared(new ConcreteCallable<CallableType>(func))) {
             // ...
         }
 
+        /// @brief Copy assignment operator.
+        /// @param other Existing function to copy from.
+        /// @return Reference to this instance after it has been updated.
+        Function &operator=(const Function &other) noexcept {
+            _callable = other._callable;
+            return *this;
+        }
+
+        /// @brief Move assignment operator.
+        /// @param other Existing function to take ownership of.
+        /// @return Reference to this instance after it has been updated.
+        Function &operator=(Function &&other) noexcept {
+            _callable = other._callable;
+            return *this;
+        }
+
+        /// @brief Assignment operator.
+        /// @param func Function to store.
+        /// @tparam CallableType Callable instance that satisfies the function signature.
+        /// @return Reference to this instance after it has been updated.
         template<typename CallableType>
-        Function& operator=(CallableType func) {
+        Function &operator=(CallableType func) {
             _callable = createShared(new ConcreteCallable<CallableType>(func));
             return *this;
         }
@@ -117,6 +147,14 @@ namespace hyper {
         ReturnValue operator()(Args... args) const {
             ASSERTF((bool)_callable, "Attempt to call null function");
             return _callable->invoke(args...);
+        }
+
+        /// @brief Explicit bool cast.
+        /// @details Checks whether the function can be safely invoked.
+        /// @return True if the function references a callable instance.
+        /// @return False if the function points to null.
+        explicit operator bool() const noexcept {
+            return (bool)_callable;
         }
     };
 }
