@@ -10,11 +10,11 @@ TEST(Pair, DefaultConstructor) {
 }
 
 TEST(Pair, GeneralConstructor) {
-    const int first  = 42;
-    const int second = 500;
-    Pair<int, int> pair(first, second);
+    const int first    = 42;
+    const char *second = "foobar";
+    Pair<const int, const char * const> pair(first, second);
     EXPECT_EQ(first, pair.first);
-    EXPECT_EQ(second, pair.second);
+    EXPECT_STREQ(second, pair.second);
 }
 
 TEST(Pair, Create) {

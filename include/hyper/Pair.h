@@ -4,6 +4,8 @@
 #ifndef HYPER_PAIR_H
 #define HYPER_PAIR_H
 
+#include "utility.h"
+
 namespace hyper {
     /// @brief Simple container for holding two values.
     /// @tparam T1 Type of the first value.
@@ -19,7 +21,7 @@ namespace hyper {
         /// @brief Default constructor.
         /// @details Creates a pair and assigns the first and second values to the defaults.
         constexpr Pair()
-                : first(T1()), second(T2()) {
+                : first(), second() {
             // ...
         }
 
@@ -27,8 +29,17 @@ namespace hyper {
         /// @details Creates a pair and populates the values with the values specified.
         /// @param a First value.
         /// @param b Second value.
-        constexpr Pair(T1 a, T2 b) noexcept
+        constexpr Pair(const T1 &a, const T2 &b) noexcept
                 : first(a), second(b) {
+            // ...
+        }
+
+        /// @brief General constructor.
+        /// @details Creates a pair and populates the values with the values specified.
+        /// @param a First value.
+        /// @param b Second value.
+        constexpr Pair(T1 &&a, T2 &&b) noexcept
+                : first(forward<T1>(a)), second(forward<T2>(b)) {
             // ...
         }
 
@@ -84,8 +95,8 @@ namespace hyper {
     /// @param second Second value.
     /// @return Pair created from @c first and @c second.
     template<typename T1, typename T2>
-    inline constexpr Pair<T1, T2> createPair(T1 first, T2 second) noexcept {
-        return Pair<T1, T2>(first, second);
+    inline constexpr Pair<typename RemoveReference<T1>::type, typename RemoveReference<T2>::type> createPair(T1 &&first, T2 &&second) noexcept {
+        return Pair<typename RemoveReference<T1>::type, typename RemoveReference<T2>::type>(forward<T1>(first), forward<T2>(second));
     }
 }
 
