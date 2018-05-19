@@ -426,7 +426,7 @@ namespace hyper {
     /// @param second Second pointer to swap.
     /// @tparam T Type the smart pointers reference.
     template<typename T>
-    void swap(SharedPointer<T> first, SharedPointer<T> second) noexcept {
+    void swap(SharedPointer<T> &first, SharedPointer<T> &second) noexcept {
         first.swap(second);
     };
 
