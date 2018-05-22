@@ -43,6 +43,13 @@ namespace hyper {
             // ...
         }
 
+        /// @brief Swaps values with another pair of the same type.
+        /// @param other Other pair to swap values with.
+        void swap(Pair &other) noexcept {
+            ::hyper::swap(first, other.first);
+            ::hyper::swap(second, other.second);
+        }
+
         /// @brief Equality operator.
         /// @details Compares against another pair of the same type.
         /// @return True if the first and second values of both pairs are equal, false otherwise.
@@ -98,6 +105,16 @@ namespace hyper {
     inline constexpr Pair<typename RemoveReference<T1>::type, typename RemoveReference<T2>::type> createPair(T1 &&first, T2 &&second) noexcept {
         return Pair<typename RemoveReference<T1>::type, typename RemoveReference<T2>::type>(forward<T1>(first), forward<T2>(second));
     }
+
+    /// @brief Swaps the values of two pairs.
+    /// @param first First pair to swap.
+    /// @param second Second pair to swap.
+    /// @tparam T1 Type of the first value in both pairs.
+    /// @tparam T2 Type of the second value in both pairs.
+    template<typename T1, typename T2>
+    inline void swap(Pair<T1, T2> &first, Pair<T1, T2> &second) noexcept {
+        first.swap(second);
+    };
 }
 
 #endif // HYPER_PAIR_H
