@@ -32,16 +32,7 @@ endif()
 add_subdirectory(util)
 
 # Add top-level namespace tests.
-set(TOP_LEVEL_SRC_FILES
-        ByteTest.cpp
-        CounterTest.cpp
-        DefaultDeleterTest.cpp
-        ScopedPointerTest.cpp
-        UniquePointerTest.cpp
-        SharedPointerTest.cpp
-        IntegerTest.cpp
-        FloatTest.cpp
-        PairTest.cpp)
+file(GLOB TOP_LEVEL_SRC_FILES *Test.cpp)
 
 add_executable(base_test ${TOP_LEVEL_SRC_FILES})
 target_link_libraries(base_test gmock_main test_util hyper)
