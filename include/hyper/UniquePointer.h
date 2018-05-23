@@ -44,6 +44,14 @@ namespace hyper {
             // ...
         }
 
+        /// @brief Move constructor.
+        /// @details Creates a new unique pointer from another temporary unique pointer.
+        /// @param other Temporary pointer to take ownership of.
+        constexpr UniquePointer(UniquePointer &&other) noexcept
+                : _rawPointer(other.release()) {
+            // ...
+        }
+
         /// @brief Copy constructor.
         /// @details Copy constructor is disabled to maintain exclusive ownership of the raw pointer.
         UniquePointer(const UniquePointer &) = delete;
@@ -122,6 +130,15 @@ namespace hyper {
             return *this;
         }
 
+        /// @brief Move assignment operator.
+        /// @details Replaces the smart pointer with an instance of another pointer.
+        /// @param other Pointer to replace the existing instance with.
+        /// @return Updated version of the existing pointer.
+        UniquePointer &operator=(UniquePointer &&other) noexcept {
+            reset(other.release());
+            return *this;
+        }
+
         /// @brief Releases the pointer being held and returns it so another instance may own it.
         /// @return Pointer held by the instance.
         /// @private For use by this class only.
@@ -169,6 +186,14 @@ namespace hyper {
         /// @tparam Subtype Any compatible pointer type.
         template<typename Subtype>
         constexpr explicit UniquePointer(UniquePointer<Subtype[]> &&other) noexcept
+                : _rawPointer(other.release()) {
+            // ...
+        }
+
+        /// @brief Move constructor.
+        /// @details Creates a new unique pointer from another temporary unique pointer.
+        /// @param other Temporary pointer to take ownership of.
+        constexpr UniquePointer(UniquePointer &&other) noexcept
                 : _rawPointer(other.release()) {
             // ...
         }
@@ -249,6 +274,15 @@ namespace hyper {
             return *this;
         }
 
+        /// @brief Move assignment operator.
+        /// @details Replaces the smart pointer with an instance of another pointer.
+        /// @param other Pointer to replace the existing instance with.
+        /// @return Updated version of the existing pointer.
+        UniquePointer &operator=(UniquePointer &&other) noexcept {
+            reset(other.release());
+            return *this;
+        }
+
         /// @brief Releases the pointer being held and returns it so another instance may own it.
         /// @return Pointer held by the instance.
         /// @private For use by this class only.
@@ -273,6 +307,11 @@ namespace hyper {
     void swap(UniquePointer<T> &first, UniquePointer<T> &second) noexcept {
         first.swap(second);
     };
+
+    template<typename T>
+    constexpr UniquePointer<T> createUnique(T *&&ptr) noexcept {
+        return UniquePointer<T>(forward<T *>(ptr));
+    }
 }
 
 #endif // HYPER_UNIQUE_POINTER_H
